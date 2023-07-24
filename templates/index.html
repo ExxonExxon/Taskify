@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hero Section with Navigation Bar</title>
+  <style>
+    /* Internal CSS */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+
+body::-webkit-scrollbar {
+  width: 12px;
+}
+
+/* Track */
+body::-webkit-scrollbar-track {
+  background: #222; /* Dark background color for the track */
+}
+
+/* Handle */
+body::-webkit-scrollbar-thumb {
+  background: #555; /* Color of the scrollbar handle */
+  border-radius: 6px;
+}
+
+/* Handle on hover */
+body::-webkit-scrollbar-thumb:hover {
+  background: #888;
+}
+
+/* Optional: To style the scrollbar buttons (not supported in Firefox) */
+body::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Optional: To style the scrollbar corner (not supported in Firefox) */
+body::-webkit-scrollbar-corner {
+  background: #222;
+}
+
+header {
+  background-color: #333;
+  padding: 10px;
+}
+
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+  padding: 5px 15px;
+  font-size: 14px;
+  position: relative;
+}
+
+nav a:hover {
+  color: #cccccc;
+  text-decoration: underline;
+}
+
+.hero {
+  background-image: linear-gradient(#333333 0%, #111111 90%);
+  color: #fff;
+  text-align: center;
+  padding: 100px 0;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+}
+
+.hero button {
+  background-color: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 10px 30px;
+  font-size: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.features {
+  background-color: #111111;
+  padding: 50px 0;
+}
+
+.features h1 {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 30px;
+}
+
+.top-features {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.feature-card {
+  flex: 1 0 40%;
+  background-color: #222222;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.feature-card h1 {
+  font-size: 1.8rem;
+  color: #fff;
+}
+
+.feature-card p {
+  color: #ccc;
+}
+
+.pricing {
+  background-color: #222;
+  color: #fff;
+  padding: 50px 0;
+}
+
+.pricing h1 {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+}
+
+.pricing-plans {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.plan {
+  background-color: #333;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  padding: 30px;
+  flex: 1;
+  max-width: 300px;
+  text-align: center;
+  margin-top: 10px;
+}
+
+.plan h2 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.plan p {
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+.plan ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.plan li {
+  margin-bottom: 12px;
+  font-size: 1rem;
+}
+
+.plan strong {
+  color: #fff;
+}
+
+.plan p:last-child {
+  margin-bottom: 0;
+}
+
+.price {
+  font-size: 1.5rem;
+}
+
+.highlight {
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.cta-btn {
+  display: inline-block;
+  padding: 12px 24px;
+  background-color: #4caf50;
+  color: #fff;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 25px;
+}
+
+.recommended {
+  border: 2px solid #4caf50;
+  position: relative;
+  z-index: 1;
+}
+
+.recommended-label {
+  background-color: #4caf50;
+  color: #fff;
+  border-radius: 5px;
+  font-size: 1rem;
+  padding: 5px 10px;
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Animations and Interactivity */
+/* Animate the hero button on hover */
+.hero button:hover {
+  transform: scale(1.1);
+}
+
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Create a fade-in animation for the feature cards */
+.feature-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: ease 0.3s;
+}
+
+.feature-card:hover {
+    transform: scale(1.1);
+    
+}
+
+/* Create a bounce effect for the pricing plan cards */
+.plan {
+  animation: bounceIn 1s forwards;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Footer Styling */
+footer {
+  background-color: #333;
+  padding: 20px;
+  text-align: center;
+}
+
+.footer-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+
+.footer-content a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.github-icon img {
+  width: 20px;
+  height: 20px;
+}
+
+/* Animate the footer links on hover */
+.footer-content a:hover {
+  color: #cccccc;
+  text-decoration: underline;
+}
+
+/* Hide the footer initially */
+footer {
+  opacity: 0;
+}
+
+/* Animate the footer on scroll */
+footer {
+  animation: fadeInUp 1s forwards;
+}
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+  }
+}
+
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Services</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+  <div class="hero">
+    <h1>Welcome to Taskify</h1>
+    <p>Welcome to Taskify. Get started now!</p>
+    <button>Get Started</button>
+  </div>
+
+  <div class="features" id="features">
+    <h1>Our features</h1>
+    <div class="top-features">
+      <div class="feature-card">
+        <h1>Task Organization</h1>
+        <p>With Taskify, keep your tasks in order and stay on top of your to-do list effortlessly. Create, manage, and prioritize tasks with ease. Set due dates, add descriptions, and assign tags or labels to categorize your tasks. Stay organized and track your progress towards completing your goals.</p>
+      </div>
+      <div class="feature-card">
+        <h1>Collaboration</h1>
+        <p>Collaborate with your team seamlessly using Taskify's collaboration features. Assign tasks to team members, share task lists, and track everyone's progress in real-time. Enhance productivity and achieve your objectives together.</p>
+      </div>
+      <div class="feature-card">
+        <h1>Reminders & Notifications</h1>
+        <p>Never miss a deadline again! Taskify provides reminders and notifications to keep you informed about upcoming tasks and deadlines. Stay on track and receive timely updates on your tasks, so you can stay focused and meet your targets.</p>
+      </div>
+      <div class="feature-card">
+        <h1>Progress Tracking</h1>
+        <p>Track your progress efficiently with Taskify's Progress Tracking feature. Get insights into your task completion rates, view detailed reports, and analyze your productivity trends over time. Visualize your achievements and stay motivated to accomplish more.</p>
+      </div>
+    </div>
+  </div>
+
+  <section class="pricing" id="pricing">
+    <h1>Pricing</h1>
+    <div class="pricing-plans">
+      <div class="plan recommended">
+        <div class="recommended-label">Recommended</div>
+        <h2>Free Plan</h2>
+        <ul>
+          <li>Organize tasks efficiently</li>
+          <li>Set reminders &amp; receive notifications</li>
+        </ul>
+        <p class="price">Price: <span class="highlight">Free</span></p>
+        <a href="#" class="cta-btn">Get Started</a>
+      </div>
+
+      <div class="plan">
+        <h2>Pro Plan</h2>
+        <ul>
+          <li>Advanced task organization and categorization</li>
+          <li>Real-time collaboration with your team</li>
+          <li>Set priorities and deadlines</li>
+          <li>Receive reminders &amp; notifications on multiple devices</li>
+        </ul>
+        <p class="price">Price: <span class="highlight">$1.99/month</span></p>
+        <a href="#" class="cta-btn">Upgrade Now</a>
+      </div>
+
+      <div class="plan">
+        <h2>Premium Plan</h2>
+        <ul>
+          <li>All Pro features</li>
+          <li>Advanced analytics and reporting</li>
+          <li>Priority customer support</li>
+          <li>Integrations with third-party apps</li>
+        </ul>
+        <p class="price">Price: <span class="highlight">$4.99/month</span></p>
+        <a href="#" class="cta-btn">Upgrade Now</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-content">
+      <a href="https://github.com" class="github-icon"><i style="font-size: 20px;" class="fa fa-github"></i></a>
+      <a href="#">Terms of Service</a>
+      <a href="#">About</a>
+      <a href="#">Contact Us</a>
+    </div>
+  </footer>
+
+  <script>
+    // Add Intersection Observer to animate feature cards and footer
+const featureCards = document.querySelectorAll('.feature-card');
+const footer = document.querySelector('footer');
+
+const options = {
+  threshold: 0.2
+};
+
+const animateOnScroll = (entries, observer) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animation = 'fadeInUp 1s forwards';
+      observer.unobserve(entry.target);
+    }
+  });
+};
+
+const footerObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.animation = 'fadeInUp 1s forwards';
+    }
+  });
+}, options);
+
+featureCards.forEach(card => {
+  const observer = new IntersectionObserver(animateOnScroll, options);
+  observer.observe(card);
+});
+
+footerObserver.observe(footer);
+
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do List</title>
+  <style>
+    /* Internal CSS */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #333333;
+      color: #fff;
+    }
+
+    nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+nav a {
+  text-decoration: none;
+  color: #fff;
+  padding: 5px 15px;
+  font-size: 14px;
+  position: relative;
+}
+
+nav a:hover {
+  color: #cccccc;
+  text-decoration: underline;
+}
+
+    /* ... Copy the rest of the styles here ... */
+    /* ... to maintain the original styling ... */
+
+    /* Additional To-Do List page specific styles */
+    .todo-container {
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    .navigation {
+      display: flex;
+      justify-content: space-between;
+      background-color: #222;
+      padding: 10px;
+    }
+
+    .navigation ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+    }
+
+    .navigation li {
+      margin-right: 20px;
+    }
+
+    .navigation a {
+      text-decoration: none;
+      color: #fff;
+      font-size: 16px;
+      padding: 5px 10px;
+      border-radius: 5px;
+    }
+
+    .navigation a:hover {
+      background-color: #555;
+    }
+
+    .task-list {
+      flex: 1;
+      max-width: 500px;
+      margin-right: 20px;
+    }
+
+    .task {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+    }
+
+    .task-title {
+      font-size: 16px;
+      margin-bottom: 5px;
+    }
+
+    .task-description {
+      font-size: 14px;
+      color: #ccc;
+      margin-bottom: 5px;
+    }
+
+    .task-group,
+    .task-importance {
+      font-size: 14px;
+      color: #4caf50;
+    }
+
+    .add-task-container {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+
+    .add-task-title {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    .task-form {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .task-form label {
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .task-form input[type="text"],
+    .task-form select {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+      color: #fff;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .task-form textarea {
+      flex: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      resize: vertical;
+      font-size: 14px;
+      color: #fff;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .task-form button {
+      flex: 1;
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .task-form button:hover {
+      background-color: #45a049;
+      transform: scale(1.05);
+    }
+
+    /* Hide the footer initially */
+    .footer {
+      opacity: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="todo-container">
+    <header>
+        <nav>
+          <a href="#">Home</a>
+          <a href="#">About</a>
+          <a href="#">Services</a>
+          <a href="#">Logout</a>
+        </nav>
+      </header>
+
+      <br>
+
+    <div class="add-task-container">
+      <div class="add-task-title">Add Task</div>
+      <form class="task-form">
+        <textarea type="text" placeholder="Title" required></textarea>
+        <textarea placeholder="Description" required></textarea>
+
+        <select>
+          <option value="personal">Personal</option>
+          <option value="work">Work</option>
+          <option value="study">Study</option>
+        </select>
+
+        <select>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+
+        <button type="submit">Add</button>
+      </form>
+    </div>
+
+    <div class="task-list">
+      <div class="task">
+        <div class="task-title">Task 1</div>
+        <div class="task-description">This is the description for Task 1.</div>
+        <div class="task-group">Group: Personal</div>
+        <div class="task-importance">Importance: High</div>
+      </div>
+      <div class="task">
+        <div class="task-title">Task 2</div>
+        <div class="task-description">This is the description for Task 2.</div>
+        <div class="task-group">Group: Work</div>
+        <div class="task-importance">Importance: Medium</div>
+      </div>
+      <!-- Add more example tasks if needed -->
+    </div>
+  </div>
+</body>
+
+</html>

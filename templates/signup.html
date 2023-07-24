@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signup Page</title>
+  <style>
+    /* Internal CSS */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-image: linear-gradient(#333333 0%, #111111 90%);
+      color: #fff;
+    }
+
+    /* ... Copy the rest of the styles here ... */
+    /* ... to maintain the original styling ... */
+
+    /* Additional signup page specific styles */
+    .signup-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100%;
+    }
+
+    .signup-box {
+      background-color: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      max-width: 400px;
+      opacity: 0;
+      transform: translateY(20px);
+      animation: fadeInUp 1s forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .signup-title {
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+
+    .signup-input {
+      margin-bottom: 20px;
+      padding: 10px;
+      padding-right: 0px;
+      margin-right: 50px !important;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 97%;
+      font-size: 16px;
+      color: #fff;
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .signup-input::placeholder {
+      color: #ccc;
+    }
+
+    .signup-btn {
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .signup-btn:hover {
+      background-color: #45a049;
+      transform: scale(1.05);
+    }
+
+    .login-link {
+      color: #ccc;
+      font-size: 14px;
+      text-decoration: none;
+      margin-top: 15px;
+    }
+
+    .login-link:hover {
+      text-decoration: underline;
+    }
+
+    .signup-social {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .signup-social-icon {
+      font-size: 24px;
+      color: #fff;
+      cursor: pointer;
+      margin: 0 10px;
+      transition: color 0.3s;
+    }
+
+    .signup-social-icon:hover {
+      color: #45a049;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="signup-container">
+    <div class="signup-box">
+      <h1 class="signup-title">Sign Up for Taskify</h1>
+      <form>
+        <input type="text" class="signup-input" placeholder="Username">
+        <input type="email" class="signup-input" placeholder="Email">
+        <input type="password" class="signup-input" placeholder="Password">
+        <button type="submit" class="signup-btn">Sign Up</button>
+      </form>
+      <br>
+      <a href="#" class="login-link">Already have an account? Log in here</a>
+      <div class="signup-social">
+        <span class="signup-social-icon"><i class="fa fa-google"></i></span>
+        <span class="signup-social-icon"><i class="fa fa-facebook"></i></span>
+        <span class="signup-social-icon"><i class="fa fa-twitter"></i></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Your JavaScript code (if any) can be placed here
+  </script>
+</body>
+
+</html>
