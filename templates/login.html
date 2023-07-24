@@ -160,13 +160,15 @@
   <div class="login-container">
     <div class="login-box">
       <h1 class="login-title">Welcome to Taskify</h1>
-      <form class="login-form">
-        <input type="text" class="login-input" placeholder="Username">
-        <input type="password" class="login-input" placeholder="Password">
+      <form class="login-form" method="post" action="/login">
+        <input type="text" name="username" class="login-input" placeholder="Username">
+        <input type="password" name="password" class="login-input" placeholder="Password">
         <button type="submit" class="login-btn">Login</button>
         <br>
-        <a href="#" class="forgot-password">Forgot password?</a>
-      </form>
+    </form>
+    
+      <a href="#" class="forgot-password">Forgot password?</a>
+      <br>
       <a href="#" class="signup-link">Not signed up? Signup here</a>
       <div class="login-social">
         <span class="login-social-icon"><i class="fa fa-google"></i></span>

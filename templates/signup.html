@@ -121,14 +121,15 @@
   <div class="signup-container">
     <div class="signup-box">
       <h1 class="signup-title">Sign Up for Taskify</h1>
-      <form>
-        <input type="text" class="signup-input" placeholder="Username">
-        <input type="email" class="signup-input" placeholder="Email">
-        <input type="password" class="signup-input" placeholder="Password">
+      <form method="post" action="/signup">
+        <input type="text" name="username" class="signup-input" placeholder="Username">
+        <input type="email" name="email" class="signup-input" placeholder="Email">
+        <input type="password" name="password" class="signup-input" placeholder="Password">
         <button type="submit" class="signup-btn">Sign Up</button>
-      </form>
+    </form>
+    
       <br>
-      <a href="#" class="login-link">Already have an account? Log in here</a>
+      <a href="/login" class="login-link">Already have an account? Log in here</a>
       <div class="signup-social">
         <span class="signup-social-icon"><i class="fa fa-google"></i></span>
         <span class="signup-social-icon"><i class="fa fa-facebook"></i></span>
