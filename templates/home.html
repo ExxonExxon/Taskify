@@ -7,13 +7,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>To-Do List</title>
   <style>
-    /* Internal CSS */
+    /* Global styles */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       line-height: 1.6;
       background-color: #333333;
       color: #fff;
+    }
+
+    a {
+      text-decoration: none;
+      color: #fff;
+    }
+
+    a:hover {
+      text-decoration: underline;
     }
 
     nav {
@@ -23,8 +32,6 @@
     }
 
     nav a {
-      text-decoration: none;
-      color: #fff;
       padding: 5px 15px;
       font-size: 14px;
     }
@@ -34,102 +41,383 @@
       border-radius: 5px;
     }
 
+    /* Container styles */
     .todo-container {
       padding: 20px;
+      width: auto;
     }
 
-    /* ... Copy the rest of the styles here ... */
-    /* ... to maintain the original styling ... */
-
-    /* Additional To-Do List page specific styles */
-    .task-list {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-
-    .task {
-      background-color: #222;
-      border-radius: 5px;
-      margin: 10px;
-      padding: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-      width: calc(50% - 20px); /* Half of the available width with margin */
-    }
-
-    .add-task-container {
-      max-width: 100%;
-      margin-bottom: 20px;
-      background-color: #222;
-      border-radius: 5px;
-      padding: 20px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-    }
+   /* Additional To-Do List page specific styles */
+.add-task-container {
+  max-width: 50%;
+  width: 100%; /* Adjust the width to 100% to fill the available space */
+  margin: 0 auto; /* Center the container horizontally */
+  padding: 20px;
+  background-color: #222;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  margin-top: 20px;
+}
 
     .add-task-title {
-      font-size: 18px;
-      margin-bottom: 10px;
+      font-size: 24px;
+      margin-bottom: 15px;
       color: #fff;
     }
 
     .task-form {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
       gap: 10px;
+      margin-top: 10px;
     }
 
     .task-form label {
-      font-size: 14px;
+      font-size: 16px;
       color: #ccc;
     }
 
     .task-form input[type="text"],
-    .task-form select {
-      flex: 1;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 14px;
+    .task-form select,
+    .task-form textarea {
+      padding: 10px;
+      margin: 0;
+      resize: vertical;
+      border: none;
+      font-size: 16px;
       color: #fff;
       background-color: #444;
+      margin: none;
+      padding-bottom: -5px;
+    }
+
+    .task-form input[type="text"]:focus,
+    .task-form textarea:focus
+    {
+      border: none;
+      outline: none ;
     }
 
     .task-form textarea {
-      flex: 1;
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      resize: vertical;
-      font-size: 14px;
-      color: #fff;
-      background-color: #444;
+      max-height: 70px;
+      min-height: 20px;
     }
 
     .task-form .dropdown {
       display: flex;
       align-items: center;
       gap: 5px;
+      position: relative;
+    }
+
+    .task-form .dropdown-btn {
+      background-color: transparent;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+    }
+
+    .task-form .dropdown-icon {
+      margin-right: 5px;
+    }
+
+    .task-form .dropdown-container {
+      position: absolute;
+      background-color: #333;
+      min-width: 160px;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 5px;
+      padding: 10px;
+      display: none;
+    }
+
+    .task-form .dropdown-item {
+      display: block;
+      color: #fff;
+      padding: 5px;
+      cursor: pointer;
+    }
+
+    .task-form .dropdown-item:hover {
+      background-color: #555;
+    }
+
+    /* Highlight the selected priority */
+    .task-form .selected-priority {
+      background-color: #4caf50;
     }
 
     .task-form button {
       background-color: #4caf50;
       color: #fff;
       border: none;
-      padding: 10px;
+      padding: 12px 20px;
       border-radius: 5px;
-      font-size: 14px;
+      font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s, transform 0.3s;
     }
 
     .task-form button:hover {
       background-color: #45a049;
-      transform: scale(1.05);
+      transform: scale(1.0);
+    }
+
+    /* Task list styles */
+    .task-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.task {
+  background-color: #444;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  flex-basis: calc(50% - 20px);
+}
+
+.task-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #fff;
+}
+
+.task-description {
+  font-size: 16px;
+  color: #ccc;
+  margin-bottom: 10px;
+}
+
+.task-group {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 5px;
+}
+
+.task-importance {
+  font-size: 14px;
+  color: #4caf50;
+}
+
+.task-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.delete-task-btn {
+  background-color: #f44336;
+  padding: 5px 10px;
+  margin-right: 0;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+}
+
+
+    /* Additional styles for the group sections */
+    .group-section {
+  margin-top: 20px;
+  border: 2px solid #444;
+  border-radius: 5px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.group-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+.custom-dropdown {
+      position: relative;
+    }
+
+    .custom-dropdown .dropdown-btn {
+      background-color: #444;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      padding: 10px;
+      border-radius: 5px;
+      width: 100%;
+      text-align: left;
+    }
+
+    .custom-dropdown .dropdown-icon {
+      margin-right: 5px;
+    }
+
+    .custom-dropdown .dropdown-container {
+      position: absolute;
+      background-color: #333;
+      width: 100%;
+      box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+      z-index: 1;
+      border-radius: 5px;
+      padding: 10px;
+      display: none;
+    }
+
+    .custom-dropdown .dropdown-item {
+      display: block;
+      color: #fff;
+      padding: 5px;
+      cursor: pointer;
+    }
+
+    .custom-dropdown .dropdown-item:hover {
+      background-color: #555;
+    }
+
+
+    .group-section {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: ease 0.3s;
+    }
+
+    .group-section:nth-child(odd) {
+      animation: fadeInUp 0.5s ease 0.2s both;
+    }
+
+    .group-section:nth-child(even) {
+      animation: fadeInUp 0.5s ease 0.4s both;
+    }
+
+    .group-section:hover {
+      transform: scale(1.01);
+    }
+
+    .slider {
+      width: 100%;
+      -webkit-appearance: none;
+      height: 5px;
+      border-radius: 5px;
+      background: #444;
+      outline: none;
+      opacity: 0.7;
+      -webkit-transition: .2s;
+      transition: opacity .2s;
+    }
+
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #4caf50;
+      cursor: pointer;
+    }
+
+    .slider::-moz-range-thumb {
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #4caf50;
+      cursor: pointer;
+    }
+
+    /* Footer styles */
+    footer {
+      background-color: #333;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .github-icon img {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Animate the footer links on hover */
+    .footer-content a:hover {
+      color: #cccccc;
+      text-decoration: underline;
     }
 
     /* Hide the footer initially */
-    .footer {
+    footer {
       opacity: 0;
+    }
+
+    /* Animations and Interactivity */
+    /* Animate the hero button on hover */
+    .task-form button:hover {
+      transform: scale(1.01);
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    /* Create a fade-in animation for the feature cards */
+    .task-card {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: ease 0.3s;
+    }
+
+    .task-card:hover {
+      transform: scale(1.01);
+    }
+
+    .custom-dropdown .new-group-input {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .custom-dropdown .new-group-input input[type="text"] {
+      flex: 1;
+      padding: 5px;
+      border: none;
+      background-color: #444;
+      color: #fff;
+      border-radius: 5px;
+    }
+
+    .custom-dropdown .new-group-input button {
+      background-color: #4caf50;
+      color: #fff;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 5px;
+      margin-left: 10px;
+      cursor: pointer;
     }
   </style>
 </head>
@@ -141,53 +429,246 @@
         <a href="#">Home</a>
         <a href="#">About</a>
         <a href="#">Services</a>
-        <a href="#">Logout</a>
+        <a href="/logout">Logout</a>
       </nav>
     </header>
 
     <div class="add-task-container">
-      <div class="add-task-title">Add Task</div>
-      <form class="task-form">
-        <input type="text" placeholder="Title" required>
-        <textarea placeholder="Description" required></textarea>
-
-        <div class="dropdown">
-          <label for="group">Group:</label>
-          <select id="group">
-            <option value="personal">Personal</option>
-            <option value="work">Work</option>
-            <option value="study">Study</option>
-          </select>
+      <form class="task-form" method="post" action="/add_task">
+        <input type="text" name="title" placeholder="Title" required>
+        <textarea name="description" placeholder="Description" required></textarea>
+        <!-- Use the custom dropdown for selecting the group -->
+        <div class="custom-dropdown">
+          <button type="button" class="dropdown-btn"><i class="fa fa-folder dropdown-icon"></i> Group: </button>
+          <div class="dropdown-container" id="groupDropdown">
+            <!-- Dropdown items will be populated dynamically -->
+          </div>
+          <div class="new-group-input" style="display: none;">
+            <input type="text" placeholder="Enter new group name">
+            <button type="button" onclick="addNewGroup()">Add</button>
+          </div>
         </div>
 
-        <div class="dropdown">
-          <label for="importance">Importance:</label>
-          <select id="importance">
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-          </select>
+        <div class="slider-container">
+          <span>Priority:</span>
+          <input type="range" min="1" max="3" value="1" step="1" class="slider" name="priority">
         </div>
 
-        <button type="submit">Add</button>
+        <button type="submit"><i class="fa fa-plus"></i> Add Task</button>
       </form>
     </div>
 
     <div class="task-list">
-      <div class="task">
-        <div class="task-title">Task 1</div>
-        <div class="task-description">This is the description for Task 1.</div>
-        <div class="task-group">Group: Personal</div>
-        <div class="task-importance">Importance: High</div>
-      </div>
-      <div class="task">
-        <div class="task-title">Task 2</div>
-        <div class="task-description">This is the description for Task 2.</div>
-        <div class="task-group">Group: Work</div>
-        <div class="task-importance">Importance: Medium</div>
-      </div>
-      <!-- Add more example tasks if needed -->
+      <!-- Display tasks dynamically using JavaScript -->
     </div>
+
+    <footer>
+      <div class="footer-content">
+        <a href="https://github.com" class="github-icon"><i style="font-size: 20px;" class="fa fa-github"></i></a>
+        <a href="#">Terms of Service</a>
+        <a href="#">About</a>
+        <a href="#">Contact Us</a>
+      </div>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+    // Function to fetch and display tasks
+    function fetchTasks() {
+      fetch("/get_tasks")
+        .then(response => response.json())
+        .then(data => {
+          // Group tasks based on their groups
+          const tasksByGroup = data.reduce((groups, task) => {
+            (groups[task.group_name] = groups[task.group_name] || []).push(task);
+            return groups;
+          }, {});
+
+          const taskList = document.querySelector(".task-list");
+          taskList.innerHTML = ""; // Clear previous tasks
+
+          // Create task cards for each group and sort tasks by priority
+          Object.entries(tasksByGroup).forEach(([group, tasks]) => {
+            const groupSection = document.createElement("div");
+            groupSection.classList.add("group-section");
+            groupSection.innerHTML = `<div class="group-title">Group: ${group}</div>`;
+            taskList.appendChild(groupSection);
+
+            tasks.sort((a, b) => b.priority - a.priority);
+            tasks.forEach(task => {
+              const taskItem = document.createElement("div");
+              taskItem.classList.add("task");
+              taskItem.innerHTML = `
+                <div class="task-title">${task.title}</div>
+                <div class="task-description">${task.description}</div>
+                <div class="task-group">Group: ${task.group_name}</div>
+                <div class="task-priority">Priority: ${task.priority}</div>
+                <div class="task-actions">
+                  <button class="delete-task-btn" data-id="${task.id}">Delete</button>
+                </div>
+              `;
+
+              // Add event listener for the delete button
+              const deleteBtn = taskItem.querySelector(".delete-task-btn");
+              deleteBtn.addEventListener("click", () => {
+                deleteTask(task.id);
+              });
+
+              groupSection.appendChild(taskItem);
+            });
+          });
+        });
+    }
+
+    // Function to delete a task using AJAX
+    function deleteTask(taskId) {
+      fetch(`/delete_task/${taskId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            fetchTasks(); // Refresh the task list after deletion
+          } else {
+            console.log(data.error);
+          }
+        });
+    }
+
+    // Fetch tasks on page load
+    fetchTasks();
+
+    // Function to add a new task
+    function addTask() {
+      const title = document.querySelector('input[name="title"]').value;
+      const description = document.querySelector('textarea[name="description"]').value;
+      const group = document.querySelector('.custom-dropdown .dropdown-btn').textContent.replace("Group: ", "");
+      const priority = document.querySelector('.custom-dropdown .priority .selected-item').textContent;
+
+      if (group.trim() === "Group") {
+        alert("Please select a group.");
+        return;
+      }
+
+      if (priority.trim() === "Priority") {
+        alert("Please select a priority.");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("title", title);
+      formData.append("description", description);
+      formData.append("group", group);
+      formData.append("priority", priority);
+
+      fetch("/add_task", {
+        method: "POST",
+        body: formData,
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            fetchTasks(); // Refresh the task list after adding a new task
+          } else {
+            console.log(data.error);
+          }
+        })
+        .catch(error => console.error(error));
+    }
+
+    // Event listener for the "Add Task" button
+    const addTaskBtn = document.querySelector(".task-form button[type='submit']");
+    addTaskBtn.addEventListener("click", addTask);
+
+    // Set the selected group when clicking on a group item
+    const groupItems = document.querySelectorAll(".custom-dropdown .dropdown-container .dropdown-item");
+    groupItems.forEach(item => {
+      item.addEventListener("click", function () {
+        const selectedGroup = item.textContent;
+        item.closest(".custom-dropdown").querySelector(".dropdown-btn").textContent = `Group: ${selectedGroup}`;
+        groupItems.forEach(item => item.classList.remove("selected-item"));
+        item.classList.add("selected-item");
+      });
+    });
+
+    // Set the selected priority when clicking on a priority item
+    const priorityItems = document.querySelectorAll(".custom-dropdown .priority .dropdown-item");
+    priorityItems.forEach(item => {
+      item.addEventListener("click", function () {
+        const selectedPriority = item.textContent;
+        item.closest(".custom-dropdown").querySelector(".priority .dropdown-btn").textContent = `Priority: ${selectedPriority}`;
+        priorityItems.forEach(item => item.classList.remove("selected-item"));
+        item.classList.add("selected-item");
+      });
+    });
+
+    // Function to fetch and display user groups
+    function fetchUserGroups() {
+      fetch("/get_user_groups")
+        .then(response => response.json())
+        .then(data => {
+          const groupDropdown = document.querySelector(".custom-dropdown .dropdown-container");
+          groupDropdown.innerHTML = ""; // Clear existing dropdown items
+
+          data.groups.forEach(group => {
+            const dropdownItem = document.createElement("div");
+            dropdownItem.classList.add("dropdown-item");
+            dropdownItem.textContent = group;
+            dropdownItem.addEventListener("click", function () {
+              document.querySelector(".custom-dropdown .dropdown-btn").textContent = `Group: ${group}`;
+              document.querySelector('input[name="group"]').value = group;
+            });
+            groupDropdown.appendChild(dropdownItem);
+          });
+
+          // Add option to add a new group
+          const newGroupInput = document.querySelector(".custom-dropdown .new-group-input");
+          const addGroupButton = newGroupInput.querySelector("button");
+          addGroupButton.addEventListener("click", addNewGroup);
+
+          const addNewGroupButton = document.createElement("div");
+          addNewGroupButton.classList.add("dropdown-item");
+          addNewGroupButton.textContent = "Add New Group";
+          addNewGroupButton.addEventListener("click", function () {
+            toggleNewGroupInput();
+          });
+          groupDropdown.appendChild(addNewGroupButton);
+        })
+        .catch(error => console.error(error));
+    }
+
+    // Fetch user groups on page load
+    fetchUserGroups();
+
+    function addNewGroup() {
+      const newGroupNameInput = document.querySelector(".custom-dropdown .new-group-input input[type='text']");
+      const newGroupName = newGroupNameInput.value.trim();
+      if (newGroupName !== "") {
+        const groupDropdown = document.querySelector(".custom-dropdown .dropdown-container");
+        const newGroupItem = document.createElement("div");
+        newGroupItem.classList.add("dropdown-item");
+        newGroupItem.textContent = newGroupName;
+        newGroupItem.addEventListener("click", function () {
+          document.querySelector(".custom-dropdown .dropdown-btn").textContent = `Group: ${newGroupName}`;
+          document.querySelector('input[name="group"]').value = newGroupName;
+        });
+        groupDropdown.insertBefore(newGroupItem, groupDropdown.lastChild);
+        newGroupNameInput.value = "";
+        toggleNewGroupInput();
+      }
+    }
+
+    function toggleNewGroupInput() {
+      const newGroupInput = document.querySelector(".custom-dropdown .new-group-input");
+      const addNewGroupButton = document.querySelector(".custom-dropdown .dropdown-container .dropdown-item:last-child");
+      newGroupInput.style.display = newGroupInput.style.display === "none" ? "flex" : "none";
+      addNewGroupButton.style.display = newGroupInput.style.display === "none" ? "block" : "none";
+    }
+  });
+    </script>
   </div>
 </body>
 

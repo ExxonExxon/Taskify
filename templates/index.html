@@ -8,329 +8,332 @@
   <title>Hero Section with Navigation Bar</title>
   <style>
     /* Internal CSS */
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  line-height: 1.6;
-}
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #ffffff; /* Update the background color of the body to white */
+    }
 
-body::-webkit-scrollbar {
-  width: 12px;
-}
+    body::-webkit-scrollbar {
+      width: 12px;
+    }
 
-/* Track */
-body::-webkit-scrollbar-track {
-  background: #222; /* Dark background color for the track */
-}
+    /* Track */
+    body::-webkit-scrollbar-track {
+      background: #f2f2f2; /* Update the scrollbar track color */
+    }
 
-/* Handle */
-body::-webkit-scrollbar-thumb {
-  background: #555; /* Color of the scrollbar handle */
-  border-radius: 6px;
-}
+    /* Handle */
+    body::-webkit-scrollbar-thumb {
+      background: #888; /* Update the scrollbar handle color */
+      border-radius: 6px;
+    }
 
-/* Handle on hover */
-body::-webkit-scrollbar-thumb:hover {
-  background: #888;
-}
+    /* Handle on hover */
+    body::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
 
-/* Optional: To style the scrollbar buttons (not supported in Firefox) */
-body::-webkit-scrollbar-button {
-  display: none;
-}
+    /* Optional: To style the scrollbar buttons (not supported in Firefox) */
+    body::-webkit-scrollbar-button {
+      display: none;
+    }
 
-/* Optional: To style the scrollbar corner (not supported in Firefox) */
-body::-webkit-scrollbar-corner {
-  background: #222;
-}
+    /* Optional: To style the scrollbar corner (not supported in Firefox) */
+    body::-webkit-scrollbar-corner {
+      background: #f2f2f2; /* Update the scrollbar corner color */
+    }
 
-header {
-  background-color: #333;
-  padding: 10px;
-}
+    header {
+      background-color: #ffffff; /* Update the header background color to white */
+      padding: 10px;
+    }
 
-nav {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-}
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      background-color: #f2f2f2; /* Update the navigation bar background color */
+    }
 
-nav a {
-  text-decoration: none;
-  color: #fff;
-  padding: 5px 15px;
-  font-size: 14px;
-  position: relative;
-}
+    nav a {
+      text-decoration: none;
+      color: #000000; /* Update the navigation bar text color to black */
+      padding: 5px 15px;
+      font-size: 14px;
+      position: relative;
+    }
 
-nav a:hover {
-  color: #cccccc;
-  text-decoration: underline;
-}
+    nav a:hover {
+      color: #888;
+      text-decoration: underline;
+    }
 
-.hero {
-  background-image: linear-gradient(#333333 0%, #111111 90%);
-  color: #fff;
-  text-align: center;
-  padding: 100px 0;
-}
+    .hero {
+      background-image: linear-gradient(#f2f2f2, #e6e6e6); /* Update the hero section background with a light gradient */
+      color: #000000; /* Update the hero section text color to black */
+      text-align: center;
+      padding: 100px 0;
+    }
 
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 20px;
-}
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
 
-.hero p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-}
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
 
-.hero button {
-  background-color: transparent;
-  color: white;
-  border: 1px solid white;
-  padding: 10px 30px;
-  font-size: 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.3s;
-}
+    .hero button {
+      background-color: #ffffff;
+      color: #000000;
+      border: 1px solid #000000;
+      padding: 10px 30px;
+      font-size: 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
 
-.features {
-  background-color: #111111;
-  padding: 50px 0;
-}
+    .features {
+      background-color: #e6e6e6; /* Update the features section background color to white */
+      padding: 50px 0;
+    }
 
-.features h1 {
-  text-align: center;
-  color: #fff;
-  margin-bottom: 30px;
-}
+    .features h1 {
+      text-align: center;
+      color: #000000; /* Update the features section text color to black */
+      margin-bottom: 30px;
+    }
 
-.top-features {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
+    .top-features {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
 
-.feature-card {
-  flex: 1 0 40%;
-  background-color: #222222;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+    .feature-card {
+      flex: 1 0 40%;
+      background-color: #f2f2f2; /* Update the feature cards background color to a light gray */
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
-.feature-card h1 {
-  font-size: 1.8rem;
-  color: #fff;
-}
+    .feature-card h1 {
+      font-size: 1.8rem;
+      color: #000000; /* Update the feature cards text color to black */
+    }
 
-.feature-card p {
-  color: #ccc;
-}
+    .feature-card p {
+      color: #000000; /* Update the feature cards text color to black */
+    }
 
-.pricing {
-  background-color: #222;
-  color: #fff;
-  padding: 50px 0;
-}
+    .pricing {
+      background-color: #e6e6e6; /* Update the pricing section background color to white */
+      color: #000000; /* Update the pricing section text color to black */
+      padding: 50px 0;
+    }
 
-.pricing h1 {
-  text-align: center;
-  margin-bottom: 30px;
-  font-size: 2.5rem;
-}
+    .pricing h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.5rem;
+    }
 
-.pricing-plans {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+    .pricing-plans {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
 
-.plan {
-  background-color: #333;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 30px;
-  flex: 1;
-  max-width: 300px;
-  text-align: center;
-  margin-top: 10px;
-}
+    .plan {
+      background-color: #f2f2f2; /* Update the pricing plan cards background color to a light gray */
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 30px;
+      flex: 1;
+      max-width: 300px;
+      text-align: center;
+      margin-top: 10px;
+    }
 
-.plan h2 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
+    .plan h2 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+      color: #000000; /* Update the pricing plan cards text color to black */
+    }
 
-.plan p {
-  font-size: 1rem;
-  margin-bottom: 15px;
-}
+    .plan p {
+      font-size: 1rem;
+      margin-bottom: 15px;
+      color: #000000; /* Update the pricing plan cards text color to black */
+    }
 
-.plan ul {
-  padding: 0;
-  margin: 0;
-  list-style: none;
-}
+    .plan ul {
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
 
-.plan li {
-  margin-bottom: 12px;
-  font-size: 1rem;
-}
+    .plan li {
+      margin-bottom: 12px;
+      font-size: 1rem;
+      color: #000000; /* Update the pricing plan cards text color to black */
+    }
 
-.plan strong {
-  color: #fff;
-}
+    .plan strong {
+      color: #000000; /* Update the pricing plan cards text color to black */
+    }
 
-.plan p:last-child {
-  margin-bottom: 0;
-}
+    .plan p:last-child {
+      margin-bottom: 0;
+    }
 
-.price {
-  font-size: 1.5rem;
-}
+    .price {
+      font-size: 1.5rem;
+    }
 
-.highlight {
-  color: #4caf50;
-  font-weight: bold;
-}
+    .highlight {
+      color: #4caf50;
+      font-weight: bold;
+    }
 
-.cta-btn {
-  display: inline-block;
-  padding: 12px 24px;
-  background-color: #4caf50;
-  color: #fff;
-  border-radius: 5px;
-  text-decoration: none;
-  font-size: 1rem;
-  font-weight: bold;
-  margin-top: 25px;
-}
+    .cta-btn {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #4caf50;
+      color: #ffffff;
+      border-radius: 5px;
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: bold;
+      margin-top: 25px;
+    }
 
-.recommended {
-  border: 2px solid #4caf50;
-  position: relative;
-  z-index: 1;
-}
+    .recommended {
+      border: 2px solid #4caf50;
+      position: relative;
+      z-index: 1;
+    }
 
-.recommended-label {
-  background-color: #4caf50;
-  color: #fff;
-  border-radius: 5px;
-  font-size: 1rem;
-  padding: 5px 10px;
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-}
+    .recommended-label {
+      background-color: #4caf50;
+      color: #ffffff;
+      border-radius: 5px;
+      font-size: 1rem;
+      padding: 5px 10px;
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
 
-/* Animations and Interactivity */
-/* Animate the hero button on hover */
-.hero button:hover {
-  transform: scale(1.1);
-}
+    /* Animations and Interactivity */
+    /* Animate the hero button on hover */
+    .hero button:hover {
+      transform: scale(1.1);
+    }
 
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
+    /* Create a fade-in animation for the feature cards */
+    .feature-card {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: ease 0.3s;
+    }
 
-/* Create a fade-in animation for the feature cards */
-.feature-card {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: ease 0.3s;
-}
+    .feature-card:hover {
+      transform: scale(1.1);
+    }
 
-.feature-card:hover {
-    transform: scale(1.1);
-    
-}
+    /* Create a bounce effect for the pricing plan cards */
+    .plan {
+      animation: bounceIn 1s forwards;
+    }
 
-/* Create a bounce effect for the pricing plan cards */
-.plan {
-  animation: bounceIn 1s forwards;
-}
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.5);
+      }
+      60% {
+        opacity: 1;
+        transform: scale(1.1);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
 
-@keyframes bounceIn {
-  0% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-  60% {
-    opacity: 1;
-    transform: scale(1.1);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
+    /* Footer Styling */
+    footer {
+      background-color: black; /* Update the footer background color to a light gray */
+      padding: 20px;
+      text-align: center;
+    }
 
-/* Footer Styling */
-footer {
-  background-color: #333;
-  padding: 20px;
-  text-align: center;
-}
+    .footer-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
 
-.footer-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
+    .footer-content a {
+      color: white; /* Update the footer links text color to black */
+      text-decoration: none;
+      font-size: 14px;
+    }
 
-.footer-content a {
-  color: #fff;
-  text-decoration: none;
-  font-size: 14px;
-}
+    .github-icon img {
+      width: 20px;
+      height: 20px;
+    }
 
-.github-icon img {
-  width: 20px;
-  height: 20px;
-}
+    /* Animate the footer links on hover */
+    .footer-content a:hover {
+      color: #cecdcd;
+      text-decoration: underline;
+    }
 
-/* Animate the footer links on hover */
-.footer-content a:hover {
-  color: #cccccc;
-  text-decoration: underline;
-}
+    /* Hide the footer initially */
+    footer {
+      opacity: 0;
+    }
 
-/* Hide the footer initially */
-footer {
-  opacity: 0;
-}
+    /* Animate the footer on scroll */
+    footer {
+      animation: fadeInUp 1s forwards;
+    }
 
-/* Animate the footer on scroll */
-footer {
-  animation: fadeInUp 1s forwards;
-}
-
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-  }
-}
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+      }
+    }
 
   </style>
 </head>
@@ -423,36 +426,36 @@ footer {
 
   <script>
     // Add Intersection Observer to animate feature cards and footer
-const featureCards = document.querySelectorAll('.feature-card');
-const footer = document.querySelector('footer');
+    const featureCards = document.querySelectorAll('.feature-card');
+    const footer = document.querySelector('footer');
 
-const options = {
-  threshold: 0.2
-};
+    const options = {
+      threshold: 0.2
+    };
 
-const animateOnScroll = (entries, observer) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.style.animation = 'fadeInUp 1s forwards';
-      observer.unobserve(entry.target);
-    }
-  });
-};
+    const animateOnScroll = (entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = 'fadeInUp 1s forwards';
+          observer.unobserve(entry.target);
+        }
+      });
+    };
 
-const footerObserver = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.style.animation = 'fadeInUp 1s forwards';
-    }
-  });
-}, options);
+    const footerObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = 'fadeInUp 1s forwards';
+        }
+      });
+    }, options);
 
-featureCards.forEach(card => {
-  const observer = new IntersectionObserver(animateOnScroll, options);
-  observer.observe(card);
-});
+    featureCards.forEach(card => {
+      const observer = new IntersectionObserver(animateOnScroll, options);
+      observer.observe(card);
+    });
 
-footerObserver.observe(footer);
+    footerObserver.observe(footer);
 
   </script>
 </body>
