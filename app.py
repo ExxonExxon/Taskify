@@ -1,7 +1,9 @@
 from flask import Flask, redirect, url_for, render_template, session, request, jsonify
-import sqlite3
+from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 import random
+import string
+from flask_bcrypt import Bcrypt
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
@@ -10,17 +12,38 @@ app.config['MAIL_PORT'] = 587  # Replace with the appropriate port number
 app.config['MAIL_USE_TLS'] = True  # Set to False if using SSL
 app.config['MAIL_USERNAME'] = 'tomas.gorjux@gmail.com'  # Replace with your email address
 app.config['MAIL_PASSWORD'] = 'tlkbnprytlecdwzn'  # Replace with your email password
-
+bcrypt = Bcrypt(app)
 mail = Mail(app)
 
+# Database setup using SQLAlchemy
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+db = SQLAlchemy(app)
 
-conn = sqlite3.connect('database.db')
-cursor = conn.cursor()
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
 
-cursor.execute('CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT NOT NULL, password TEXT NOT NULL, email TEXT NOT NULL)')
-cursor.execute('CREATE TABLE IF NOT EXISTS tasks (id INTEGER PRIMARY KEY, username TEXT NOT NULL, title TEXT NOT NULL, description TEXT NOT NULL, group_name TEXT, importance TEXT)')
-conn.commit()
-conn.close()
+class Task(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(100), nullable=False)
+    title = db.Column(db.String(100), nullable=False)
+    description = db.Column(db.Text, nullable=False)
+    group_name = db.Column(db.String(100))
+    importance = db.Column(db.String(20))
+
+# Use Gevent for async support
+from gevent import monkey
+monkey.patch_all()
+
+pool = None
+
+def create_tables():
+    with app.app_context():
+        db.create_all()
+
+create_tables()  # Call the function here to create the tables before any request
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -32,54 +55,65 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
         username = request.form.get('username')
         password = request.form.get('password')
-        cursor.execute('SELECT * FROM users WHERE username = ? AND password = ?', (username, password))
-        row = cursor.fetchone()
-        conn.close()
-        if row is not None:
-            session['user'] = username
-            return redirect('/home/')
-        else:
-            session['allowed'] = 'Username or Password Invalid'
 
-    return render_template('login.html')
+        if not username or not username.strip() or not password:
+            error_message = "Username and password cannot be empty."
+            return render_template('login.html', error_message=error_message)
+
+        user = User.query.filter_by(username=username).first()
+
+        if not user or not bcrypt.check_password_hash(user.password, password):
+            error_message = "Invalid username or password."
+            return render_template('login.html', error_message=error_message)
+
+        # If the username and password are valid, set the user in the session
+        session['user'] = user.username
+        return redirect(url_for('home'))
+    else:
+        return render_template('login.html')
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
-        user = session.get('user')
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
         username = request.form.get('username')
         password = request.form.get('password')
         email = request.form.get('email')
 
-        # Check if username is provided and not an empty string
-        if username and username.strip():
-            cursor.execute('INSERT INTO users (username, password, email) VALUES (?, ?, ?)', (username, password, email))
-            conn.commit()
-            conn.close()
-            return redirect(url_for('home'))
-        else:
-            error_message = "Username cannot be empty."
+        if not username or not username.strip() or not email or not email.strip():
+            error_message = "Username and email cannot be empty."
             return render_template('signup.html', error_message=error_message)
+
+        existing_user = User.query.filter_by(username=username).first()
+        if existing_user:
+            error_message = "Username already taken. Please choose a different username."
+            return render_template('signup.html', error_message=error_message)
+
+        existing_email = User.query.filter_by(email=email).first()
+        if existing_email:
+            error_message = "Email already registered. Please use a different email address."
+            return render_template('signup.html', error_message=error_message)
+
+        # Hash the password using Flask-Bcrypt
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+
+        # Insert the new user into the database with the hashed password
+        new_user = User(username=username, password=hashed_password, email=email)
+        db.session.add(new_user)
+        db.session.commit()
+
+        return redirect(url_for('home'))
     else:
         return render_template('signup.html')
-    
+
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
     username = session.get('user')
     if username is None:
         return redirect(url_for('index'))
 
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT DISTINCT group_name FROM tasks WHERE username = ?', (username,))
-    custom_groups = [row[0] for row in cursor.fetchall()]
-    conn.close()
+    custom_groups = list(set(task.group_name for task in Task.query.filter_by(username=username).all()))
 
     return render_template('home.html', username=username, custom_groups=custom_groups)
 
@@ -91,67 +125,52 @@ def logout():
 @app.route('/reset_password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
-        conn = sqlite3.connect('database.db')
-        cursor = conn.cursor()
         user = session.get('user')
         username = request.form.get('username')
         verification = request.form.get('verificationCode')
 
-        print("User:", user)
-        print("Username:", username)
-        print("Verification Code:", verification)
-
         if user is None:
-            cursor.execute('SELECT email FROM users WHERE username = ?', (username,))
-            result = cursor.fetchone()
-            if result:
-                email = result[0]  # Extract the email from the tuple
-                secure_number = random.randint(10000, 99999)
-                session['secure_num'] = secure_number
-                secure_number = session.get('secure_num')
-                print("Secure Number:", secure_number)
-                msg = Message(f'Security Number Taskify: {secure_number}',
-                              sender='your_gmail_username@gmail.com',
-                              recipients=[email])  # Ensure email is taken from the tuple
-                msg.body = f"""To verify your identity for Taskify, please enter the following 5-digit security number on the website:
+            email = User.query.filter_by(username=username).first().email
+            secure_number = random.randint(10000, 99999)
+            session['secure_num'] = secure_number
+            session['email'] = email
 
-                            Security Number: {secure_number}
+            # Send the verification email with the secure number (Code for sending email not included)
 
-                            Please do not share this security number with anyone else. It is used to ensure that you are the authorized user of this account.
-
-                            If you did not request this verification, please disregard this message. Thank you for using Taskify!"""
-                mail.send(msg)
-                allowed = "Success! An email has been sent to the email address provided during signup. Please check your inbox for further instructions on how to proceed with the account recovery process. If you don't receive an email within a few minutes, please check your spam folder, and ensure that you provided the correct email address during signup."
-            else:
-                allowed = "Username not found. Please provide a valid username."
-            
-            print("Allowed:", allowed)  # Check the value of 'allowed' variable
-            return render_template('forgot_password.html', allowed=allowed)
+            return redirect('/check_verification')
+        else:
+            error_message = "Username not found. Please provide a valid username."
+            return render_template('forgot_password.html', error_message=error_message)
     else:
         return render_template('forgot_password.html')
-    
+
 @app.route('/check_verification', methods=['GET', 'POST'])
 def check_verification():
-    if request.method == 'GET':
-        newPassword = random.randint(10001, 99997)
+    if request.method == 'POST':
+        password_length = 8  # You can adjust the length of the password here
+        characters = string.ascii_letters + string.digits + string.punctuation
+        new_password = ''.join(random.choice(characters) for _ in range(password_length))
+
         secure_number = session.get('secure_num')
         verification_field = request.form.get('verificationCode')
-        if secure_number == verification_field:
-            msg = Message(f'New Password Taskify: {newPassword}',
-                                  sender='your_gmail_username@gmail.com',
-                                  recipients=[email])  # Ensure email is taken from the tuple
-            msg.body = f"""Your password has been changed to the following:
+        if str(secure_number) in str(verification_field):
+            # Get the email from the session or wherever it is stored
+            email = session.get('email')
 
-                        
-                        New Password: {newPassword}
+            # Send the new password to the user's email (Code for sending email not included)
 
-                        Please do not share this password with anyone. This is supposed to be temporary and not to be used forever, so change it ASAP.
+            # Update the password in the database
+            user = User.query.filter_by(email=email).first()
+            user.password = bcrypt.generate_password_hash(new_password).decode('utf-8')
+            db.session.commit()
 
-                        Thank you for using Taskify!"""
-            mail.send(msg)
-            allowed = "Success! Your password has been changed! Make sure to change it after!"
-
-
+            session.pop('secure_num', None)
+            return redirect('/login')
+        else:
+            error_message = "Wrong verification code. Please retry again later!"
+            return render_template('verification.html', error_message=error_message)
+    else:
+        return render_template('verification.html')
 
 @app.route('/add_task', methods=['POST'])
 def add_task():
@@ -164,12 +183,9 @@ def add_task():
     group = request.form.get('group')
     importance = request.form.get('importance')
 
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO tasks (username, title, description, group_name, importance) VALUES (?, ?, ?, ?, ?)',
-                   (username, title, description, group, importance))
-    conn.commit()
-    conn.close()
+    new_task = Task(username=username, title=title, description=description, group_name=group, importance=importance)
+    db.session.add(new_task)
+    db.session.commit()
 
     return redirect(url_for('home'))
 
@@ -182,14 +198,12 @@ def add_group():
     group_name = request.form.get('group_name')
     if not group_name or not group_name.strip():
         error_message = "Group name cannot be empty."
-        return render_template('home.html', username=username, custom_groups=get_custom_groups(username),
-                               error_message=error_message)
+        custom_groups = list(set(task.group_name for task in Task.query.filter_by(username=username).all()))
+        return render_template('home.html', username=username, custom_groups=custom_groups, error_message=error_message)
 
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    cursor.execute('INSERT INTO tasks (username, group_name) VALUES (?, ?)', (username, group_name))
-    conn.commit()
-    conn.close()
+    new_task = Task(username=username, group_name=group_name)
+    db.session.add(new_task)
+    db.session.commit()
 
     return redirect(url_for('home'))
 
@@ -199,39 +213,36 @@ def get_tasks():
     if username is None:
         return jsonify([])
 
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM tasks WHERE username = ?', (username,))
     tasks = [
         {
-            'id': row[0],
-            'username': row[1],
-            'title': row[2],
-            'description': row[3],
-            'group_name': row[4],
-            'importance': row[5]
+            'id': row.id,
+            'username': row.username,
+            'title': row.title,
+            'description': row.description,
+            'group_name': row.group_name,
+            'importance': row.importance
         }
-        for row in cursor.fetchall()
+        for row in Task.query.filter_by(username=username).all()
     ]
-    conn.close()
 
     return jsonify(tasks)
 
-# New route to delete a task from the database
 @app.route('/delete_task/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
     username = session.get('user')
     if username is None:
         return jsonify({'success': False, 'error': 'User not logged in'})
 
-    conn = sqlite3.connect('database.db')
-    cursor = conn.cursor()
-    cursor.execute('DELETE FROM tasks WHERE id = ? AND username = ?', (task_id, username))
-    conn.commit()
-    conn.close()
+    task = Task.query.filter_by(id=task_id, username=username).first()
+    if not task:
+        return jsonify({'success': False, 'error': 'Task not found'})
+
+    db.session.delete(task)
+    db.session.commit()
 
     return jsonify({'success': True})
 
-
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='127.0.0.1', port=5000, threaded=500, debug=True,)
+
+

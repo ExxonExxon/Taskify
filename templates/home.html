@@ -179,6 +179,7 @@
   padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   flex-basis: calc(50% - 20px);
+  margin-top: 20px;
 }
 
 .task-title {
@@ -434,29 +435,26 @@
     </header>
 
     <div class="add-task-container">
-      <form class="task-form" method="post" action="/add_task">
+      <form class="task-form">
         <input type="text" name="title" placeholder="Title" required>
         <textarea name="description" placeholder="Description" required></textarea>
-        <!-- Use the custom dropdown for selecting the group -->
-        <div class="custom-dropdown">
-          <button type="button" class="dropdown-btn"><i class="fa fa-folder dropdown-icon"></i> Group: </button>
-          <div class="dropdown-container" id="groupDropdown">
-            <!-- Dropdown items will be populated dynamically -->
-          </div>
-          <div class="new-group-input" style="display: none;">
-            <input type="text" placeholder="Enter new group name">
-            <button type="button" onclick="addNewGroup()">Add</button>
-          </div>
+        <input type="text" id="group-input" placeholder="Enter Group Name" required>
+
+        <div class="new-group-input">
+          <button type="button" id="add-group-btn">Add Group</button>
         </div>
 
-        <div class="slider-container">
+        <div class="priority">
           <span>Priority:</span>
           <input type="range" min="1" max="3" value="1" step="1" class="slider" name="priority">
+          <span class="priority-value">Priority: 1</span>
         </div>
 
-        <button type="submit"><i class="fa fa-plus"></i> Add Task</button>
+        <button type="button" id="add-task-btn"><i class="fa fa-plus"></i> Add Task</button>
       </form>
     </div>
+    
+    
 
     <div class="task-list">
       <!-- Display tasks dynamically using JavaScript -->
@@ -472,7 +470,7 @@
     </footer>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", function () {
     // Function to fetch and display tasks
     function fetchTasks() {
       fetch("/get_tasks")
@@ -538,22 +536,21 @@
         });
     }
 
-    // Fetch tasks on page load
-    fetchTasks();
-
     // Function to add a new task
-    function addTask() {
+    function addTask(event) {
+      event.preventDefault(); // Prevent the default form submission behavior
+
       const title = document.querySelector('input[name="title"]').value;
       const description = document.querySelector('textarea[name="description"]').value;
-      const group = document.querySelector('.custom-dropdown .dropdown-btn').textContent.replace("Group: ", "");
-      const priority = document.querySelector('.custom-dropdown .priority .selected-item').textContent;
+      const group = document.querySelector('input[name="group"]').value;
+      const priority = document.querySelector(".priority .slider").value;
 
-      if (group.trim() === "Group") {
-        alert("Please select a group.");
+      if (group.trim() === "") {
+        alert("Please enter a group.");
         return;
       }
 
-      if (priority.trim() === "Priority") {
+      if (priority === "") {
         alert("Please select a priority.");
         return;
       }
@@ -580,71 +577,23 @@
     }
 
     // Event listener for the "Add Task" button
-    const addTaskBtn = document.querySelector(".task-form button[type='submit']");
-    addTaskBtn.addEventListener("click", addTask);
-
-    // Set the selected group when clicking on a group item
-    const groupItems = document.querySelectorAll(".custom-dropdown .dropdown-container .dropdown-item");
-    groupItems.forEach(item => {
-      item.addEventListener("click", function () {
-        const selectedGroup = item.textContent;
-        item.closest(".custom-dropdown").querySelector(".dropdown-btn").textContent = `Group: ${selectedGroup}`;
-        groupItems.forEach(item => item.classList.remove("selected-item"));
-        item.classList.add("selected-item");
-      });
-    });
+    const addTaskForm = document.querySelector(".task-form");
+    addTaskForm.addEventListener("submit", addTask); // Use "submit" event instead of "click"
 
     // Set the selected priority when clicking on a priority item
-    const priorityItems = document.querySelectorAll(".custom-dropdown .priority .dropdown-item");
-    priorityItems.forEach(item => {
-      item.addEventListener("click", function () {
-        const selectedPriority = item.textContent;
-        item.closest(".custom-dropdown").querySelector(".priority .dropdown-btn").textContent = `Priority: ${selectedPriority}`;
-        priorityItems.forEach(item => item.classList.remove("selected-item"));
-        item.classList.add("selected-item");
-      });
+    const prioritySlider = document.querySelector(".priority .slider");
+    const priorityValue = document.createElement("span");
+    priorityValue.classList.add("priority-value");
+    priorityValue.textContent = `Priority: ${prioritySlider.value}`;
+    prioritySlider.insertAdjacentElement("afterend", priorityValue);
+    prioritySlider.addEventListener("input", function () {
+      const selectedPriority = prioritySlider.value;
+      priorityValue.textContent = `Priority: ${selectedPriority}`;
     });
 
-    // Function to fetch and display user groups
-    function fetchUserGroups() {
-      fetch("/get_user_groups")
-        .then(response => response.json())
-        .then(data => {
-          const groupDropdown = document.querySelector(".custom-dropdown .dropdown-container");
-          groupDropdown.innerHTML = ""; // Clear existing dropdown items
-
-          data.groups.forEach(group => {
-            const dropdownItem = document.createElement("div");
-            dropdownItem.classList.add("dropdown-item");
-            dropdownItem.textContent = group;
-            dropdownItem.addEventListener("click", function () {
-              document.querySelector(".custom-dropdown .dropdown-btn").textContent = `Group: ${group}`;
-              document.querySelector('input[name="group"]').value = group;
-            });
-            groupDropdown.appendChild(dropdownItem);
-          });
-
-          // Add option to add a new group
-          const newGroupInput = document.querySelector(".custom-dropdown .new-group-input");
-          const addGroupButton = newGroupInput.querySelector("button");
-          addGroupButton.addEventListener("click", addNewGroup);
-
-          const addNewGroupButton = document.createElement("div");
-          addNewGroupButton.classList.add("dropdown-item");
-          addNewGroupButton.textContent = "Add New Group";
-          addNewGroupButton.addEventListener("click", function () {
-            toggleNewGroupInput();
-          });
-          groupDropdown.appendChild(addNewGroupButton);
-        })
-        .catch(error => console.error(error));
-    }
-
-    // Fetch user groups on page load
-    fetchUserGroups();
-
+    // Function to add a new group
     function addNewGroup() {
-      const newGroupNameInput = document.querySelector(".custom-dropdown .new-group-input input[type='text']");
+      const newGroupNameInput = document.querySelector("#new-group-input");
       const newGroupName = newGroupNameInput.value.trim();
       if (newGroupName !== "") {
         const groupDropdown = document.querySelector(".custom-dropdown .dropdown-container");
@@ -656,19 +605,20 @@
           document.querySelector('input[name="group"]').value = newGroupName;
         });
         groupDropdown.insertBefore(newGroupItem, groupDropdown.lastChild);
+
         newGroupNameInput.value = "";
-        toggleNewGroupInput();
       }
     }
 
-    function toggleNewGroupInput() {
-      const newGroupInput = document.querySelector(".custom-dropdown .new-group-input");
-      const addNewGroupButton = document.querySelector(".custom-dropdown .dropdown-container .dropdown-item:last-child");
-      newGroupInput.style.display = newGroupInput.style.display === "none" ? "flex" : "none";
-      addNewGroupButton.style.display = newGroupInput.style.display === "none" ? "block" : "none";
-    }
+    // Event listener for the "Add Group" button
+    const addGroupButton = document.querySelector("#add-group-btn");
+    addGroupButton.addEventListener("click", addNewGroup);
+
+    // Fetch tasks and user groups on page load
+    fetchTasks();
   });
     </script>
+    
   </div>
 </body>
 

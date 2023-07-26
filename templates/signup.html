@@ -16,6 +16,54 @@
       color: #fff;
     }
 
+    body::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    /* Track */
+    body::-webkit-scrollbar-track {
+      background: #f2f2f2; /* Update the scrollbar track color */
+    }
+
+    /* Handle */
+    body::-webkit-scrollbar-thumb {
+      background: #888; /* Update the scrollbar handle color */
+    }
+
+    /* Handle on hover */
+    body::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* Optional: To style the scrollbar buttons (not supported in Firefox) */
+    body::-webkit-scrollbar-button {
+      display: none;
+    }
+    
+    a {
+      text-decoration: none;
+      color: #fff;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    nav {
+      display: flex;
+      background-color: #222;
+      padding: 10px;
+    }
+
+    nav a {
+      padding: 5px 15px;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      border-radius: 5px;
+    }
+
     /* ... Copy the rest of the styles here ... */
     /* ... to maintain the original styling ... */
 
@@ -118,6 +166,13 @@
 </head>
 
 <body>
+  <header>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/login">Login</a>
+   </nav>
+  </header>
   <div class="signup-container">
     <div class="signup-box">
       <h1 class="signup-title">Sign Up for Taskify</h1>
@@ -132,8 +187,6 @@
       <a href="/login" class="login-link">Already have an account? Log in here</a>
       <div class="signup-social">
         <span class="signup-social-icon"><i class="fa fa-google"></i></span>
-        <span class="signup-social-icon"><i class="fa fa-facebook"></i></span>
-        <span class="signup-social-icon"><i class="fa fa-twitter"></i></span>
       </div>
     </div>
   </div>

@@ -15,6 +15,54 @@
       background-image: linear-gradient(#333333 0%, #111111 90%);
       color: #fff;
     }
+    
+    body::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    /* Track */
+    body::-webkit-scrollbar-track {
+      background: #f2f2f2; /* Update the scrollbar track color */
+    }
+
+    /* Handle */
+    body::-webkit-scrollbar-thumb {
+      background: #888; /* Update the scrollbar handle color */
+    }
+
+    /* Handle on hover */
+    body::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* Optional: To style the scrollbar buttons (not supported in Firefox) */
+    body::-webkit-scrollbar-button {
+      display: none;
+    }
+
+    a {
+      text-decoration: none;
+      color: #fff;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    nav {
+      display: flex;
+      background-color: #222;
+      padding: 10px;
+    }
+
+    nav a {
+      padding: 5px 15px;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      border-radius: 5px;
+    }
 
     /* ... Copy the rest of the styles here ... */
     /* ... to maintain the original styling ... */
@@ -157,6 +205,13 @@
 </head>
 
 <body>
+  <header>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/signup">Signup</a>
+    </nav>
+  </header>
   <div class="login-container">
     <div class="login-box">
       <h1 class="login-title">Welcome to Taskify</h1>
@@ -166,7 +221,7 @@
         <button type="submit" class="login-btn">Login</button>
         <br>
     </form>
-    
+      {{ allowed }} {{ reset }} <br>
       <a href="/reset_password" class="forgot-password">Forgot password?</a>
       <br>
       <a href="/signup" class="signup-link">Not signed up? Signup here</a>
