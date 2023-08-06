@@ -43,7 +43,6 @@
             justify-content: center;
             flex-wrap: wrap;
             background-color: #f2f2f2;
-            margin-left: 205px;
         }
 
         nav a {
@@ -123,7 +122,7 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            margin-left: 440px;
+            /* margin-left: 340px; */
         }
 
         h1 {
@@ -331,29 +330,16 @@
             }
 
         }
-        
-        .profile-picture {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 2px solid #3498db;
-            overflow: hidden;
-        }
 
-        .profile-picture img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-        }
 
     </style>
 </head>
 <body class="{{ dark_mode_class }}">
     <header>
         <nav>
-            <a class="active" href="">Home</a>
+            <a href="/home/">Home</a>
             <a href="/groups/">Groups</a>
-            <a href="/profile/">Profile</a>
+            <a class="active" href="">Profile</a>
             <a href="/logout">Logout</a>
             <button class="color-changer-nav" onclick="toggleDarkLightMode()">
                 <i id="dark-mode-icon" class="{{ icoColor }}"></i>
@@ -361,73 +347,26 @@
         </nav>
     </header>
 
-    <div class="sidebar">
-        <div class="profile-picture">
-            <img src="/static/pfp/{{ username }}.jpg" alt="Profile Picture">
-        </div>
-        <ul>
-            <li><h3 style="margin: none;">Your Groups:</h3></li>
-            {% for group in custom_groups %}
-                <li>
-                    <a>{{ group }}</a>
-                    <form class="delete-form" action="{{ url_for('delete_group', group_name=group) }}" method="POST">
-                        <button style="background-color: red;"  type="submit" class="delete-button">Delete</button>
-                    </form>
-                </li>
-            {% endfor %}
-            <form class="add-form" action="/add_group" method="POST">
-                <label for="group_name">Custom Group Name:</label>
-                <input type="text" id="group_name" name="group_name" required>
-                <button class="add_group_btn" type="submit">Add Group</button>
-            </form>
-        </ul>
-    </div>
-    
-
     <div class="content">
-        <h1>Welcome, {{ username }}</h1>
-
-        <form class="add-form" action="/add_task" method="POST">
-            <input placeholder="Task Title" type="text" id="title" name="title" required>
-            <textarea placeholder="Description" id="description" name="description" required></textarea>
-            <div class="button-row">
-                <select id="group" name="group">
-                    <option value="">Add Group Here</option>
-                    {% for group in custom_groups %}
-                        <option value="{{ group }}">{{ group }}</option>
-                    {% endfor %}
-                </select>
-                <select id="importance" name="importance">
-                    <option value="">Priority</option>
-                    <option value="low">Low</option>
-                    <option value="medium">Medium</option>
-                    <option value="high">High</option>
-                </select>
-            </div>
+        <h1>Change Username</h1>
+        <form class="add-form" action="/profile/">
+            <input type="text" placeholder="Existing Username" id="title">
+            <input type="text" placeholder="New Username" id="title">
             <button type="submit">Add Task</button>
         </form>
-
-        <h2 id="tasks">Your Tasks:</h2>
-        {% if tasks|length == 0 %}
-            <p>Looks like there are no tasks or groups. Add some!</p>
-        {% else %}
-            <ul class="task-list">
-                {% for task in tasks %}
-                    {% if task.title or task.description %}
-                        <li class="task-item">
-                            <strong>{{ task.title }}</strong>
-                            {% if task.description %}
-                                <p>{{ task.description }}</p>
-                            {% endif %}
-                            <p>Group: {{ task.group_name }}</p>
-                            <p>Importance: {{ task.importance }}</p>
-                            <button onclick="deleteTask({{ task.id }})">Delete</button>
-                        </li>
-                    {% endif %}
-                {% endfor %}
-            </ul>
-        {% endif %}
-
+        <h1>Change Password</h1>
+        <form class="add-form" action="/profile/">
+            <input type="text" placeholder="Existing Password" id="title">
+            <input type="text" placeholder="New Password" id="title">
+            <button type="submit">Add Task</button>
+        </form>
+        <a href="/reset_password">Forgot Password?</a>  
+        <h1>Change Profile Picture</h1>
+        <form class="add-form" action="/update_profile_picture" method="POST" enctype="multipart/form-data">
+            <label for="profile_picture">Choose a new profile picture:</label>
+            <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="input-field">
+            <button type="submit" class="submit-button">Change Profile Picture</button>
+        </form>
     </div>
 
     <script>

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskify - Groups</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+
+            transition: background-color 0.5s, color 0.5s; /* Add this line for transition effect */
+        }
+
+        body.light-mode {
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        body.dark-mode h1 {
+            color: #eee;
+        }
+
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+
+        header {
+            background-color: #ffffff;
+            padding: 10px;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            background-color: #f2f2f2;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #000000;
+            padding: 5px 10px;
+            font-size: 14px;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: #888;
+            text-decoration: underline;
+        }
+
+        .color-changer-nav {
+            text-decoration: none;
+            color: #000000;
+            padding: 5px 15px;
+            font-size: 14px;
+            position: relative;
+            border: none;
+            background-color: transparent !important;
+            cursor: pointer;
+        }
+
+        body.dark-mode .color-changer-nav {
+            color: #ccc;
+            background-color: transparent;
+        }
+
+        body.dark-mode nav a {
+            color: #ccc;
+        }
+
+
+        body.dark-mode header {
+            background-color: #222;
+            color: #ccc;
+        }
+
+        body.dark-mode nav {
+            background-color: #222 !important;
+        }
+
+        /* Improved styling for form elements */
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .groups {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 2px;
+            margin-top: 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ccc;
+            padding: 5px 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        .delete-form {
+            display: inline;
+            margin-left: 10px;
+        }
+
+        .delete-button {
+            background-color: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .add-form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 5px;
+        }
+
+        .add_group_btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .active {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="/home/">Home</a>
+            <a class="active" href="">Groups</a>
+            <a href="#">Profile</a>
+            <a href="/logout">Logout</a>
+            <button class="color-changer-nav" onclick="toggleDarkLightMode()">
+                <i id="dark-mode-icon" class="{{ icoColor }}"></i>
+            </button>
+        </nav>
+    </header>
+
+    <h1>Your Groups</h1>
+    <div class="groups">
+        <ul>
+            <li><h3 style="margin: none;">Your Groups:</h3></li>
+            {% for group in custom_groups %}
+                <li>
+                    <a style="margin-top: 0 !important; padding-top: 0 !important; color: white;">{{ group }}</a>
+                    <form class="delete-form" action="{{ url_for('delete_groups', group_name=group) }}" method="POST">
+                        <button style="margin-top: 0 !important;" class="delete-button" type="submit">Delete</button>
+                    </form>
+                </li>
+            {% endfor %}
+            <form class="add-form" action="/add_group/groups" method="POST">
+                <label for="group_name">Custom Group Name:</label>
+                <input type="text" id="group_name" name="group_name" required>
+                <button class="add_group_btn" type="submit">Add Group</button>
+            </form>
+        </ul>
+    </div>
+    <script>
+    let icoColor = "";
+        document.body.classList.add("transition");
+
+        function deleteTask(taskId) {
+            fetch(`/delete_task/${taskId}`, {
+                method: 'DELETE',
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function toggleDarkLightMode() {
+    const body = document.body;
+    const iconElement = document.getElementById("dark-mode-icon");
+
+    if (body.classList.contains("dark-mode")) {
+        body.classList.remove("dark-mode");
+        body.classList.add("light-mode");
+        document.cookie = "dark_mode=false; path=/";
+        icoColor = "fa fa-sun-o";
+    } else {
+        body.classList.remove("light-mode");
+        body.classList.add("dark-mode");
+        document.cookie = "dark_mode=true; path=/";
+        icoColor = "fa fa-moon-o";
+    }
+
+    iconElement.className = icoColor;
+
+    // Add a timeout to remove the transition class after the transition is complete
+    setTimeout(() => {
+        body.classList.remove("transition");
+    }, 500); // 500ms is the duration of the transition
+}
+
+
+    const darkModeCookie = document.cookie.match(/(?:(?:^|.*;\s*)dark_mode\s*=\s*([^;]*).*$)|^.*$/)[1];
+    const iconElement = document.getElementById("dark-mode-icon");
+
+    if (darkModeCookie && darkModeCookie === "true") {
+        document.body.classList.add("dark-mode");
+        icoColor = "fa fa-moon-o";
+    } else {
+        icoColor = "fa fa-sun-o";
+    }
+
+    iconElement.className = icoColor;
+    </script>
+</body>
+</html>

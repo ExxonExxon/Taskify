@@ -221,7 +221,7 @@
         <button type="submit" class="login-btn">Login</button>
         <br>
     </form>
-      {{ allowed }} {{ reset }} <br>
+         {{ reset }} <br>
       <a href="/reset_password" class="forgot-password">Forgot password?</a>
       <br>
       <a href="/signup" class="signup-link">Not signed up? Signup here</a>
@@ -232,6 +232,7 @@
       </div>
     </div>
   </div>
+  {{ error_message }}
 
   <script>
     // Your JavaScript code (if any) can be placed here
