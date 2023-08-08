@@ -2,13 +2,10 @@ from flask import Flask, redirect, url_for, render_template, session, request, j
 from flask_session import Session
 from flask_mail import Mail, Message
 import random
-import string
 import os
-import json
 import sqlite3
 from flask_bcrypt import Bcrypt
 import datetime
-import redis
 
 current_time = datetime.datetime.now()
 current_hour = current_time.hour
@@ -128,7 +125,8 @@ def signup():
 
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
 
-        cursor.execute("INSERT INTO users (username, password, email) VALUES (?, ?, ?)", (username, hashed_password, email))
+
+        cursor.execute("INSERT INTO users (username, password, email, profile_picture) VALUES (?, ?, ?)", (username, hashed_password, email))
         conn.commit()
         conn.close()
 
@@ -140,6 +138,7 @@ def signup():
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
     username = session.get('user')
+    plus = 0
     if username is None:
         return redirect(url_for('index'))
 
@@ -151,9 +150,7 @@ def home():
 
     cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
     tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
-
     conn.close()
-
 
     return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks)
 
@@ -166,6 +163,19 @@ def groups():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
+    if request.method == 'POST':
+        new_group_name = request.form.get('new_group_name')
+
+        cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
+        existing_groups = [row[0] for row in cursor.fetchall()]
+
+        if new_group_name in existing_groups:
+            conn.close()
+            return render_template('groups.html', username=username, custom_groups=existing_groups, tasks=tasks, error='Group already exists.')
+
+        cursor.execute("INSERT INTO tasks (username, group_name) VALUES (?, ?)", (username, new_group_name))
+        conn.commit()
+
     cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
     custom_groups = [row[0] for row in cursor.fetchall()]
 
@@ -174,8 +184,8 @@ def groups():
 
     conn.close()
 
-
     return render_template('groups.html', username=username, custom_groups=custom_groups, tasks=tasks)
+
 
 
 @app.route('/logout')
@@ -190,7 +200,7 @@ def forgot_password():
         email = request.form.get('email')
         verification = request.form.get('verificationCode')
 
-        if user is None or user is None:
+        if user is None or user is not None:
             secure_number = random.randint(10000, 99999)
             session['secure_num'] = secure_number
             session['email'] = email
@@ -247,40 +257,65 @@ def check_code():
     else:
         return render_template('verification_code_check.html')
     
-@app.route('/update_profile_picture', methods=['POST'])
-def update_profile_picture():
-    username = session.get('user')
-    if username is None:
-        return redirect(url_for('index'))
-
-    if 'profile_picture' not in request.files:
-        # No file was selected in the form
-        return redirect(request.url)
-
-    profile_picture = request.files['profile_picture']
-    
-    if profile_picture.filename == '':
-        # No file was selected in the form
-        return redirect(request.url)
-
-    # Save the profile picture with the username as the filename
-    filename = f'{username}.jpg'  # Adjust the extension as needed
-    filename_user = 'jpg'
-    profile_picture.save(os.path.join('static', 'pfp', filename))
-
-    # Update the user's profile picture filename in the database
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
-    cursor.execute("UPDATE users SET profile_picture = ? WHERE username = ?", (filename_user, username))
-    conn.commit()
-    conn.close()
-
-    return redirect(url_for('profile'))
 
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
-    return render_template('profile.html')
+    if request.method == 'POST':
+        username = session.get('user')
+        existingUsername = request.form.get('existingUsername')
+        newUsername = request.form.get('newUsername')
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT username FROM tasks WHERE username = ?', (username,))
+        tasks = cursor.fetchone()
+
+        if existingUsername:
+            if existingUsername == username:
+                if newUsername:
+                    cursor.execute('UPDATE users SET username = ? WHERE username = ?', (newUsername, existingUsername))
+                    conn.commit()
+                    session['user'] = newUsername
+                    message = None
+                    return redirect(url_for('profile'))
+                else:
+                    message = 'Please enter your new username!'
+            else:
+                message = 'That is not your current username!'
+        else:
+            message = 'Please enter something'
+
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT username FROM tasks WHERE username = ?', (username,))
+        tasks = cursor.fetchall()
+
+        cursor.execute('SELECT * FROM tasks WHERE title IS NULL AND description IS NULL AND username = ?', (username,))
+        groups = cursor.fetchall()
+
+        number_of_groups = len(groups)
+        number_of_tasks = len(tasks)  # Count the number of tasks
+            
+
+        return render_template('profile.html', username=username, message=message, tasks=tasks, tasks=number_of_tasks, number_of_groups=number_of_groups)
+    else:
+        message = None
+        username = session.get('user')
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT username FROM tasks WHERE username = ?', (username,))
+        tasks = cursor.fetchall()
+
+        cursor.execute('SELECT * FROM tasks WHERE title IS NULL AND description IS NULL AND username = ?', (username,))
+        groups = cursor.fetchall()
+
+        number_of_groups = len(groups)
+        number_of_tasks = len(tasks)  # Count the number of tasks
+
+        return render_template('profile.html', username=username, tasks=number_of_tasks, number_of_groups=number_of_groups)
+
 
 @app.route('/reset_password/verification', methods=['GET', 'POST'])
 def reset_password_verification():
@@ -402,10 +437,10 @@ def add_group_groups():
     existing_group = cursor.fetchone()
     if existing_group:
         conn.close()
-
-    cursor.execute("INSERT INTO tasks (username, group_name) VALUES (?, ?)", (username, group_name))
-    conn.commit()
-    conn.close()
+    else:
+        cursor.execute("INSERT INTO tasks (username, group_name) VALUES (?, ?)", (username, group_name))
+        conn.commit()
+        conn.close()
 
     return redirect(url_for('groups'))
 

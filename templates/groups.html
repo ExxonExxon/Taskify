@@ -115,13 +115,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 1px solid #222;
             padding: 5px 0;
         }
 
         a {
             text-decoration: none;
-            color: #007bff;
+        }
+
+        body.dark-mode a {
+            color: #eee;
+        }
+
+        body.light-mode a {
+            color: #222;
         }
 
         .delete-form {
@@ -157,6 +164,20 @@
             border: none;
             padding: 5px 10px;
             cursor: pointer;
+            width: 102.3%;
+            
+        }
+
+        @media (max-width: 768px) {
+            .add_group_btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            width: 103.7%;
+            font-size: 16px;
+        }
         }
 
         .active {
@@ -183,7 +204,7 @@
             <li><h3 style="margin: none;">Your Groups:</h3></li>
             {% for group in custom_groups %}
                 <li>
-                    <a style="margin-top: 0 !important; padding-top: 0 !important; color: white;">{{ group }}</a>
+                    <a style="margin-top: 0 !important; padding-top: 0 !important;">{{ group }}</a>
                     <form class="delete-form" action="{{ url_for('delete_groups', group_name=group) }}" method="POST">
                         <button style="margin-top: 0 !important;" class="delete-button" type="submit">Delete</button>
                     </form>

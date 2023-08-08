@@ -43,7 +43,8 @@
             justify-content: center;
             flex-wrap: wrap;
             background-color: #f2f2f2;
-            margin-left: 205px;
+            margin-left: 190px;
+            padding-left: 80px;
         }
 
         nav a {
@@ -123,7 +124,7 @@
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            margin-left: 440px;
+            margin-left: 300px;
         }
 
         h1 {
@@ -332,20 +333,6 @@
 
         }
         
-        .profile-picture {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            border: 2px solid #3498db;
-            overflow: hidden;
-        }
-
-        .profile-picture img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-        }
-
     </style>
 </head>
 <body class="{{ dark_mode_class }}">
@@ -362,26 +349,27 @@
     </header>
 
     <div class="sidebar">
-        <div class="profile-picture">
-            <img src="/static/pfp/{{ username }}.jpg" alt="Profile Picture">
-        </div>
         <ul>
             <li><h3 style="margin: none;">Your Groups:</h3></li>
             {% for group in custom_groups %}
                 <li>
                     <a>{{ group }}</a>
+                    <ul>
+                        {% for task in tasks[group] %}
+                            <li>{{ task }}</li>
+                        {% endfor %}
+                    </ul>
                     <form class="delete-form" action="{{ url_for('delete_group', group_name=group) }}" method="POST">
-                        <button style="background-color: red;"  type="submit" class="delete-button">Delete</button>
+                        <button style="background-color: red;" type="submit" class="delete-button">Delete</button>
                     </form>
                 </li>
             {% endfor %}
-            <form class="add-form" action="/add_group" method="POST">
-                <label for="group_name">Custom Group Name:</label>
-                <input type="text" id="group_name" name="group_name" required>
-                <button class="add_group_btn" type="submit">Add Group</button>
+            <form action="/add_group" method="post">
+                <input type="text" name="group_name" placeholder="Add a New Group!">
+                <input type="submit" class="delete-button">
             </form>
-        </ul>
     </div>
+
     
 
     <div class="content">
@@ -433,6 +421,29 @@
     <script>
         let icoColor = "";
         document.body.classList.add("transition");
+        let dropdownOpen = false;
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById("myDropdown");
+            
+            if (!dropdownOpen) {
+                dropdown.style.display = "block";
+                dropdownOpen = true;
+            } else {
+                dropdown.style.display = "none";
+                dropdownOpen = false;
+            }
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.profile-picture')) {
+                const dropdown = document.getElementById("myDropdown");
+                if (dropdownOpen) {
+                    dropdown.style.display = "none";
+                    dropdownOpen = false;
+                }
+            }
+        }
 
         function deleteTask(taskId) {
             fetch(`/delete_task/${taskId}`, {
