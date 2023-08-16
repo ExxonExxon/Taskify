@@ -6,19 +6,17 @@
     <title>Task Manager</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-         body {
+         /* Reset and Global Styles */
+        body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
             background-color: #f7f7f7;
             color: #333;
-            transition: background-color 0.5s, color 0.5s; /* Add this line for transition effect */
+            transition: background-color 0.5s, color 0.5s;
         }
 
-        .active {
-            text-decoration: underline;
-        }
-
+        /* Dark Mode Styles */
         body.light-mode {
             background-color: #f7f7f7;
             color: #333;
@@ -28,11 +26,16 @@
             color: #eee;
         }
 
+        body.dark-mode a {
+            color: white;
+        }
+
         body.dark-mode {
             background-color: #333;
             color: #fff;
         }
 
+        /* Header and Navigation Styles */
         header {
             background-color: #ffffff;
             padding: 10px;
@@ -67,6 +70,7 @@
             background-color: transparent;
         }
 
+        /* Dark Mode Navigation Styles */
         body.dark-mode .color-changer-nav {
             color: #ccc;
             background-color: transparent;
@@ -75,7 +79,6 @@
         body.dark-mode nav a {
             color: #ccc;
         }
-
 
         body.dark-mode header {
             background-color: #222;
@@ -86,7 +89,7 @@
             background-color: #222 !important;
         }
 
-        /* Improved styling for form elements */
+        /* Form and Input Styles */
         .input-field {
             width: 100%;
             padding: 10px;
@@ -95,7 +98,7 @@
             border-radius: 5px;
         }
 
-        /* Styling for the "Add Task" button */
+        /* "Add Task" Button Styles */
         .submit-button {
             padding: 10px 15px;
             background-color: #333;
@@ -106,23 +109,23 @@
             transition: background-color 0.3s, color 0.3s;
         }
 
-        /* Dark mode styling for form elements */
+        /* Dark Mode Form and Input Styles */
         body.dark-mode .input-field {
             background-color: #444;
             color: #fff;
             border-color: #555;
         }
 
-        /* Dark mode styling for "Add Task" button */
+        /* Dark Mode "Add Task" Button Styles */
         body.dark-mode .submit-button {
             background-color: #222;
         }
 
+        /* Content Container Styles */
         .content {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
-            /* margin-left: 340px; */
         }
 
         h1 {
@@ -134,6 +137,7 @@
             color: black;
         }
 
+        /* Add Form Styles */
         .add-form {
             margin-bottom: 20px;
             display: flex;
@@ -153,6 +157,7 @@
             align-items: center;
         }
 
+        /* Button Row Styles */
         .button-row {
             display: flex;
             justify-content: space-between;
@@ -162,7 +167,7 @@
         }
 
         .button-row select {
-            margin-right: 0; /* Remove margin-right for spacing */
+            margin-right: 0;
         }
 
         button[type="submit"],
@@ -175,11 +180,13 @@
             cursor: pointer;
         }
 
+        /* Dark Mode Button Styles */
         body.dark-mode button[type="submit"],
         button {
             background-color: #222;
         }
 
+        /* Task List Styles */
         .task-list {
             list-style: none;
             padding: 0;
@@ -193,6 +200,7 @@
             margin-bottom: 10px;
         }
 
+        /* Dark Mode Task Item Styles */
         body.dark-mode .task-item {
             background-color: #222;
         }
@@ -205,6 +213,7 @@
             background-color: rgb(151, 31, 31);
         }
 
+        /* Sidebar Styles */
         .sidebar {
             width: 250px;
             background-color: #333;
@@ -251,28 +260,15 @@
             background-color: #444;
         }
 
-        .sidebar .add-form {
-            margin-top: auto;
-        }
-
-        .sidebar label {
-            color: #ccc;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
-
-        .sidebar input[type="text"] {
-            width: 90%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #555;
-            border-radius: 5px;
+        /* Dark Mode Sidebar Input Styles */
+        body.dark-mode .sidebar input[type="text"] {
             background-color: #444;
             color: #fff;
+            border-color: #555;
             transition: border-color 0.3s;
         }
 
-        .sidebar input[type="text"]:focus {
+        body.dark-mode .sidebar input[type="text"]:focus {
             border-color: #777;
             outline: none;
         }
@@ -291,6 +287,7 @@
             background-color: #777;
         }
 
+        /* Delete Button Styles */
         .delete-button {
             background-color: #ff4d4d;
             color: #fff;
@@ -304,11 +301,46 @@
             background-color: #b33434 !important;
         }
 
+        /* Stats Section Styles */
+        .stats-section {
+            margin-bottom: 30px;
+        }
+
+        .stats-container {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #f2f2f2;
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat {
+            flex: 1;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            color: #333;
+            font-weight: bold;
+        }
+
+
+        /* Responsive Styles */
         @media (max-width: 768px) {
             .content {
-                margin: 0 2px; /* Adjust margins for smaller screens */
+                margin: 0 2px;
                 padding: 10px;
-                margin-left: 0; /* Reset margin for small screens */
+                margin-left: 0;
             }
 
             .sidebar {
@@ -320,21 +352,19 @@
             }
 
             .sidebar li {
-            width: 95%;
+                width: 95%;
             }
 
             nav {
                 display: flex;
-                flex-direction: row; /* Change to row layout */
-                justify-content: space-between; /* Distribute links evenly */
-                align-items: center; /* Center align vertically */
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
                 background-color: #f2f2f2;
-                margin-left: 0; /* Reset margin for small screens */
-                padding: 5px 10px; /* Add some padding for better spacing */
+                margin-left: 0;
+                padding: 5px 10px;
             }
-
         }
-
 
     </style>
 </head>
@@ -352,18 +382,32 @@
     </header>
     <div class="content">
         <h1>Welcome, {{ username }}</h1>
-        <h1>Stats:</h1>
-        <p>Number of Tasks: {{ tasks }}</p>
-        <p>Number of Groups: {{ number_of_groups }}</p>
+        <div class="stats-section">
+            <div class="stats-container">
+                <div class="stat">
+                    <span class="stat-label">Number of Tasks:</span>
+                    <span class="stat-value">{{ tasks }}</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Plan:</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Account Made on:</span>
+                    <span class="stat-value">{{ date_made }}</span>
+                </div>
+            </div>
+        </div>
+        <!-- Change Username Form -->
         <h1>Change Username</h1>
-        <form class="add-form" action="/profile/" method="post">
+        <form class="add-form" action="/profile/" method="post" onsubmit="setCookie()">
             <input type="text" placeholder="Existing Username" name="existingUsername" id="title">
-            <input type="text" placeholder="New Username" name="newUsername" id="title">
-            <button type="submit">Chnage Username</button>
+            <input type="text" placeholder="New Username" name="username" id="newUsername">
+            <button type="submit">Change Username</button>
         </form>
         {% if message is defined %}
             <p style="color: red;">{{ message }}</p>
         {% endif %}
+
         <h1>Change Password</h1>
         <form class="add-form" action="/profile/">
             <input type="text" placeholder="Existing Password" id="title">
@@ -373,9 +417,60 @@
         <a href="/reset_password">Forgot Password?</a>  
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         let icoColor = "";
         document.body.classList.add("transition");
+
+        // Fetch tasks data from Flask route
+    fetch('/get_tasks')
+        .then(response => response.json())
+        .then(tasks => {
+            const dates = tasks.map(task => task.date_made);
+            const taskCounts = {};
+
+            dates.forEach(date => {
+                if (!taskCounts[date]) {
+                    taskCounts[date] = 1;
+                } else {
+                    taskCounts[date]++;
+                }
+            });
+
+            const ctx = document.getElementById('tasksChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(taskCounts),
+                    datasets: [{
+                        label: 'Tasks Created',
+                        data: Object.values(taskCounts),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            }
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching tasks:', error);
+        });
+
+        // Call the fetchTasks function when the page loads
+        document.addEventListener('DOMContentLoaded', fetchTasks);
 
         function deleteTask(taskId) {
             fetch(`/delete_task/${taskId}`, {
@@ -430,6 +525,19 @@
     }
 
     iconElement.className = icoColor;
+
+    function setCookie() {
+        var usernameInput = document.querySelector('input[name="username"]');
+        var usernameValue = usernameInput.value;
+
+        // Set the new cookie name based on the username
+        var newCookieName = "user_" + encodeURIComponent(usernameValue);
+
+        // Set the cookie with the new cookie name
+        document.cookie = newCookieName + "=" + encodeURIComponent(usernameValue) + "; path=/";
+    }
+
+
     </script>
 </body>
 </html>

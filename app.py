@@ -1,11 +1,8 @@
-from flask import Flask, redirect, url_for, render_template, session, request, jsonify
+from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response
 from flask_session import Session
 from flask_mail import Mail, Message
-import random
-import os
-import sqlite3
+import os, sqlite3, random, datetime, string
 from flask_bcrypt import Bcrypt
-import datetime
 
 current_time = datetime.datetime.now()
 current_hour = current_time.hour
@@ -35,7 +32,8 @@ def init_db():
             username TEXT NOT NULL,
             password TEXT NOT NULL,
             email TEXT NOT NULL,
-            profile_picture TEXT
+            accountMade TEXT,
+            plan TEXT NOT NULL
         )
     ''')
 
@@ -46,7 +44,8 @@ def init_db():
             title TEXT,
             description TEXT,
             group_name TEXT NOT NULL,
-            importance INTEGER
+            importance INTEGER,
+            date_made TEXT NOT NULL
         )
     ''')
 
@@ -55,9 +54,11 @@ def init_db():
 
 init_db()
 
+
+
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    username = session.get('user')
+    username = request.cookies.get('user')
     if username is not None:
         return redirect(url_for('home'))
     else:
@@ -73,7 +74,7 @@ def login():
         session.pop('email', None)
 
         if not username or not username.strip() or not password:
-            error_message = "Username and password cannot be empty."
+            session['error_message'] = "Username and password cannot be empty."
             return render_template('login.html', error_message=error_message)
 
         conn = sqlite3.connect(DATABASE)
@@ -84,13 +85,14 @@ def login():
         conn.close()
 
         if not user or not bcrypt.check_password_hash(user[2], password):
-            error_message = "Invalid username or password."
-            return render_template('login.html', error_message=error_message)
+            session['error_message'] = "Invalid username or password."
+            return render_template('login.html', error_message=error_message)   
 
         session['user'] = user[1]
         return redirect(url_for('home'))
     else:
-        return render_template('login.html')
+        error_message = session.get('error_message')
+        return render_template('login.html', error_message=error_message)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -124,11 +126,17 @@ def signup():
             return render_template('signup.html', error_message=error_message)
 
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-
-
-        cursor.execute("INSERT INTO users (username, password, email, profile_picture) VALUES (?, ?, ?)", (username, hashed_password, email))
+        
+        current_datetime = datetime.datetime.now()  # Get the current date and time
+        current_date = current_datetime.date()      # Extract only the date part
+        plan = "Free"
+        
+        cursor.execute("INSERT INTO users (username, password, email, accountMade, plan) VALUES (?, ?, ?, ?, ?)", (username, hashed_password, email, current_date, plan))
         conn.commit()
         conn.close()
+
+        resp = make_response(render_template('signup.html'))
+        resp.set_cookie('user', username)
 
         session['user'] = username
         return redirect(url_for('home'))
@@ -151,7 +159,7 @@ def home():
     cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
     tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
     conn.close()
-
+    username = request.cookies.get('user')
     return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks)
 
 @app.route('/groups/', methods=['GET', 'POST'])
@@ -185,13 +193,6 @@ def groups():
     conn.close()
 
     return render_template('groups.html', username=username, custom_groups=custom_groups, tasks=tasks)
-
-
-
-@app.route('/logout')
-def logout():
-    session.pop('user', None)
-    return redirect(url_for('index'))
 
 @app.route('/reset_password', methods=['GET', 'POST'])
 def forgot_password():
@@ -256,28 +257,38 @@ def check_code():
             return redirect(url_for('login'))
     else:
         return render_template('verification_code_check.html')
-    
+
+@app.route('/pricing-pro', methods=['GET', 'POST'])
+def pricing_pro():
+    return render_template('pricing_pro.html')
 
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
     if request.method == 'POST':
         username = session.get('user')
         existingUsername = request.form.get('existingUsername')
-        newUsername = request.form.get('newUsername')
+        newUsername = request.form.get('username')
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
 
         cursor.execute('SELECT username FROM tasks WHERE username = ?', (username,))
         tasks = cursor.fetchone()
+        cursor.execute('SELECT plan FROM users WHERE username = ?', (username))
+        plan = cursor.fetchone()
 
         if existingUsername:
             if existingUsername == username:
                 if newUsername:
                     cursor.execute('UPDATE users SET username = ? WHERE username = ?', (newUsername, existingUsername))
+                    cursor.execute('UPDATE tasks SET username = ? WHERE username = ?', (newUsername, existingUsername))
                     conn.commit()
+
+                    # Update the session and cookie with the new username
                     session['user'] = newUsername
-                    message = None
-                    return redirect(url_for('profile'))
+                    response = make_response(redirect(url_for('profile')))
+                    response.set_cookie('user', newUsername)
+
+                    return response
                 else:
                     message = 'Please enter your new username!'
             else:
@@ -294,11 +305,17 @@ def profile():
         cursor.execute('SELECT * FROM tasks WHERE title IS NULL AND description IS NULL AND username = ?', (username,))
         groups = cursor.fetchall()
 
+        cursor.execute('SELECT accountMade FROM users WHERE username = ?', (username,))
+        date_made = cursor.fetchone()
+        if date_made:
+            date_string = date_made[0]  # Assuming the date is the first element in the tuple
+            modified_string = date_string.replace("'", "")
+            modified_string = date_string.replace("-", " ")
+        
         number_of_groups = len(groups)
         number_of_tasks = len(tasks)  # Count the number of tasks
-            
 
-        return render_template('profile.html', username=username, message=message, tasks=tasks, tasks=number_of_tasks, number_of_groups=number_of_groups)
+        return render_template('profile.html', username=username, message=message, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string, plane=plan)
     else:
         message = None
         username = session.get('user')
@@ -311,10 +328,20 @@ def profile():
         cursor.execute('SELECT * FROM tasks WHERE title IS NULL AND description IS NULL AND username = ?', (username,))
         groups = cursor.fetchall()
 
+        cursor.execute('SELECT accountMade FROM users WHERE username = ?', (username,))
+        date_made = cursor.fetchone()
+        if date_made:
+            date_string = date_made[0]  # Assuming the date is the first element in the tuple
+            modified_string = date_string.replace("'", "")
+            modified_string = date_string.replace("-", " ")
+        
         number_of_groups = len(groups)
         number_of_tasks = len(tasks)  # Count the number of tasks
 
-        return render_template('profile.html', username=username, tasks=number_of_tasks, number_of_groups=number_of_groups)
+        cursor.execute('SELECT plan FROM users WHERE username = ?', (username))
+        plan = cursor.fetchone()
+
+        return render_template('profile.html', username=username, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string, plan=plan)
 
 
 @app.route('/reset_password/verification', methods=['GET', 'POST'])
@@ -354,12 +381,16 @@ def add_task():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
-    cursor.execute("INSERT INTO tasks (username, title, description, group_name, importance) VALUES (?, ?, ?, ?, ?)",
-                   (username, title, description, group, importance))
+    datetime_now = datetime.datetime.now()
+    date_made = datetime_now.date()
+
+    cursor.execute("INSERT INTO tasks (username, title, description, group_name, importance, date_made) VALUES (?, ?, ?, ?, ?, ?)",
+                   (username, title, description, group, importance, date_made))
     conn.commit()
     conn.close()
 
     return redirect(url_for('home'))
+
 
 @app.route('/add_group', methods=['POST'])
 def add_group():
@@ -388,10 +419,13 @@ def add_group():
     existing_group = cursor.fetchone()
     if existing_group:
         conn.close()
+    else:
+        # Assuming date_made is the name of the date field in your tasks table
+        date_made = datetime.date.today()  # You may need to import datetime
 
-    cursor.execute("INSERT INTO tasks (username, group_name) VALUES (?, ?)", (username, group_name))
-    conn.commit()
-    conn.close()
+        cursor.execute("INSERT INTO tasks (username, group_name, date_made) VALUES (?, ?, ?)", (username, group_name, date_made))
+        conn.commit()
+        conn.close()
 
     return redirect(url_for('home'))
 
@@ -500,6 +534,7 @@ def group(group_name):
     return render_template('group.html', username=username, custom_groups=custom_groups, tasks=tasks, selected_group=group_name)
 
 
+# Update your get_tasks route to include the date_created column
 @app.route('/get_tasks', methods=['GET'])
 def get_tasks():
     username = session.get('user')
@@ -509,7 +544,7 @@ def get_tasks():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
-    cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
+    cursor.execute("SELECT id, username, title, description, group_name, importance, date_made FROM tasks WHERE username = ?", (username,))
     tasks = [
         {
             'id': row[0],
@@ -517,7 +552,8 @@ def get_tasks():
             'title': row[2],
             'description': row[3],
             'group_name': row[4],
-            'importance': row[5]
+            'importance': row[5],
+            'date_made': row[6]
         }
         for row in cursor.fetchall()
     ]
@@ -525,6 +561,7 @@ def get_tasks():
     conn.close()
 
     return jsonify(tasks)
+
 
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000, threaded=True, debug=True)

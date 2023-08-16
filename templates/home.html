@@ -249,89 +249,89 @@
             background-color: #444;
         }
 
-        .sidebar .add-form {
-            margin-top: auto;
-        }
+            .sidebar .add-form {
+                margin-top: auto;
+            }
 
-        .sidebar label {
-            color: #ccc;
-            font-size: 14px;
-            margin-bottom: 5px;
-        }
+            .sidebar label {
+                color: #ccc;
+                font-size: 14px;
+                margin-bottom: 5px;
+            }
 
-        .sidebar input[type="text"] {
-            width: 90%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #555;
-            border-radius: 5px;
-            background-color: #444;
-            color: #fff;
-            transition: border-color 0.3s;
-        }
-
-        .sidebar input[type="text"]:focus {
-            border-color: #777;
-            outline: none;
-        }
-
-        .add_group_btn {
-            background-color: #555;
-            color: #fff;
-            border: none;
-            padding: 5px 92px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        .add_group_btn:hover {
-            background-color: #777;
-        }
-
-        .delete-button {
-            background-color: #ff4d4d;
-            color: #fff;
-            border: none;
-            padding: 6px 12px !important;
-            cursor: pointer;
-            transition: ease 0.3s;
-        }
-
-        .delete-button:hover {
-            background-color: #b33434 !important;
-        }
-
-        @media (max-width: 768px) {
-            .content {
-                margin: 0 2px; /* Adjust margins for smaller screens */
+            .sidebar input[type="text"] {
+                width: 90%;
                 padding: 10px;
-                margin-left: 0; /* Reset margin for small screens */
+                margin-bottom: 10px;
+                border: 1px solid #555;
+                border-radius: 5px;
+                background-color: #444;
+                color: #fff;
+                transition: border-color 0.3s;
             }
 
-            .sidebar {
-                display: none;
+            .sidebar input[type="text"]:focus {
+                border-color: #777;
+                outline: none;
             }
 
-            .button-row {
-                flex-direction: column;
+            .add_group_btn {
+                background-color: #555;
+                color: #fff;
+                border: none;
+                padding: 5px 92px;
+                border-radius: 5px;
+                cursor: pointer;
+                transition: background-color 0.3s, color 0.3s;
             }
 
-            .sidebar li {
-            width: 95%;
+            .add_group_btn:hover {
+                background-color: #777;
             }
 
-            nav {
-                display: flex;
-                flex-direction: row; /* Change to row layout */
-                justify-content: space-between; /* Distribute links evenly */
-                align-items: center; /* Center align vertically */
-                background-color: #f2f2f2;
-                margin-left: 0; /* Reset margin for small screens */
-                padding: 5px 10px; /* Add some padding for better spacing */
+            .delete-button {
+                background-color: #ff4d4d;
+                color: #fff;
+                border: none;
+                padding: 6px 12px !important;
+                cursor: pointer;
+                transition: ease 0.3s;
             }
 
-        }
+            .delete-button:hover {
+                background-color: #b33434 !important;
+            }
+
+            @media (max-width: 768px) {
+                .content {
+                    margin: 0 2px; /* Adjust margins for smaller screens */
+                    padding: 10px;
+                    margin-left: 0; /* Reset margin for small screens */
+                }
+
+                .sidebar {
+                    display: none;
+                }
+
+                .button-row {
+                    flex-direction: column;
+                }
+
+                .sidebar li {
+                width: 95%;
+                }
+
+                nav {
+                    display: flex;
+                    flex-direction: row; /* Change to row layout */
+                    justify-content: space-between; /* Distribute links evenly */
+                    align-items: center; /* Center align vertically */
+                    background-color: #f2f2f2;
+                    margin-left: 0; /* Reset margin for small screens */
+                    padding: 5px 10px; /* Add some padding for better spacing */
+                }
+
+            }
         
     </style>
 </head>
@@ -341,7 +341,7 @@
             <a class="active" href="">Home</a>
             <a href="/groups/">Groups</a>
             <a href="/profile/">Profile</a>
-            <a href="/logout">Logout</a>
+            <a href="#" onclick="logout()">Logout</a>
             <button class="color-changer-nav" onclick="toggleDarkLightMode()">
                 <i id="dark-mode-icon" class="{{ icoColor }}"></i>
             </button>
@@ -498,6 +498,14 @@
     }
 
     iconElement.className = icoColor;
+
+    function logout() {
+        // Clear the "user" cookie by setting an empty value and an expired date
+        document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        
+        // Redirect the user to the logout page or any desired page
+        window.location.href = "/";
+    }
     </script>
 </body>
 </html>
