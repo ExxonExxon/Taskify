@@ -1,0 +1,4 @@
+Flask==2.0.1
+Flask-Session==0.4.0
+Flask-Mail==0.9.1
+Flask-Bcrypt==0.7.1
