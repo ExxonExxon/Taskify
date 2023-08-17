@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+  <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -176,6 +177,7 @@
   <div class="signup-container">
     <div class="signup-box">
       <h1 class="signup-title">Sign Up for Taskify</h1>
+      <h5>Signed Up Users: {{ signed_up_users }}</h5>
       <form method="post" action="/signup" id="signup-form">
         <input type="text" name="username" class="signup-input" placeholder="Username">
         <input type="email" name="email" class="signup-input" placeholder="Email">

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager</title>
@@ -373,7 +374,7 @@
     
 
     <div class="content">
-        <h1>Welcome, {{ username }}</h1>
+        <h1 id="currentTime"></h1>
 
         <form class="add-form" action="/add_task" method="POST">
             <input placeholder="Task Title" type="text" id="title" name="title" required>
@@ -506,6 +507,24 @@
         // Redirect the user to the logout page or any desired page
         window.location.href = "/";
     }
+
+    // Get the current date and time
+    const currentTime = new Date();
+
+    // Extract hours, minutes, and seconds
+    const hours = currentTime.getHours();
+    const minutes = currentTime.getMinutes();
+    const seconds = currentTime.getSeconds();
+
+    // Display the time in the <p> tag
+    const timeDisplay = document.getElementById("currentTime");
+    if (hours >= 12) {
+        timeDisplay.textContent = `Good Evening, {{ username }}`;
+    }
+    else if (hours < 12) {
+        timeDisplay.textContent = `Good Morning, {{ username }}`;
+    }
+    
     </script>
 </body>
 </html>

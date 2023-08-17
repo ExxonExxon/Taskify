@@ -141,7 +141,17 @@ def signup():
         session['user'] = username
         return redirect(url_for('home'))
     else:
-        return render_template('signup.html')
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        cursor.execute("SELECT * FROM users")
+        row = cursor.fetchall()
+        signed_up_users = 0
+
+        for rows in row:
+            signed_up_users += 1
+
+        return render_template('signup.html', signed_up_users=signed_up_users)
 
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
@@ -265,15 +275,17 @@ def pricing_pro():
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
     if request.method == 'POST':
-        username = session.get('user')
+        username = request.cookies.get('user')
         existingUsername = request.form.get('existingUsername')
         newUsername = request.form.get('username')
+        existingPassword = request.form.get('existingPassword')
+        newPassword = request.form.get('newPassword')
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
 
         cursor.execute('SELECT username FROM tasks WHERE username = ?', (username,))
         tasks = cursor.fetchone()
-        cursor.execute('SELECT plan FROM users WHERE username = ?', (username))
+        cursor.execute('SELECT plan FROM users WHERE username = ?', (username,))
         plan = cursor.fetchone()
 
         if existingUsername:
@@ -296,6 +308,21 @@ def profile():
         else:
             message = 'Please enter something'
 
+        if existingPassword and newPassword:
+            cursor.execute('SELECT password FROM users WHERE username = ?', (username,))
+            passwordNow = cursor.fetchone()
+            
+            if passwordNow and bcrypt.check_password_hash(passwordNow[0], existingPassword):
+                hashed_new_password = bcrypt.generate_password_hash(newPassword).decode('utf-8')
+                cursor.execute('UPDATE users SET password = ? WHERE username = ?', (hashed_new_password, username))
+                conn.commit()
+                messagePass = 'Successfully Changed Password!'
+            else:
+                messagePass = 'Wrong Existing Password'
+        else:
+            messagePass = 'Please enter the fields. Thanks!'
+
+
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
 
@@ -307,6 +334,11 @@ def profile():
 
         cursor.execute('SELECT accountMade FROM users WHERE username = ?', (username,))
         date_made = cursor.fetchone()
+
+        cursor.execute('SELECT plan FROM users WHERE username = ?', (username,))
+        plan = cursor.fetchone()
+        plan = str(plan)
+
         if date_made:
             date_string = date_made[0]  # Assuming the date is the first element in the tuple
             modified_string = date_string.replace("'", "")
@@ -315,7 +347,12 @@ def profile():
         number_of_groups = len(groups)
         number_of_tasks = len(tasks)  # Count the number of tasks
 
-        return render_template('profile.html', username=username, message=message, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string, plane=plan)
+        plan = plan.replace("(", "")
+        plan = plan.replace(")", "")
+        plan = plan.replace("'", "")
+        plan = plan.replace(",", "")
+
+        return render_template('profile.html', username=username, messagePass=messagePass, message=message, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string, plan=plan)
     else:
         message = None
         username = session.get('user')
@@ -330,6 +367,11 @@ def profile():
 
         cursor.execute('SELECT accountMade FROM users WHERE username = ?', (username,))
         date_made = cursor.fetchone()
+
+        cursor.execute('SELECT plan FROM users WHERE username = ?', (username,))
+        plan = cursor.fetchone()
+        plan = str(plan)
+
         if date_made:
             date_string = date_made[0]  # Assuming the date is the first element in the tuple
             modified_string = date_string.replace("'", "")
@@ -338,8 +380,10 @@ def profile():
         number_of_groups = len(groups)
         number_of_tasks = len(tasks)  # Count the number of tasks
 
-        cursor.execute('SELECT plan FROM users WHERE username = ?', (username))
-        plan = cursor.fetchone()
+        plan = plan.replace("(", "")
+        plan = plan.replace(")", "")
+        plan = plan.replace("'", "")
+        plan = plan.replace(",", "")
 
         return render_template('profile.html', username=username, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string, plan=plan)
 
@@ -472,7 +516,8 @@ def add_group_groups():
     if existing_group:
         conn.close()
     else:
-        cursor.execute("INSERT INTO tasks (username, group_name) VALUES (?, ?)", (username, group_name))
+        date_now = datetime.datetime.now()
+        cursor.execute("INSERT INTO tasks (username, group_name, date_made) VALUES (?, ?, ?)", (username, group_name, date_now))
         conn.commit()
         conn.close()
 

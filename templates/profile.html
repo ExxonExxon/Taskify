@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager</title>
@@ -364,7 +365,40 @@
                 margin-left: 0;
                 padding: 5px 10px;
             }
+
         }
+
+        #plan-details {
+        margin-top: 20px;
+    }
+
+    .plan-details {
+        display: none;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-top: 10px;
+        background-color: #f7f7f7;
+    }
+
+    .plan-details h2 {
+        font-size: 20px;
+        margin-bottom: 10px;
+    }
+
+    .plan-details ul {
+        list-style: none;
+        padding-left: 20px;
+        margin-bottom: 10px;
+    }
+
+    .plan-details li {
+        margin-bottom: 5px;
+    }
+
+    .plan-details p {
+        font-weight: bold;
+    }
 
     </style>
 </head>
@@ -385,11 +419,12 @@
         <div class="stats-section">
             <div class="stats-container">
                 <div class="stat">
-                    <span class="stat-label">Number of Tasks:</span>
+                    <span class="stat-label">Number of Tasks (Including Groups):</span>
                     <span class="stat-value">{{ tasks }}</span>
                 </div>
                 <div class="stat">
                     <span class="stat-label">Plan:</span>
+                    <span class="stat-value">{{ plan }}</span>
                 </div>
                 <div class="stat">
                     <span class="stat-label">Account Made on:</span>
@@ -410,17 +445,89 @@
 
         <h1>Change Password</h1>
         <form class="add-form" action="/profile/">
-            <input type="text" placeholder="Existing Password" id="title">
-            <input type="text" placeholder="New Password" id="title">
-            <button type="submit">Add Task</button>
+            <input name="existingPassword" type="text" placeholder="Existing Password" id="title">
+            <input name="newPassword" type="text" placeholder="New Password" id="title">
+            <button type="submit">Change Password</button>
+            {% if messagePass is defined %}
+                <p style="color: red;">{{ message }}</p>
+            {% endif %}
         </form>
         <a href="/reset_password">Forgot Password?</a>  
+
+        <!-- Change Plan Section -->
+       <!-- Change Plan Section -->
+       <h1>Change Plan</h1>
+       <h4>Current Plan: {{ plan }}</h4>
+       <form class="add-form" action="/change_plan" method="post">
+           <label for="plan">Select Plan:</label>
+           <select id="plan" name="newPlan">
+               <option value="Free">Free Plan</option>
+               <option value="Pro">Pro Plan</option>
+               <option value="Premium">Premium Plan</option>
+           </select>
+           <button class="submit-button" type="submit">Change Plan</button>
+       </form>
+       
+       <!-- Plan Details Sections -->
+       <!-- Plan Details Sections -->
+        <div id="plan-details">
+            <div id="plan-details-Free" class="plan-details">
+                <h2>Free Plan Details</h2>
+                <ul>
+                    <li>Organize tasks efficiently</li>
+                    <li>Set reminders &amp; receive notifications</li>
+                </ul>
+                <p>Price: Free</p>
+            </div>
+            <div id="plan-details-Pro" class="plan-details">
+                <h2>Pro Plan Details</h2>
+                <ul>
+                    <li>Advanced task organization and categorization</li>
+                    <li>Real-time collaboration with your team</li>
+                    <li>Set priorities and deadlines</li>
+                    <li>Receive reminders &amp; notifications on multiple devices</li>
+                </ul>
+                <p>Price: $1.99/month</p>
+            </div>
+            <div id="plan-details-Premium" class="plan-details">
+                <h2>Premium Plan Details</h2>
+                <ul>
+                    <li>All Pro features</li>
+                    <li>Advanced analytics and reporting</li>
+                    <li>Priority customer support</li>
+                    <li>Integrations with third-party apps</li>
+                </ul>
+                <p>Price: $5.99/month</p>
+            </div>
+        </div>
+
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         let icoColor = "";
         document.body.classList.add("transition");
+
+        const planDropdown = document.getElementById('plan');
+    const planDetailsContainer = document.getElementById('plan-details');
+
+    planDropdown.addEventListener('change', () => {
+        const selectedPlan = planDropdown.value;
+        updatePlanDetails(selectedPlan);
+    });
+
+    function updatePlanDetails(plan) {
+        // Hide all plan details sections
+        const planDetailsSections = document.querySelectorAll('.plan-details');
+        planDetailsSections.forEach(section => {
+            section.style.display = 'none';
+        });
+
+        // Show the selected plan details section
+        const selectedPlanDetails = document.getElementById(`plan-details-${plan}`);
+        selectedPlanDetails.style.display = 'block';
+    }
 
         // Fetch tasks data from Flask route
     fetch('/get_tasks')
