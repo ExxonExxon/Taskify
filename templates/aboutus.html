@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taskify</title>
+  <style>
+    /* Internal CSS */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      background-color: #ffffff;
+    }
+
+    body::-webkit-scrollbar {
+      width: 12px;
+    }
+
+    body::-webkit-scrollbar-track {
+      background: #f2f2f2;
+    }
+
+    body::-webkit-scrollbar-thumb {
+      background: #888;
+    }
+
+    body::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    /* ... (header and navigation styles) ... */
+
+    .hero {
+      background-image: linear-gradient(#f2f2f2, #e6e6e6);
+      color: #000000;
+      text-align: center;
+      padding: 100px 0;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .hero p {
+      font-size: 1.2rem;
+      margin-bottom: 30px;
+    }
+
+    .features {
+      background-color: #e6e6e6;
+      padding: 50px 0;
+    }
+
+    .features h1 {
+      text-align: center;
+      color: #000000;
+      margin-bottom: 30px;
+    }
+
+    .top-features {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    .feature-card {
+      flex: 1 0 40%;
+      background-color: #f2f2f2;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .feature-card h2 {
+      font-size: 1.8rem;
+      color: #000000;
+    }
+
+    .feature-card p {
+      color: #000000;
+    }
+
+    .contact-section {
+      background-color: #f2f2f2;
+      padding: 50px 0;
+      text-align: center;
+    }
+
+    .contact-section h2 {
+      font-size: 2rem;
+      color: #000000;
+      margin-bottom: 30px;
+    }
+
+    .contact-form {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .contact-form label {
+      font-size: 1rem;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .contact-form input,
+    .contact-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .contact-form button {
+      background-color: #4caf50;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .contact-form button:hover {
+      background-color: #45a049;
+    }
+
+    footer {
+      background-color: black;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .footer-content a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .github-icon img {
+      width: 20px;
+      height: 20px;
+    }
+
+    .footer-content a:hover {
+      color: #cecdcd;
+      text-decoration: underline;
+    }
+
+    /* Animations and Interactivity */
+    /* ... (animations and interactivity styles) ... */
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <a href="#">Home</a>
+      <a href="#">About</a>
+      <a href="#">Services</a>
+      <a href="#">Contact</a>
+    </nav>
+  </header>
+  <div class="hero">
+    <h1>Welcome to Taskify</h1>
+    <p>Welcome to Taskify. Get started now!</p>
+    <button onclick="window.location.href='/signup';">Get Started</button>
+  </div>
+
+  <div class="features" id="features">
+    <h1>Our Features</h1>
+    <div class="top-features">
+        <div class="feature-card">
+            <h2>Easily Create and Delete Tasks</h2>
+            <p>Create and delete tasks with just a few clicks. Keep your to-do list organized and up-to-date.</p>
+        </div>
+        <div class="feature-card">
+            <h2>Prioritize Your Tasks</h2>
+            <p>Mark tasks as high, medium, or low priority. Focus on what matters most and stay productive.</p>
+        </div>
+        <div class="feature-card">
+            <h2>Create Task Groups</h2>
+            <p>Organize your tasks into groups. Stay organized by categorizing tasks based on projects, topics, or goals.</p>
+        </div>
+        <div class="feature-card">
+            <h2>Mobile Friendly and User-Friendly</h2>
+            <p>Access your tasks on the go. Our website is designed to work seamlessly on mobile devices, ensuring you can stay productive wherever you are.</p>
+        </div>
+    </div>
+  </div>
+
+  <div class="contact-section">
+    <h2>Contact Us</h2>
+    <div class="contact-form">
+      <form action="#" method="post">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="message">Message</label>
+        <textarea id="message" name="message" rows="4" required></textarea>
+
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <a href="https://github.com" class="github-icon"><i style="font-size: 20px;" class="fa fa-github"></i></a>
+      <a href="#">Terms of Service</a>
+      <a href="#">About</a>
+      <a href="#">Contact Us</a>
+    </div>
+  </footer>
+
+  <script>
+    // ... (Intersection Observer and animations script) ...
+  </script>
+</body>
+
+</html>

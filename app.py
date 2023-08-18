@@ -32,10 +32,10 @@ def init_db():
             username TEXT NOT NULL,
             password TEXT NOT NULL,
             email TEXT NOT NULL,
-            accountMade TEXT,
-            plan TEXT NOT NULL
+            accountMade TEXT
         )
     ''')
+
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS tasks (
@@ -129,9 +129,8 @@ def signup():
         
         current_datetime = datetime.datetime.now()  # Get the current date and time
         current_date = current_datetime.date()      # Extract only the date part
-        plan = "Free"
         
-        cursor.execute("INSERT INTO users (username, password, email, accountMade, plan) VALUES (?, ?, ?, ?, ?)", (username, hashed_password, email, current_date, plan))
+        cursor.execute("INSERT INTO users (username, password, email, accountMade) VALUES (?, ?, ?, ?)", (username, hashed_password, email, current_date))
         conn.commit()
         conn.close()
 
@@ -285,8 +284,7 @@ def profile():
 
         cursor.execute('SELECT username FROM tasks WHERE username = ?', (username,))
         tasks = cursor.fetchone()
-        cursor.execute('SELECT plan FROM users WHERE username = ?', (username,))
-        plan = cursor.fetchone()
+
 
         if existingUsername:
             if existingUsername == username:
@@ -335,10 +333,6 @@ def profile():
         cursor.execute('SELECT accountMade FROM users WHERE username = ?', (username,))
         date_made = cursor.fetchone()
 
-        cursor.execute('SELECT plan FROM users WHERE username = ?', (username,))
-        plan = cursor.fetchone()
-        plan = str(plan)
-
         if date_made:
             date_string = date_made[0]  # Assuming the date is the first element in the tuple
             modified_string = date_string.replace("'", "")
@@ -347,12 +341,7 @@ def profile():
         number_of_groups = len(groups)
         number_of_tasks = len(tasks)  # Count the number of tasks
 
-        plan = plan.replace("(", "")
-        plan = plan.replace(")", "")
-        plan = plan.replace("'", "")
-        plan = plan.replace(",", "")
-
-        return render_template('profile.html', username=username, messagePass=messagePass, message=message, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string, plan=plan)
+        return render_template('profile.html', username=username, messagePass=messagePass, message=message, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string)
     else:
         message = None
         username = session.get('user')
@@ -368,10 +357,6 @@ def profile():
         cursor.execute('SELECT accountMade FROM users WHERE username = ?', (username,))
         date_made = cursor.fetchone()
 
-        cursor.execute('SELECT plan FROM users WHERE username = ?', (username,))
-        plan = cursor.fetchone()
-        plan = str(plan)
-
         if date_made:
             date_string = date_made[0]  # Assuming the date is the first element in the tuple
             modified_string = date_string.replace("'", "")
@@ -380,12 +365,7 @@ def profile():
         number_of_groups = len(groups)
         number_of_tasks = len(tasks)  # Count the number of tasks
 
-        plan = plan.replace("(", "")
-        plan = plan.replace(")", "")
-        plan = plan.replace("'", "")
-        plan = plan.replace(",", "")
-
-        return render_template('profile.html', username=username, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string, plan=plan)
+        return render_template('profile.html', username=username, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string)
 
 
 @app.route('/reset_password/verification', methods=['GET', 'POST'])

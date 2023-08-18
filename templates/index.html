@@ -336,6 +336,50 @@
       }
     }
 
+    .different-section {
+      padding: 50px 0;
+      text-align: center;
+    }
+
+    .different-section h2 {
+      font-size: 2rem;
+      color: #000000;
+      margin-bottom: 30px;
+    }
+
+    .different-points {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .different-point {
+      flex: 1;
+      padding: 20px;
+      border: 1px solid #888;
+      border-radius: 10px;
+      background-color: #ffffff;
+      transition: transform 0.3s;
+    }
+
+    .different-point i {
+      font-size: 24px;
+      color: #4caf50;
+      margin-bottom: 10px;
+    }
+
+    .different-point p {
+      font-size: 1rem;
+      color: #000000;
+    }
+
+    .different-point:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
   </style>
 </head>
 
@@ -355,66 +399,57 @@
   </div>
 
   <div class="features" id="features">
-    <h1>Our features</h1>
+    <h1>Our Features</h1>
     <div class="top-features">
-      <div class="feature-card">
-        <h1>Task Organization</h1>
-        <p>With Taskify, keep your tasks in order and stay on top of your to-do list effortlessly. Create, manage, and prioritize tasks with ease. Set due dates, add descriptions, and assign tags or labels to categorize your tasks. Stay organized and track your progress towards completing your goals.</p>
-      </div>
-      <div class="feature-card">
-        <h1>Collaboration</h1>
-        <p>Collaborate with your team seamlessly using Taskify's collaboration features. Assign tasks to team members, share task lists, and track everyone's progress in real-time. Enhance productivity and achieve your objectives together.</p>
-      </div>
-      <div class="feature-card">
-        <h1>Reminders & Notifications</h1>
-        <p>Never miss a deadline again! Taskify provides reminders and notifications to keep you informed about upcoming tasks and deadlines. Stay on track and receive timely updates on your tasks, so you can stay focused and meet your targets.</p>
-      </div>
-      <div class="feature-card">
-        <h1>Progress Tracking</h1>
-        <p>Track your progress efficiently with Taskify's Progress Tracking feature. Get insights into your task completion rates, view detailed reports, and analyze your productivity trends over time. Visualize your achievements and stay motivated to accomplish more.</p>
-      </div>
+        <div class="feature-card">
+            <h2>Easily Create and Delete Tasks</h2>
+            <p>Create and delete tasks with just a few clicks. Keep your to-do list organized and up-to-date.</p>
+        </div>
+        <div class="feature-card">
+            <h2>Prioritize Your Tasks</h2>
+            <p>Mark tasks as high, medium, or low priority. Focus on what matters most and stay productive.</p>
+        </div>
+        <div class="feature-card">
+            <h2>Create Task Groups</h2>
+            <p>Organize your tasks into groups. Stay organized by categorizing tasks based on projects, topics, or goals.</p>
+        </div>
+        <div class="feature-card">
+            <h2>Mobile Friendly and User-Friendly</h2>
+            <p>Access your tasks on the go. Our website is designed to work seamlessly on mobile devices, ensuring you can stay productive wherever you are.</p>
+        </div>
     </div>
+    <section class="different-section">
+      <h2>Why Taskify is Different</h2>
+      <div class="different-points">
+        <div class="different-point">
+          <i class="fa fa-check-circle"></i>
+          <p>Free to Use</p>
+          <p>Taskify is completely free to use, ensuring that you can access all of its features without any cost. No subscription fees or hidden charges.</p>
+        </div>
+        <div class="different-point">
+          <i class="fa fa-check-circle"></i>
+          <p>Easy to Use</p>
+          <p>Taskify's intuitive interface and user-friendly design make it simple to create, manage, and organize your tasks. No steep learning curves or complex setups.</p>
+        </div>
+        <div class="different-point">
+          <i class="fa fa-check-circle"></i>
+          <p>Mobile-Friendly</p>
+          <p>Access your tasks anytime, anywhere. Taskify's responsive design ensures that you can stay productive on both desktop and mobile devices.</p>
+        </div>
+        <div class="different-point">
+          <i class="fa fa-check-circle"></i>
+          <p>Flexible Task Groups</p>
+          <p>Stay organized your way. Create and customize task groups based on projects, topics, or goals. Tailor Taskify to your unique workflow.</p>
+        </div>
+        <div class="different-point">
+          <i class="fa fa-check-circle"></i>
+          <p>Stay Organized</p>
+          <p>Taskify empowers you to prioritize tasks, set deadlines, and categorize them effectively. Stay on top of your to-do list and boost productivity.</p>
+        </div>
+      </div>
+    </section>
   </div>
 
-  <section class="pricing" id="pricing">
-    <h1>Pricing</h1>
-    <div class="pricing-plans">
-      <div class="plan recommended">
-        <div class="recommended-label">Recommended</div>
-        <h2>Free Plan</h2>
-        <ul>
-          <li>Organize tasks efficiently</li>
-          <li>Set reminders &amp; receive notifications</li>
-        </ul>
-        <p class="price">Price: <span class="highlight">Free</span></p>
-        <a href="#" class="cta-btn">Get Started</a>
-      </div>
-
-      <div class="plan">
-        <h2>Pro Plan</h2>
-        <ul>
-          <li>Advanced task organization and categorization</li>
-          <li>Real-time collaboration with your team</li>
-          <li>Set priorities and deadlines</li>
-          <li>Receive reminders &amp; notifications on multiple devices</li>
-        </ul>
-        <p class="price">Price: <span class="highlight">$1.99/month</span></p>
-        <a href="/pricing-pro" class="cta-btn">Upgrade Now</a>
-      </div>
-
-      <div class="plan">
-        <h2>Premium Plan</h2>
-        <ul>
-          <li>All Pro features</li>
-          <li>Advanced analytics and reporting</li>
-          <li>Priority customer support</li>
-          <li>Integrations with third-party apps</li>
-        </ul>
-        <p class="price">Price: <span class="highlight">$4.99/month</span></p>
-        <a href="#" class="cta-btn">Upgrade Now</a>
-      </div>
-    </div>
-  </section>
 
   <footer>
     <div class="footer-content">
