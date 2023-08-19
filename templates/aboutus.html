@@ -3,10 +3,10 @@
 
 <head>
   <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <meta charset="UTF-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Taskify</title>
+  <title>About Us - Taskify</title>
   <style>
     /* Internal CSS */
     body {
@@ -16,23 +16,30 @@
       background-color: #ffffff;
     }
 
-    body::-webkit-scrollbar {
-      width: 12px;
+    header {
+      background-color: #ffffff;
+      padding: 10px;
     }
 
-    body::-webkit-scrollbar-track {
-      background: #f2f2f2;
+    nav {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      background-color: #f2f2f2;
     }
 
-    body::-webkit-scrollbar-thumb {
-      background: #888;
+    nav a {
+      text-decoration: none;
+      color: #000000;
+      padding: 5px 15px;
+      font-size: 14px;
+      position: relative;
     }
 
-    body::-webkit-scrollbar-thumb:hover {
-      background: #555;
+    nav a:hover {
+      color: #888;
+      text-decoration: underline;
     }
-
-    /* ... (header and navigation styles) ... */
 
     .hero {
       background-image: linear-gradient(#f2f2f2, #e6e6e6);
@@ -51,94 +58,8 @@
       margin-bottom: 30px;
     }
 
-    .features {
-      background-color: #e6e6e6;
-      padding: 50px 0;
-    }
-
-    .features h1 {
-      text-align: center;
-      color: #000000;
-      margin-bottom: 30px;
-    }
-
-    .top-features {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .feature-card {
-      flex: 1 0 40%;
-      background-color: #f2f2f2;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .feature-card h2 {
-      font-size: 1.8rem;
-      color: #000000;
-    }
-
-    .feature-card p {
-      color: #000000;
-    }
-
-    .contact-section {
-      background-color: #f2f2f2;
-      padding: 50px 0;
-      text-align: center;
-    }
-
-    .contact-section h2 {
-      font-size: 2rem;
-      color: #000000;
-      margin-bottom: 30px;
-    }
-
-    .contact-form {
-      max-width: 400px;
-      margin: 0 auto;
-      padding: 20px;
-      background-color: #ffffff;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .contact-form label {
-      font-size: 1rem;
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    .contact-form input,
-    .contact-form textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .contact-form button {
-      background-color: #4caf50;
-      color: #ffffff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-
-    .contact-form button:hover {
-      background-color: #45a049;
-    }
-
+    /* Add more styling for other sections if needed */
+    
     footer {
       background-color: black;
       padding: 20px;
@@ -168,69 +89,113 @@
       text-decoration: underline;
     }
 
-    /* Animations and Interactivity */
-    /* ... (animations and interactivity styles) ... */
+    footer {
+      opacity: 0;
+      animation: fadeInUp 1s forwards;
+    }
+
+    @keyframes fadeInUp {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .different-section {
+    padding: 50px 0;
+    text-align: center;
+  }
+
+  .different-section h2 {
+    font-size: 2rem;
+    color: #000000;
+    margin-bottom: 30px;
+  }
+
+  .different-points {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .different-point {
+    flex: 1;
+    padding: 20px;
+    border: 1px solid #888;
+    border-radius: 10px;
+    background-color: #ffffff;
+    transition: transform 0.3s;
+  }
+
+  .different-point i {
+    font-size: 24px;
+    color: #4caf50;
+    margin-bottom: 10px;
+  }
+
+  .different-point p {
+    font-size: 1rem;
+    color: #000000;
+  }
+
+  .different-point:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
   </style>
 </head>
 
 <body>
   <header>
     <nav>
-      <a href="#">Home</a>
+      <a href="/">Home</a>
       <a href="#">About</a>
-      <a href="#">Services</a>
-      <a href="#">Contact</a>
+      <a href="/#features">Features</a>
+      <a href="/contact">Contact</a>
     </nav>
   </header>
   <div class="hero">
-    <h1>Welcome to Taskify</h1>
-    <p>Welcome to Taskify. Get started now!</p>
-    <button onclick="window.location.href='/signup';">Get Started</button>
+    <h1>About Us</h1>
+    <p>Welcome to the About Us page of Tomas! We're passionate about bringing you the best solutions for your tasks and productivity needs.</p>
   </div>
-
-  <div class="features" id="features">
-    <h1>Our Features</h1>
-    <div class="top-features">
-        <div class="feature-card">
-            <h2>Easily Create and Delete Tasks</h2>
-            <p>Create and delete tasks with just a few clicks. Keep your to-do list organized and up-to-date.</p>
-        </div>
-        <div class="feature-card">
-            <h2>Prioritize Your Tasks</h2>
-            <p>Mark tasks as high, medium, or low priority. Focus on what matters most and stay productive.</p>
-        </div>
-        <div class="feature-card">
-            <h2>Create Task Groups</h2>
-            <p>Organize your tasks into groups. Stay organized by categorizing tasks based on projects, topics, or goals.</p>
-        </div>
-        <div class="feature-card">
-            <h2>Mobile Friendly and User-Friendly</h2>
-            <p>Access your tasks on the go. Our website is designed to work seamlessly on mobile devices, ensuring you can stay productive wherever you are.</p>
-        </div>
+  <section class="different-section">
+    <h2>Why Choose Us?</h2>
+    <div class="different-points">
+      <div class="different-point">
+        <i class="fa fa-check-circle"></i>
+        <p>Passion for Productivity</p>
+        <p>We're passionate about helping you achieve your goals. Our team is dedicated to creating features that simplify your task management experience.</p>
+      </div>
+      <div class="different-point">
+        <i class="fa fa-check-circle"></i>
+        <p>User-Centric Design</p>
+        <p>We prioritize your needs. Our user-friendly design and responsive interface ensure that you can easily access and manage your tasks from anywhere.</p>
+      </div>
+      <div class="different-point">
+        <i class="fa fa-check-circle"></i>
+        <p>Continuous Improvement</p>
+        <p>We're committed to continuous improvement. We value your feedback and are always working to enhance our platform to better serve you.</p>
+      </div>
+      <div class="different-point">
+        <i class="fa fa-check-circle"></i>
+        <p>Flexible Task Customization</p>
+        <p>Your workflow is unique. Customize your task groups, priorities, and deadlines according to your preferences.</p>
+      </div>
+      <div class="different-point">
+        <i class="fa fa-check-circle"></i>
+        <p>Seamless Collaboration</p>
+        <p>Collaborate with your team effortlessly. Share tasks, assign responsibilities, and stay in sync for better productivity.</p>
+      </div>
+      <!-- Add more points here as needed -->
     </div>
-  </div>
-
-  <div class="contact-section">
-    <h2>Contact Us</h2>
-    <div class="contact-form">
-      <form action="#" method="post">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required>
-
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" required>
-
-        <label for="message">Message</label>
-        <textarea id="message" name="message" rows="4" required></textarea>
-
-        <button type="submit">Send Message</button>
-      </form>
-    </div>
-  </div>
+  </section>
 
   <footer>
     <div class="footer-content">
-      <a href="https://github.com" class="github-icon"><i style="font-size: 20px;" class="fa fa-github"></i></a>
+      <a href="https://github.com/ExxonExxon/Taskify" class="github-icon" target="_blank">
+        <i style="font-size: 20px;" class="fa fa-github"></i>
+      </a>
       <a href="#">Terms of Service</a>
       <a href="#">About</a>
       <a href="#">Contact Us</a>
@@ -238,7 +203,8 @@
   </footer>
 
   <script>
-    // ... (Intersection Observer and animations script) ...
+    // Add Intersection Observer or any other scripting as needed
+
   </script>
 </body>
 

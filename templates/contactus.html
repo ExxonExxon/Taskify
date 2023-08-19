@@ -6,9 +6,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Taskify</title>
+  <title>Contact Us - Taskify</title>
   <style>
-    /* Internal CSS */
+         /* Internal CSS */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -381,84 +381,79 @@
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
+    form {
+      max-width: 500px;
+      margin: 0 auto;
+      background-color: #f2f2f2;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #000000;
+    }
+
+    form input[type="text"],
+    form input[type="email"],
+    form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    form textarea {
+      resize: vertical;
+      height: 216px;
+    }
+
+    form button[type="submit"] {
+      background-color: #4caf50;
+      color: #ffffff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    form button[type="submit"]:hover {
+      background-color: #45a049;
+      transform: scale(1.05);
+    }
   </style>
 </head>
 
 <body>
   <header>
     <nav>
-      <a href="#">Home</a>
+      <a href="/">Home</a>
       <a href="/about">About</a>
-      <a href="#features">Features</a>
-      <a href="/contact">Contact</a>
+      <a href="/#features">Features</a>
+      <a href="#">Contact</a>
     </nav>
   </header>
-  <div class="hero">
-    <h1>Welcome to Taskify</h1>
-    <p>Welcome to Taskify A Free Task Managment Site. Get started now!</p>
-    <button onclick="window.location.href='/signup';">Get Started</button>
-  </div>
-
-  <div class="features" id="features">
-    <h1>Our Features</h1>
-    <div class="top-features">
-        <div class="feature-card">
-            <h2>Easily Create and Delete Tasks</h2>
-            <p>Create and delete tasks with just a few clicks. Keep your to-do list organized and up-to-date.</p>
-        </div>
-        <div class="feature-card">
-            <h2>Prioritize Your Tasks</h2>
-            <p>Mark tasks as high, medium, or low priority. Focus on what matters most and stay productive.</p>
-        </div>
-        <div class="feature-card">
-            <h2>Create Task Groups</h2>
-            <p>Organize your tasks into groups. Stay organized by categorizing tasks based on projects, topics, or goals.</p>
-        </div>
-        <div class="feature-card">
-            <h2>Mobile Friendly and User-Friendly</h2>
-            <p>Access your tasks on the go. Our website is designed to work seamlessly on mobile devices, ensuring you can stay productive wherever you are.</p>
-        </div>
-    </div>
-    <section class="different-section">
-      <h2>Why Taskify is Different</h2>
-      <div class="different-points">
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Free to Use</p>
-          <p>Taskify is completely free to use, ensuring that you can access all of its features without any cost. No subscription fees or hidden charges.</p>
-        </div>
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Easy to Use</p>
-          <p>Taskify's intuitive interface and user-friendly design make it simple to create, manage, and organize your tasks. No steep learning curves or complex setups.</p>
-        </div>
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Mobile-Friendly</p>
-          <p>Access your tasks anytime, anywhere. Taskify's responsive design ensures that you can stay productive on both desktop and mobile devices.</p>
-        </div>
-      </div>
-      <div class="different-points">
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Flexible Task Groups</p>
-          <p>Stay organized your way. Create and customize task groups based on projects, topics, or goals. Tailor Taskify to your unique workflow.</p>
-        </div>
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Stay Organized</p>
-          <p>Taskify empowers you to prioritize tasks, set deadlines, and categorize them effectively. Stay on top of your to-do list and boost productivity.</p>
-        </div>
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Free to Use</p>
-          <p>Taskify is completely free to use, ensuring that you can access all of its features without any cost. No subscription fees or hidden charges.</p>
-        </div>
-      </div>
-    </section>
-    
-  </div>
-
+  
+  <!-- Contact Form Section -->
+  <section class="hero">
+    <h1>Contact Us</h1>
+    <p>We'd love to hear from you! In case you need to file a bug or want to add/remove features! Fill out the form below to get in touch.</p>
+    <form action="/contact" method="post">
+      
+      <label for="email">Your Email:</label>
+      <input type="email" id="email" name="email" required>
+      
+      <label for="message">Your Message:</label>
+      <textarea id="message" name="message" rows="4" required></textarea>
+      
+      <button type="submit">Send Message</button>
+    </form>
+  </section>
 
   <footer>
     <div class="footer-content">
@@ -470,41 +465,6 @@
       <a href="#">Contact Us</a>
     </div>
   </footer>
-
-  <script>
-    // Add Intersection Observer to animate feature cards and footer
-    const featureCards = document.querySelectorAll('.feature-card');
-    const footer = document.querySelector('footer');
-
-    const options = {
-      threshold: 0.2
-    };
-
-    const animateOnScroll = (entries, observer) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.animation = 'fadeInUp 1s forwards';
-          observer.unobserve(entry.target);
-        }
-      });
-    };
-
-    const footerObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.animation = 'fadeInUp 1s forwards';
-        }
-      });
-    }, options);
-
-    featureCards.forEach(card => {
-      const observer = new IntersectionObserver(animateOnScroll, options);
-      observer.observe(card);
-    });
-
-    footerObserver.observe(footer);
-
-  </script>
 </body>
 
 </html>

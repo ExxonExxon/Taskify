@@ -64,6 +64,20 @@ def index():
     else:
         return render_template('index.html')
 
+@app.route('/about')
+def aboutus():
+    username = request.cookies.get('user')
+    if username is not None:
+        return redirect(url_for('home'))
+    else:
+        return render_template('aboutus.html')
+    
+@app.route('/contact')
+def contactus():
+    return render_template('contactus.html')
+
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
