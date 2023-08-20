@@ -406,7 +406,8 @@
             border: 1px solid #f44336;
             padding: 10px;
             margin-top: 20px;
-            border-radius: 5px;
+            border-radius
+            : 5px;
         }
 
         .danger-zone h2 {
@@ -430,6 +431,16 @@
 
         .delete-account-btn:hover {
             background-color: #b33434;
+        }
+
+        .danger-zone input[type="text"] {
+            width: 95%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #a3a3a3;
+            border-radius: 5px;
+            display: block;
+            align-items: center;
         }
 
     </style>
@@ -472,98 +483,63 @@
         {% endif %}
 
         <h1>Change Password</h1>
-        <form class="add-form" action="/profile/">
+        <form class="add-form" action="/profile/" method="post">
             <input name="existingPassword" type="text" placeholder="Existing Password" id="title">
             <input name="newPassword" type="text" placeholder="New Password" id="title">
             <button type="submit">Change Password</button>
-            {% if messagePass is defined %}
-                <p style="color: red;">{{ message }}</p>
-            {% endif %}
         </form>
+        {% if messagePass is defined %}
+            <p style="color: red;">{{ messagePass }}</p>
+        {% endif %}
         <a href="/reset_password">Forgot Password?</a>  
 
         <div class="danger-zone">
             <h2>Danger Zone</h2>
             <p>Think twice before proceeding.</p>
-            <button class="delete-account-btn" onclick="deleteAccount()">Delete Account</button>
+            <form method="post" action="/delete-account">
+                <input type="text" name="verify_delete" placeholder="Enter current Username to delete!">
+                <button type="submit">Delete Account</button>
+            </form>
+            
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         let icoColor;
-        document.body.classList.add("transition");
+document.body.classList.add("transition");
 
-        
+// Fetch tasks data from Flask route
+fetch('/get_tasks')
+    .then(response => response.json())
+    .then(tasks => {
+        // ... (your chart creation code) ...
+    })
+    .catch(error => {
+        console.error('Error fetching tasks:', error);
+    });
 
-        // Fetch tasks data from Flask route
-    fetch('/get_tasks')
-        .then(response => response.json())
-        .then(tasks => {
-            const dates = tasks.map(task => task.date_made);
-            const taskCounts = {};
+// Call the fetchTasks function when the page loads
+document.addEventListener('DOMContentLoaded', fetchTasks);
 
-            dates.forEach(date => {
-                if (!taskCounts[date]) {
-                    taskCounts[date] = 1;
-                } else {
-                    taskCounts[date]++;
-                }
-            });
-
-            const ctx = document.getElementById('tasksChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: Object.keys(taskCounts),
-                    datasets: [{
-                        label: 'Tasks Created',
-                        data: Object.values(taskCounts),
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        borderWidth: 1,
-                        fill: false
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            type: 'time',
-                            time: {
-                                unit: 'day'
-                            }
-                        },
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Error fetching tasks:', error);
-        });
-
-        // Call the fetchTasks function when the page loads
-        document.addEventListener('DOMContentLoaded', fetchTasks);
-
-        function deleteTask(taskId) {
-            fetch(`/delete_task/${taskId}`, {
-                method: 'DELETE',
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    location.reload();
-                } else {
-                    alert(data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+function deleteTask(taskId) {
+    fetch(`/delete_task/${taskId}`, {
+        method: 'DELETE',
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            location.reload();
+        } else {
+            alert(data.error);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
 
-    function toggleDarkLightMode() {
+function toggleDarkLightMode() {
     const body = document.body;
     const iconElement = document.getElementById("dark-mode-icon");
 
@@ -587,37 +563,39 @@
     }, 500); // 500ms is the duration of the transition
 }
 
+// Retrieve dark mode status from cookies on page load
+const darkModeCookie = document.cookie.match(/(?:(?:^|.*;\s*)dark_mode\s*=\s*([^;]*).*$)|^.*$/)[1];
 
-    const darkModeCookie = document.cookie.match(/(?:(?:^|.*;\s*)dark_mode\s*=\s*([^;]*).*$)|^.*$/)[1];
-    const iconElement = document.getElementById("dark-mode-icon");
+// Determine initial dark mode status and set appropriate styles
+if (darkModeCookie && darkModeCookie === "true") {
+    document.body.classList.add("dark-mode");
+    icoColor = "fa fa-moon-o";
+} else {
+    icoColor = "fa fa-sun-o";
+}
 
-    if (darkModeCookie && darkModeCookie === "true") {
-        document.body.classList.add("dark-mode");
-        icoColor = "fa fa-moon-o";
-    } else {
-        icoColor = "fa fa-sun-o";
-    }
+// Set icon class based on dark mode status
+const iconElement = document.getElementById("dark-mode-icon");
+iconElement.className = icoColor;
 
-    iconElement.className = icoColor;
+function setCookie() {
+    var usernameInput = document.querySelector('input[name="username"]');
+    var usernameValue = usernameInput.value;
 
-    function setCookie() {
-        var usernameInput = document.querySelector('input[name="username"]');
-        var usernameValue = usernameInput.value;
+    // Set the new cookie name based on the username
+    var newCookieName = "user_" + encodeURIComponent(usernameValue);
 
-        // Set the new cookie name based on the username
-        var newCookieName = "user_" + encodeURIComponent(usernameValue);
+    // Set the cookie with the new cookie name
+    document.cookie = newCookieName + "=" + encodeURIComponent(usernameValue) + "; path=/";
+}
 
-        // Set the cookie with the new cookie name
-        document.cookie = newCookieName + "=" + encodeURIComponent(usernameValue) + "; path=/";
-    }
-
-    function logout() {
-        // Clear the "user" cookie by setting an empty value and an expired date
-        document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-        
-        // Redirect the user to the logout page or any desired page
-        window.location.href = "/";
-    }
+function logout() {
+    // Clear the "user" cookie by setting an empty value and an expired date
+    document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    
+    // Redirect the user to the logout page or any desired page
+    window.location.href = "/";
+}
 
 
     </script>

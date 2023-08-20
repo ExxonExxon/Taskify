@@ -237,7 +237,7 @@
             margin-bottom: 10px;
         }
 
-        .sidebar a {
+        .sidebar .a_links {
             color: #fff;
             text-decoration: none;
             display: block;
@@ -333,6 +333,11 @@
                 }
 
             }
+
+            .no-style {
+                color: white;
+                text-decoration: underline;
+            }
         
     </style>
 </head>
@@ -350,6 +355,8 @@
     </header>
 
     <div class="sidebar">
+        <p style="margin: none;padding: none;">Version Beta 1</p>
+        <p style="font-size: 10px;margin: none;padding-bottom: 0;">Want to file a bug or add/remove feature <a class="no-style" href="/contact">Contact Us</a></p>
         <ul>
             <li><h3 style="margin: none;">Your Groups:</h3></li>
             {% for group in custom_groups %}

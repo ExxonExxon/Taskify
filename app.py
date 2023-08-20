@@ -19,6 +19,7 @@ bcrypt = Bcrypt(app)
 mail = Mail(app)
 
 
+
 # Database setup using SQLite
 DATABASE = 'database.db'
 
@@ -54,9 +55,14 @@ def init_db():
 
 init_db()
 
+def get_db():
+    db = sqlite3.connect('database.db')
+    db.row_factory = sqlite3.Row
+    return db
+
 def find_task_by_id(task_id):
     try:
-        connection = sqlite3.connect('your_database_name.db')  # Update with your database name
+        connection = sqlite3.connect('database.db')  # Update with your database name
         cursor = connection.cursor()
 
         print("Searching for task with ID:", task_id)  # Add this line
@@ -90,8 +96,22 @@ def aboutus():
     else:
         return render_template('aboutus.html')
     
-@app.route('/contact')
+@app.route('/contact', methods=['GET', 'POST'])
 def contactus():
+    if request.method == 'POST':
+        email = request.form['email']
+        message = request.form['message']
+
+        msg = Message('Taskify Contact Submission',
+                      sender='tomas.gorjux@gmail.com',  # Update with your email
+                      recipients=['tomas.gorjux@gmail.com'])  # Update with your email
+        msg.body = f'From: {email}\n\nMessage:\n{message}'
+        mail.send(msg)
+
+        mail_sent = 'Email has been sent! Thank you for your time!'
+
+        return render_template('contactus.html', mail_sent=mail_sent)
+
     return render_template('contactus.html')
 
 @app.route('/get_task/<int:task_id>', methods=['GET'])
@@ -106,7 +126,7 @@ def get_task(task_id):
 @app.route('/update_task/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
     try:
-        connection = sqlite3.connect('your_database_name.db')  # Update with your database name
+        connection = sqlite3.connect('database.db')  # Update with your database name
         cursor = connection.cursor()
 
         updated_task = request.json  # Assuming you're sending JSON data
@@ -158,38 +178,40 @@ def login():
 
     return render_template('login.html', error_message=error_message)
 
-
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    error_message = ""  # Initialize the error_message variable with an empty string
+
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
         email = request.form.get('email')
-        session.pop('secure_num', None)
-        session.pop('email', None)
-
+        
+        # Validate username, password, and email (your existing validation code)
+        
         if not username or not username.strip() or not email or not email.strip():
             error_message = "Username and email cannot be empty."
-            return render_template('signup.html', error_message=error_message)
-
+        
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
-
+        
         cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
         existing_user = cursor.fetchone()
-
+        
         if existing_user:
             error_message = "Username already taken. Please choose a different username."
-            conn.close()
-            return render_template('signup.html', error_message=error_message)
-
+        
         cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
         existing_email = cursor.fetchone()
+        
         if existing_email:
             error_message = "Email already registered. Please use a different email address."
+        
+        if error_message:
+            row = cursor.execute("SELECT COUNT(*) FROM users").fetchone()[0]
             conn.close()
-            return render_template('signup.html', error_message=error_message)
-
+            return render_template('signup.html', signed_up_users=row, error_message=error_message)
+        
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
         
         current_datetime = datetime.datetime.now()  # Get the current date and time
@@ -198,26 +220,22 @@ def signup():
         cursor.execute("INSERT INTO users (username, password, email, accountMade) VALUES (?, ?, ?, ?)", (username, hashed_password, email, current_date))
         conn.commit()
         conn.close()
-
-        resp = make_response(render_template('signup.html'))
-        resp.set_cookie('user', username)
-
-        session['user'] = username
+        
+        # Set user cookie and redirect to home (your existing code)
+        
         return redirect(url_for('home'))
+    
     else:
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
-
-        cursor.execute("SELECT * FROM users")
-        row = cursor.fetchall()
-        signed_up_users = 0
-
-        for rows in row:
-            signed_up_users += 1
         
-        error_message = session.get('error_message')
-        return render_template('signup.html', signed_up_users=signed_up_users, error_message=error_message)
+        row = cursor.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+        
+        conn.close()
+        
+        return render_template('signup.html', signed_up_users=row, error_message=error_message)
 
+@app.route('/change-password', methods=['POST'])
 
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
@@ -340,6 +358,7 @@ def pricing_pro():
 
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
+    message = ''
     if request.method == 'POST':
         username = request.cookies.get('user')
         existingUsername = request.form.get('existingUsername')
@@ -369,8 +388,7 @@ def profile():
                     message = 'Please enter your new username!'
             else:
                 message = 'That is not your current username!'
-        else:
-            message = 'Please enter something'
+
 
         if existingPassword and newPassword:
             cursor.execute('SELECT password FROM users WHERE username = ?', (username,))
@@ -485,6 +503,42 @@ def add_task():
     conn.close()
 
     return redirect(url_for('home'))
+
+# Establish a connection to your SQLite database
+conn = sqlite3.connect('database.db')
+cursor = conn.cursor()
+
+# Your database creation queries here (users and tasks tables)
+
+@app.route('/delete-account', methods=['POST'])
+def delete_account():
+    if request.method == 'POST':
+        username_to_verify = request.form['verify_delete']
+
+        # Establish a new database connection and cursor
+        db = get_db()
+        cursor = db.cursor()
+
+        cursor.execute("SELECT username FROM users WHERE username = ?", (username_to_verify,))
+        result = cursor.fetchone()
+
+        if result:
+            cursor.execute("DELETE FROM users WHERE username = ?", (username_to_verify,))
+            cursor.execute("DELETE FROM tasks WHERE username = ?", (username_to_verify,))
+            db.commit()
+
+            response = redirect('/')
+            
+            # Delete the cookies by setting them to an empty value and setting an expired date
+            response.delete_cookie('user')
+            response.delete_cookie('dark_mode')
+
+            return response
+
+        else:
+            return "Invalid username. Please double-check and try again. Go <a href='/profile/'>Home</a>"
+
+    return render_template('delete_account.html')
 
 
 @app.route('/add_group', methods=['POST'])

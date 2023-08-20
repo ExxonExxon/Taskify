@@ -178,6 +178,9 @@
     <div class="signup-box">
       <h1 class="signup-title">Sign Up for Taskify</h1>
       <h5>Signed Up Users: {{ signed_up_users }}</h5>
+      {% if error_message is defined %}
+        {{ error_message }}
+      {% endif %}
       <form method="post" action="/signup" id="signup-form">
         <input type="text" name="username" class="signup-input" placeholder="Username">
         <input type="email" name="email" class="signup-input" placeholder="Email">
@@ -187,9 +190,6 @@
     
       <br>
       <a href="/login" class="login-link">Already have an account? Log in here</a>
-      <div class="signup-social">
-        <span class="signup-social-icon"><i class="fa fa-google"></i></span>
-      </div>
     </div>
   </div>
 
