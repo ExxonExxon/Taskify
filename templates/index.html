@@ -336,6 +336,35 @@
       }
     }
 
+    @media screen and (max-width: 768px) {
+      .hero h1 {
+        font-size: 2.5rem;
+      }
+      .hero p {
+        font-size: 1rem;
+      }
+      .hero button {
+        padding: 8px 20px;
+        font-size: 0.9rem;
+      }
+      .feature-card {
+        flex: 1 0 100%;
+      }
+      .different-points {
+        flex-direction: column;
+        gap: 15px;
+      }
+      .different-point {
+        padding: 15px;
+      }
+      .different-point i {
+        font-size: 20px;
+      }
+      .different-point p {
+        font-size: 0.9rem;
+      }
+    }
+
     .different-section {
       padding: 50px 0;
       text-align: center;
@@ -472,15 +501,15 @@
   </footer>
 
   <script>
-    // Add Intersection Observer to animate feature cards and footer
-    const featureCards = document.querySelectorAll('.feature-card');
-    const footer = document.querySelector('footer');
+    // Tron-ify the Intersection Observer to animate features and Recognizer
+    const recognizerCards = document.querySelectorAll('.feature-card');
+    const recognizerFooter = document.querySelector('footer');
 
-    const options = {
+    const tronOptions = {
       threshold: 0.2
     };
 
-    const animateOnScroll = (entries, observer) => {
+    const animateRecognizer = (entries, observer) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.style.animation = 'fadeInUp 1s forwards';
@@ -489,20 +518,20 @@
       });
     };
 
-    const footerObserver = new IntersectionObserver((entries) => {
+    const recognizerFooterObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.style.animation = 'fadeInUp 1s forwards';
         }
       });
-    }, options);
+    }, tronOptions);
 
-    featureCards.forEach(card => {
-      const observer = new IntersectionObserver(animateOnScroll, options);
-      observer.observe(card);
+    recognizerCards.forEach(card => {
+      const recognizerObserver = new IntersectionObserver(animateRecognizer, tronOptions);
+      recognizerObserver.observe(card);
     });
 
-    footerObserver.observe(footer);
+    recognizerFooterObserver.observe(recognizerFooter);
 
   </script>
 </body>

@@ -54,6 +54,24 @@ def init_db():
 
 init_db()
 
+def find_task_by_id(task_id):
+    try:
+        connection = sqlite3.connect('your_database_name.db')  # Update with your database name
+        cursor = connection.cursor()
+
+        print("Searching for task with ID:", task_id)  # Add this line
+        cursor.execute('SELECT * FROM tasks WHERE id = ?', (task_id,))
+        task = cursor.fetchone()
+
+        print("Retrieved task:", task)  # Add this line
+        connection.close()
+
+        return task
+    except Exception as e:
+        print(str(e))
+        return None
+
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -76,37 +94,70 @@ def aboutus():
 def contactus():
     return render_template('contactus.html')
 
+@app.route('/get_task/<int:task_id>', methods=['GET'])
+def get_task(task_id):
+    task = find_task_by_id(task_id)
+    if task:
+        return jsonify(task=task)
+    else:
+        return jsonify(error="Task not found"), 404
 
+
+@app.route('/update_task/<int:task_id>', methods=['PUT'])
+def update_task(task_id):
+    try:
+        connection = sqlite3.connect('your_database_name.db')  # Update with your database name
+        cursor = connection.cursor()
+
+        updated_task = request.json  # Assuming you're sending JSON data
+
+        cursor.execute('''
+            UPDATE tasks
+            SET title = ?, description = ?, group_name = ?, importance = ?
+            WHERE id = ?
+        ''', (
+            updated_task['title'],
+            updated_task['description'],
+            updated_task['group_name'],
+            updated_task['importance'],
+            task_id
+        ))
+
+        connection.commit()
+        connection.close()
+
+        return jsonify(success=True)
+    except Exception as e:
+        return jsonify(success=False, error=str(e))
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    error_message = None  # Initialize error message
+
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        error_message = session.get('error_message')
-        session.pop('secure_num', None)
-        session.pop('email', None)
 
-        if not username or not username.strip() or not password:
-            session['error_message'] = "Username and password cannot be empty."
-            return render_template('login.html', error_message=error_message)
+        if username:
+            if not username or not username.strip() or not password:
+                error_message = "Username and password cannot be empty."
+            else:
+                conn = sqlite3.connect(DATABASE)
+                cursor = conn.cursor()
 
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
+                cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+                user = cursor.fetchone()
+                conn.close()
 
-        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
-        user = cursor.fetchone()
-        conn.close()
+                if not user or not bcrypt.check_password_hash(user[2], password):
+                    error_message = "Invalid username or password."
+                else:
+                    session['user'] = user[1]
+                    return redirect(url_for('home'))
+    
 
-        if not user or not bcrypt.check_password_hash(user[2], password):
-            session['error_message'] = "Invalid username or password."
-            return render_template('login.html', error_message=error_message)   
+    return render_template('login.html', error_message=error_message)
 
-        session['user'] = user[1]
-        return redirect(url_for('home'))
-    else:
-        error_message = session.get('error_message')
-        return render_template('login.html', error_message=error_message)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -163,8 +214,10 @@ def signup():
 
         for rows in row:
             signed_up_users += 1
+        
+        error_message = session.get('error_message')
+        return render_template('signup.html', signed_up_users=signed_up_users, error_message=error_message)
 
-        return render_template('signup.html', signed_up_users=signed_up_users)
 
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
@@ -299,7 +352,6 @@ def profile():
         cursor.execute('SELECT username FROM tasks WHERE username = ?', (username,))
         tasks = cursor.fetchone()
 
-
         if existingUsername:
             if existingUsername == username:
                 if newUsername:
@@ -323,7 +375,7 @@ def profile():
         if existingPassword and newPassword:
             cursor.execute('SELECT password FROM users WHERE username = ?', (username,))
             passwordNow = cursor.fetchone()
-            
+
             if passwordNow and bcrypt.check_password_hash(passwordNow[0], existingPassword):
                 hashed_new_password = bcrypt.generate_password_hash(newPassword).decode('utf-8')
                 cursor.execute('UPDATE users SET password = ? WHERE username = ?', (hashed_new_password, username))
@@ -334,7 +386,12 @@ def profile():
         else:
             messagePass = 'Please enter the fields. Thanks!'
 
-
+        # Password Delete
+        if request.form.get('deletePassword'):
+            cursor.execute('UPDATE users SET password = NULL WHERE username = ?', (username,))
+            conn.commit()
+            messagePass = 'Password deleted successfully!'
+        
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
 
@@ -351,7 +408,7 @@ def profile():
             date_string = date_made[0]  # Assuming the date is the first element in the tuple
             modified_string = date_string.replace("'", "")
             modified_string = date_string.replace("-", " ")
-        
+
         number_of_groups = len(groups)
         number_of_tasks = len(tasks)  # Count the number of tasks
 

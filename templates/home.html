@@ -419,8 +419,80 @@
 
     </div>
 
+    <div id="editFormContainer" style="display: none;">
+        <form id="editForm" onsubmit="saveEditedTask(); return false;">
+            <input type="text" id="editTitle" placeholder="Task Title" required>
+            <textarea id="editDescription" placeholder="Description" required></textarea>
+            <!-- ... other edit form fields ... -->
+            <button type="submit">Save</button>
+        </form>
+    </div>
+    
+
     <script>
         let icoColor = "";
+        let editingTaskId = null;
+
+        function showEditForm(taskId) {
+            editingTaskId = taskId;
+
+            // Send a GET request to fetch task details by ID from the server
+            fetch(`/get_task/${taskId}`)  // Adjust the URL to match your server route
+            .then(response => response.json())
+            .then(data => {
+                if (data.task) {
+                    const task = data.task;
+                    document.getElementById("editTitle").value = task.title;
+                    document.getElementById("editDescription").value = task.description;
+                    // ... update other form fields ...
+
+                    document.getElementById("editFormContainer").style.display = "block";
+                } else {
+                    console.error("Task not found");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+
+        function saveEditedTask() {
+            const editedTitle = document.getElementById("editTitle").value;
+            const editedDescription = document.getElementById("editDescription").value;
+            // ... get other edited form field values ...
+
+            const updatedTask = {
+                id: editingTaskId,
+                title: editedTitle,
+                description: editedDescription,
+                // ... other updated fields ...
+            };
+
+            // Send a PUT request to your server endpoint with updatedTask
+            fetch(`/update_task/${editingTaskId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedTask)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update the task list or perform any necessary UI changes
+                    // Hide the edit form
+                    document.getElementById("editFormContainer").style.display = "none";
+                } else {
+                    // Handle error
+                    console.error(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
         document.body.classList.add("transition");
         let dropdownOpen = false;
 

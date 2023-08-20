@@ -216,23 +216,30 @@
   <div class="login-container">
     <div class="login-box">
       <h1 class="login-title">Welcome to Taskify</h1>
+      
+      {% if error_message %}
+        <p class="error">{{ error_message }}</p>
+      {% endif %}
+      
       <form class="login-form" method="post" action="/login" onsubmit="setCookie()">
         <input type="text" name="username" class="login-input" placeholder="Username">
         <input type="password" name="password" class="login-input" placeholder="Password">
         <button type="submit" class="login-btn">Login</button>
       </form>
-         {{ reset }} <br>
+      
+      {{ reset }} <br>
       <a href="/reset_password" class="forgot-password">Forgot password?</a>
       <br>
       <a href="/signup" class="signup-link">Not signed up? Signup here</a>
+      
       <div class="login-social">
         <span class="login-social-icon"><i class="fa fa-google"></i></span>
         <span class="login-social-icon"><i class="fa fa-facebook"></i></span>
         <span class="login-social-icon"><i class="fa fa-twitter"></i></span>
       </div>
     </div>
+    
   </div>
-  {{ error_message }}
 
   <script>
     function setCookie() {

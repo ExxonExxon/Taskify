@@ -190,8 +190,8 @@
     <header>
         <nav>
             <a href="/home/">Home</a>
-            <a class="active" href="">Groups</a>
-            <a href="#">Profile</a>
+            <a class="active" href="/groups/">Groups</a>
+            <a href="/profile/">Profile</a>
             <a href="/logout">Logout</a>
             <button class="color-changer-nav" onclick="toggleDarkLightMode()">
                 <i id="dark-mode-icon" class="{{ icoColor }}"></i>
@@ -239,7 +239,7 @@
             });
         }
 
-        function toggleDarkLightMode() {
+    function toggleDarkLightMode() {
     const body = document.body;
     const iconElement = document.getElementById("dark-mode-icon");
 
@@ -275,6 +275,14 @@
     }
 
     iconElement.className = icoColor;
+
+    function logout() {
+        // Clear the "user" cookie by setting an empty value and an expired date
+        document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        
+        // Redirect the user to the logout page or any desired page
+        window.location.href = "/";
+    }
     </script>
 </body>
 </html>
