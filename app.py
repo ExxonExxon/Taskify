@@ -77,8 +77,13 @@ def find_task_by_id(task_id):
         print(str(e))
         return None
 
+@app.route('/privacy-policy')
+def privacy_policy():
+    return render_template('privacypolicy.html')
 
-
+@app.route('/terms-of-services')
+def tos():
+    return render_template('tos.html')
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -239,8 +244,7 @@ def signup():
 
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
-    username = session.get('user')
-    plus = 0
+    username = request.cookies.get('user')
     if username is None:
         return redirect(url_for('index'))
 
@@ -253,7 +257,6 @@ def home():
     cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
     tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
     conn.close()
-    username = request.cookies.get('user')
     return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks)
 
 @app.route('/groups/', methods=['GET', 'POST'])
@@ -543,6 +546,8 @@ def delete_account():
 
 @app.route('/add_group', methods=['POST'])
 def add_group():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
     username = session.get('user')
     if username is None:
         return redirect(url_for('index'))
@@ -560,9 +565,6 @@ def add_group():
         tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
 
         conn.close()
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
 
     cursor.execute("SELECT group_name FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
     existing_group = cursor.fetchone()

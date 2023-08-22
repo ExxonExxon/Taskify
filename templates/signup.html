@@ -8,160 +8,97 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Signup Page</title>
   <style>
-    /* Internal CSS */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       line-height: 1.6;
-      background-image: linear-gradient(#333333 0%, #111111 90%);
-      color: #fff;
+      background-color: #f0f0f0;
     }
 
-    body::-webkit-scrollbar {
-      width: 12px;
-    }
-
-    /* Track */
-    body::-webkit-scrollbar-track {
-      background: #f2f2f2; /* Update the scrollbar track color */
-    }
-
-    /* Handle */
-    body::-webkit-scrollbar-thumb {
-      background: #888; /* Update the scrollbar handle color */
-    }
-
-    /* Handle on hover */
-    body::-webkit-scrollbar-thumb:hover {
-      background: #555;
-    }
-
-    /* Optional: To style the scrollbar buttons (not supported in Firefox) */
-    body::-webkit-scrollbar-button {
-      display: none;
-    }
-    
-    a {
-      text-decoration: none;
-      color: #fff;
-    }
-
-    a:hover {
-      text-decoration: underline;
+    header {
+      background-color: #ffffff;
+      padding: 10px;
     }
 
     nav {
       display: flex;
-      background-color: #222;
-      padding: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      background-color: #f2f2f2;
     }
 
     nav a {
+      text-decoration: none;
+      color: #000000;
       padding: 5px 15px;
       font-size: 14px;
+      position: relative;
+      transition: color 0.3s;
     }
 
     nav a:hover {
-      border-radius: 5px;
+      color: #888;
+      text-decoration: underline;
     }
 
-    /* ... Copy the rest of the styles here ... */
-    /* ... to maintain the original styling ... */
 
-    /* Additional signup page specific styles */
     .signup-container {
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
-      width: 100%;
     }
 
     .signup-box {
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 30px;
+      background-color: #ffffff;
+      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      text-align: center;
-      max-width: 400px;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 1s forwards;
-    }
-
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      width: 300px;
     }
 
     .signup-title {
       font-size: 24px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .signup-form {
+      display: flex;
+      flex-direction: column;
     }
 
     .signup-input {
-      margin-bottom: 20px;
-      padding: 10px;
-      padding-right: 0px;
-      margin-right: 50px !important;
+      margin: 10px 0;
+      padding: 12px;
       border: 1px solid #ccc;
       border-radius: 5px;
-      width: 97%;
-      font-size: 16px;
-      color: #fff;
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .signup-input::placeholder {
-      color: #ccc;
     }
 
     .signup-btn {
-      background-color: #4caf50;
-      color: #fff;
+      background-color: #007bff;
+      color: #ffffff;
       border: none;
-      padding: 12px 24px;
       border-radius: 5px;
-      font-size: 16px;
+      padding: 12px;
       cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s;
+      transition: background-color 0.3s;
     }
 
     .signup-btn:hover {
-      background-color: #45a049;
-      transform: scale(1.05);
+      background-color: #0056b3;
     }
 
     .login-link {
-      color: #ccc;
-      font-size: 14px;
-      text-decoration: none;
+      text-align: center;
       margin-top: 15px;
-    }
-
-    .login-link:hover {
-      text-decoration: underline;
-    }
-
-    .signup-social {
-      display: flex;
-      justify-content: center;
-      margin-top: 20px;
-    }
-
-    .signup-social-icon {
-      font-size: 24px;
-      color: #fff;
-      cursor: pointer;
-      margin: 0 10px;
+      font-size: 14px;
+      color: #007bff;
       transition: color 0.3s;
     }
 
-    .signup-social-icon:hover {
-      color: #45a049;
+    .login-link:hover {
+      color: #0056b3;
     }
   </style>
 </head>
@@ -172,7 +109,7 @@
       <a href="/">Home</a>
       <a href="/about">About</a>
       <a href="/login">Login</a>
-   </nav>
+    </nav>
   </header>
   <div class="signup-container">
     <div class="signup-box">
@@ -181,32 +118,27 @@
       {% if error_message is defined %}
         {{ error_message }}
       {% endif %}
-      <form method="post" action="/signup" id="signup-form">
+      <form method="post" action="/signup" id="signup-form" class="signup-form">
         <input type="text" name="username" class="signup-input" placeholder="Username">
         <input type="email" name="email" class="signup-input" placeholder="Email">
         <input type="password" name="password" class="signup-input" placeholder="Password">
         <button type="submit" class="signup-btn">Sign Up</button>
-    </form>
-    
-      <br>
-      <a href="/login" class="login-link">Already have an account? Log in here</a>
+      </form>
+      <p class="login-link">Already have an account? <a href="/login">Log in here</a></p>
     </div>
   </div>
 
   <script>
-   function setCookie(name, value, days) {
-        const expires = new Date();
-        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-        document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+    function setCookie(name, value, days) {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
     }
 
     document.getElementById("signup-form").addEventListener("submit", function(event) {
-        // Get the value of the username input field
-        const usernameInput = document.querySelector("input[name='username']");
-        const username = usernameInput.value;
-
-        // Set a cookie named "user" with the value of the username
-        setCookie("user", username, 7); // Cookie lasts for 7 days
+      const usernameInput = document.querySelector("input[name='username']");
+      const username = usernameInput.value;
+      setCookie("user", username, 7); // Cookie lasts for 7 days
     });
   </script>
 </body>

@@ -363,7 +363,7 @@
                 <li>
                     <a>{{ group }}</a>
                     <ul>
-                        {% for task in tasks[group] %}
+                        {% for task in tasks[group] %}  
                             <li>{{ task }}</li>
                         {% endfor %}
                     </ul>
@@ -385,9 +385,9 @@
 
         <form class="add-form" action="/add_task" method="POST">
             <input placeholder="Task Title" type="text" id="title" name="title" required>
-            <textarea placeholder="Description" id="description" name="description" required></textarea>
+            <textarea placeholder="Description" id="description" name="description"></textarea>
             <div class="button-row">
-                <select id="group" name="group">
+                <select id="group" name="group" required>
                     <option value="">Add Group Here</option>
                     {% for group in custom_groups %}
                         <option value="{{ group }}">{{ group }}</option>
@@ -430,7 +430,6 @@
         <form id="editForm" onsubmit="saveEditedTask(); return false;">
             <input type="text" id="editTitle" placeholder="Task Title" required>
             <textarea id="editDescription" placeholder="Description" required></textarea>
-            <!-- ... other edit form fields ... -->
             <button type="submit">Save</button>
         </form>
     </div>

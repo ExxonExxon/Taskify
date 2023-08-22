@@ -8,199 +8,111 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Page</title>
   <style>
-    /* Internal CSS */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       line-height: 1.6;
-      background-image: linear-gradient(#333333 0%, #111111 90%);
-      color: #fff;
+      background-color: #ffffff;
     }
-    
+
     body::-webkit-scrollbar {
       width: 12px;
     }
 
-    /* Track */
     body::-webkit-scrollbar-track {
-      background: #f2f2f2; /* Update the scrollbar track color */
+      background: #f2f2f2;
     }
 
-    /* Handle */
     body::-webkit-scrollbar-thumb {
-      background: #888; /* Update the scrollbar handle color */
+      background: #888;
     }
 
-    /* Handle on hover */
     body::-webkit-scrollbar-thumb:hover {
       background: #555;
     }
 
-    /* Optional: To style the scrollbar buttons (not supported in Firefox) */
     body::-webkit-scrollbar-button {
       display: none;
     }
 
-    a {
-      text-decoration: none;
-      color: #fff;
-    }
-
-    a:hover {
-      text-decoration: underline;
+    header {
+      background-color: #ffffff;
+      padding: 10px;
     }
 
     nav {
       display: flex;
-      background-color: #222;
-      padding: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      background-color: #f2f2f2;
     }
 
     nav a {
+      text-decoration: none;
+      color: #000000;
       padding: 5px 15px;
       font-size: 14px;
+      position: relative;
+      transition: color 0.3s;
     }
 
     nav a:hover {
-      border-radius: 5px;
+      color: #888;
+      text-decoration: underline;
     }
 
-    /* ... Copy the rest of the styles here ... */
-    /* ... to maintain the original styling ... */
-
-    /* Additional login page specific styles */
     .login-container {
       display: flex;
-      flex-direction: column;
-      align-items: center;
       justify-content: center;
+      align-items: center;
       height: 100vh;
-      width: 100%;
     }
 
     .login-box {
-      background-color: rgba(0, 0, 0, 0.7);
-      padding: 30px;
+      background-color: #f2f2f2;
+      padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-      text-align: center;
-      max-width: 400px;
-      opacity: 0;
-      transform: translateY(20px);
-      animation: fadeInUp 1s forwards;
-    }
-
-    @keyframes fadeInUp {
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      width: 300px;
     }
 
     .login-title {
       font-size: 24px;
-      margin-bottom: 20px;
-    }
-
-    .login-input {
-      margin-bottom: 20px;
-      padding: 10px;
-      padding-right: 0px;
-      margin-right: 50px !important;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      width: 97%;
-      font-size: 16px;
-      color: #fff;
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .login-input::placeholder {
-      color: #ccc;
-    }
-
-    .login-btn {
-      background-color: #4caf50;
-      color: #fff;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-
-    .login-btn:hover {
-      background-color: #45a049;
-      transform: scale(1.05);
-    }
-
-    .signup-link {
-      color: #ccc;
-      font-size: 14px;
-      text-decoration: none;
-      margin-top: 15px;
-    }
-
-    .signup-link:hover {
-      text-decoration: underline;
-    }
-
-    .google-btn {
-      background-color: #fff;
-      color: #111;
-      border: 1px solid #ccc;
-      padding: 12px 24px;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s;
-      margin-top: 15px;
-      display: flex;
-      align-items: center;
-    }
-
-    .google-icon {
-      margin-right: 10px;
-    }
-
-    .google-btn:hover {
-      background-color: #ccc;
-      color: #fff;
-      transform: scale(1.05);
+      margin-bottom: 15px;
+      text-align: center;
     }
 
     .login-form {
-      margin-top: 30px;
-    }
-
-    .forgot-password {
-      font-size: 14px;
-      color: #ccc;
-      margin-top: 10px;
-      text-decoration: none;
-    }
-
-    .forgot-password:hover {
-      text-decoration: underline;
-    }
-
-    .login-social {
       display: flex;
-      justify-content: center;
-      margin-top: 20px;
+      flex-direction: column;
     }
 
-    .login-social-icon {
-      font-size: 24px;
-      color: #fff;
+    .login-input {
+      margin: 8px 0;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .login-btn {
+      background-color: #007bff;
+      color: #ffffff;
+      border: none;
+      border-radius: 5px;
+      padding: 10px;
       cursor: pointer;
-      margin: 0 10px;
-      transition: color 0.3s;
+      transition: background-color 0.3s;
     }
 
-    .login-social-icon:hover {
-      color: #45a049;
+    .login-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .forgot-password,
+    .signup-link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
     }
   </style>
 </head>
@@ -216,32 +128,31 @@
   <div class="login-container">
     <div class="login-box">
       <h1 class="login-title">Welcome to Taskify</h1>
-      
+
       {% if error_message %}
         <p class="error">{{ error_message }}</p>
       {% endif %}
-      
+
       <form class="login-form" method="post" action="/login" onsubmit="setCookie()">
         <input type="text" name="username" class="login-input" placeholder="Username">
         <input type="password" name="password" class="login-input" placeholder="Password">
         <button type="submit" class="login-btn">Login</button>
       </form>
-      
+
       {{ reset }} <br>
       <a href="/reset_password" class="forgot-password">Forgot password?</a>
       <br>
       <a href="/signup" class="signup-link">Not signed up? Signup here</a>
     </div>
-    
   </div>
 
   <script>
     function setCookie() {
-    var usernameInput = document.querySelector('input[name="username"]');
-    var usernameValue = usernameInput.value;
+      var usernameInput = document.querySelector('input[name="username"]');
+      var usernameValue = usernameInput.value;
 
-    document.cookie = "user=" + encodeURIComponent(usernameValue) + "; path=/";
-  }
+      document.cookie = "user=" + encodeURIComponent(usernameValue) + "; path=/";
+    }
   </script>
 </body>
 
