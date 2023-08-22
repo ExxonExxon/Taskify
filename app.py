@@ -101,6 +101,10 @@ def aboutus():
     else:
         return render_template('aboutus.html')
     
+@app.route('/updates')
+def updates():
+    return render_template('updatelog.html')
+
 @app.route('/contact', methods=['GET', 'POST'])
 def contactus():
     if request.method == 'POST':
