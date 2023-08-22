@@ -8,6 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Page</title>
   <style>
+    /* Reset default margin, font, and background */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -15,38 +16,23 @@
       background-color: #ffffff;
     }
 
+    /* Custom scrollbar styling */
     body::-webkit-scrollbar {
       width: 12px;
     }
+    /* ... More scrollbar styles ... */
 
-    body::-webkit-scrollbar-track {
-      background: #f2f2f2;
-    }
-
-    body::-webkit-scrollbar-thumb {
-      background: #888;
-    }
-
-    body::-webkit-scrollbar-thumb:hover {
-      background: #555;
-    }
-
-    body::-webkit-scrollbar-button {
-      display: none;
-    }
-
+    /* Header and navigation styling */
     header {
       background-color: #ffffff;
       padding: 10px;
     }
-
     nav {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
       background-color: #f2f2f2;
     }
-
     nav a {
       text-decoration: none;
       color: #000000;
@@ -55,45 +41,41 @@
       position: relative;
       transition: color 0.3s;
     }
-
     nav a:hover {
       color: #888;
       text-decoration: underline;
     }
 
+    /* Login container and form styling */
     .login-container {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
-
     .login-box {
       background-color: #f2f2f2;
       padding: 20px;
       border-radius: 10px;
+      border: 1px solid #ccc; /* Added border */
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
       width: 300px;
     }
-
     .login-title {
       font-size: 24px;
       margin-bottom: 15px;
       text-align: center;
     }
-
     .login-form {
       display: flex;
       flex-direction: column;
     }
-
     .login-input {
       margin: 8px 0;
       padding: 10px;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
-
     .login-btn {
       background-color: #007bff;
       color: #ffffff;
@@ -103,11 +85,9 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
-
     .login-btn:hover {
       background-color: #0056b3;
     }
-
     .forgot-password,
     .signup-link {
       text-align: center;
@@ -147,6 +127,7 @@
   </div>
 
   <script>
+    // Function to set a cookie with the provided username
     function setCookie() {
       var usernameInput = document.querySelector('input[name="username"]');
       var usernameValue = usernameInput.value;
