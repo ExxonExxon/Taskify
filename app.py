@@ -257,6 +257,9 @@ def home():
     cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
     tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
     conn.close()
+    if '%20' in username:
+        username = username.replace('%20', ' ')
+
     return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks)
 
 @app.route('/groups/', methods=['GET', 'POST'])
