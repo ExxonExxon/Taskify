@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response
+from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response, send_from_directory
 from flask_session import Session
 from flask_mail import Mail, Message
 import os, sqlite3, random, datetime, string
@@ -76,6 +76,10 @@ def find_task_by_id(task_id):
     except Exception as e:
         print(str(e))
         return None
+    
+@app.route('/sitemap.xml')
+def serve_sitemap():
+    return send_from_directory(app.static_folder, 'sitemap.xml')
 
 @app.route('/privacy-policy')
 def privacy_policy():
