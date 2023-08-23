@@ -8,117 +8,88 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Page</title>
   <style>
+    /* Reset default margin, font, and background */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
       line-height: 1.6;
-      background-color: #ffffff;
+      background-color: #fafafa;
     }
 
-    body::-webkit-scrollbar {
-      width: 12px;
-    }
-
-    body::-webkit-scrollbar-track {
-      background: #f2f2f2;
-    }
-
-    body::-webkit-scrollbar-thumb {
-      background: #888;
-    }
-
-    body::-webkit-scrollbar-thumb:hover {
-      background: #555;
-    }
-
-    body::-webkit-scrollbar-button {
-      display: none;
-    }
-
+    /* Header and navigation styling */
     header {
       background-color: #ffffff;
       padding: 10px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
-
     nav {
       display: flex;
       justify-content: center;
-      flex-wrap: wrap;
       background-color: #f2f2f2;
+      border-radius: 10px;
+      overflow: hidden;
     }
-
     nav a {
       text-decoration: none;
-      color: #000000;
-      padding: 5px 15px;
+      color: #333;
+      padding: 10px 20px;
       font-size: 14px;
-      position: relative;
+      transition: color 0.3s;
     }
-
     nav a:hover {
-      text-decoration: underline;
+      color: #007bff;
     }
 
+    /* Login container and form styling */
     .login-container {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
-
     .login-box {
-      background-color: #f2f2f2;
-      padding: 20px;
+      background-color: #ffffff;
+      padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-      width: 300px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 320px;
+      text-align: center;
     }
-
     .login-title {
       font-size: 24px;
-      margin-bottom: 10px;
-      text-align: center;
-      padding: 0;
+      margin-bottom: 15px;
+      color: #007bff;
     }
-
     .login-form {
       display: flex;
       flex-direction: column;
     }
-
     .login-input {
-      margin: 8px 0;
-      padding: 10px;
+      margin: 10px 0;
+      padding: 12px;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
-
     .login-btn {
       background-color: #007bff;
       color: #ffffff;
       border: none;
       border-radius: 5px;
-      padding: 10px;
+      padding: 12px;
       cursor: pointer;
       transition: background-color 0.3s;
     }
-
     .login-btn:hover {
       background-color: #0056b3;
     }
-
     .forgot-password,
     .signup-link {
-      text-align: center;
       margin-top: 15px;
       font-size: 14px;
-      align-items: center;
-      color: black;
+      color: #555;
     }
-
-    .forgot-password:hover ,
-    .signup-link:hover {
-      color: #3d3d3d;
+    .signup-link {
+      color: #007bff;
     }
   </style>
 </head>
@@ -144,13 +115,16 @@
         <input type="password" name="password" class="login-input" placeholder="Password">
         <button type="submit" class="login-btn">Login</button>
       </form>
-      {{ reset }}
-      <a style="padding: 0;margin: 0;" href="/reset_password" class="forgot-password">Forgot password?</a>
-      <p>Not signed up? <a href="/signup" class="signup-link">Signup here</a></p>
+
+      {{ reset }} <br>
+      <a href="/reset_password" class="forgot-password">Forgot password?</a>
+      <br>
+      <a href="/signup" class="signup-link">Not signed up? Signup here</a>
     </div>
   </div>
 
   <script>
+    // Function to set a cookie with the provided username
     function setCookie() {
       var usernameInput = document.querySelector('input[name="username"]');
       var usernameValue = usernameInput.value;

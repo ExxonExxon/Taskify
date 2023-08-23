@@ -76,10 +76,6 @@ def find_task_by_id(task_id):
     except Exception as e:
         print(str(e))
         return None
-    
-@app.route('/sitemap.xml')
-def serve_sitemap():
-    return send_from_directory(app.static_folder, 'sitemap.xml')
 
 @app.route('/privacy-policy')
 def privacy_policy():
@@ -105,6 +101,14 @@ def aboutus():
     else:
         return render_template('aboutus.html')
     
+@app.route('/updates')
+def updates():
+    return render_template('updatelog.html')
+
+@app.route('/<path:filename>')
+def serve_sitemap(filename):
+    return send_from_directory('static', filename)
+
 @app.route('/contact', methods=['GET', 'POST'])
 def contactus():
     if request.method == 'POST':
@@ -723,4 +727,4 @@ def get_tasks():
 
 
 if __name__ == '__main__':
-    app.run(host='127.0.0.1', port=5000, threaded=True, debug=True)
+    app.run(host='0.0.0.0', port=80, threaded=True)
