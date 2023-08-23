@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -8,92 +7,113 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login Page</title>
   <style>
-    /* Reset default margin, font, and background */
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
-      line-height: 1.6;
-      background-color: #fafafa;
+      margin: 0;
+      padding: 0;
+      background-color: #1e1e1e;
+      color: #ffffff;
     }
-
-    /* Header and navigation styling */
+    
     header {
-      background-color: #ffffff;
-      padding: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    nav {
-      display: flex;
-      justify-content: center;
-      background-color: #f2f2f2;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-    nav a {
-      text-decoration: none;
-      color: #333;
-      padding: 10px 20px;
-      font-size: 14px;
-      transition: color 0.3s;
-    }
-    nav a:hover {
-      color: #007bff;
-    }
+  background-color: #1a1a1a;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-    /* Login container and form styling */
+
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+nav a {
+  text-decoration: none;
+  color: #ffffff;
+  padding: 5px 15px;
+  font-size: 14px;
+  position: relative;
+}
+
+nav a:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+    
     .login-container {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
+    
     .login-box {
-      background-color: #ffffff;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 320px;
+      background-color: #282828;
+      border: 1px solid #444;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      padding: 20px;
       text-align: center;
     }
+    
     .login-title {
-      font-size: 24px;
-      margin-bottom: 15px;
-      color: #007bff;
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #007bff; /* Added color */
     }
+    
+    .error {
+      color: #ff4444;
+      margin-bottom: 10px;
+    }
+    
     .login-form {
-      display: flex;
-      flex-direction: column;
+      margin-top: 20px;
     }
+    
     .login-input {
-      margin: 10px 0;
+      width: 90%;
       padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+      margin-bottom: 12px;
+      border: 1px solid #444;
+      border-radius: 4px;
+      background-color: #333;
+      color: #ffffff;
     }
+    
     .login-btn {
       background-color: #007bff;
       color: #ffffff;
+      padding: 12px 20px;
       border: none;
-      border-radius: 5px;
-      padding: 12px;
+      width: 96%;
+      border-radius: 4px;
       cursor: pointer;
       transition: background-color 0.3s;
     }
+    
     .login-btn:hover {
       background-color: #0056b3;
     }
+    
     .forgot-password,
     .signup-link {
-      margin-top: 15px;
-      font-size: 14px;
-      color: #555;
-    }
-    .signup-link {
       color: #007bff;
+      text-decoration: none;
+      font-size: 14px;
+      margin-top: 10px;
+      display: inline-block;
+    }
+    
+    .signup-link {
+      margin-top: 20px;
     }
   </style>
 </head>
-
 <body>
   <header>
     <nav>
@@ -104,7 +124,7 @@
   </header>
   <div class="login-container">
     <div class="login-box">
-      <h1 class="login-title">Welcome to Taskify</h1>
+      <h1 class="login-title">Welcome to <span style="font-weight: bold;">Taskify</span></h1>
 
       {% if error_message %}
         <p class="error">{{ error_message }}</p>
@@ -128,10 +148,8 @@
     function setCookie() {
       var usernameInput = document.querySelector('input[name="username"]');
       var usernameValue = usernameInput.value;
-
       document.cookie = "user=" + encodeURIComponent(usernameValue) + "; path=/";
     }
   </script>
 </body>
-
 </html>
