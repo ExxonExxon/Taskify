@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response, send_from_directory
+from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response
 from flask_session import Session
 from flask_mail import Mail, Message
 import os, sqlite3, random, datetime, string
@@ -101,14 +101,6 @@ def aboutus():
     else:
         return render_template('aboutus.html')
     
-@app.route('/updates')
-def updates():
-    return render_template('updatelog.html')
-
-@app.route('/<path:filename>')
-def serve_sitemap(filename):
-    return send_from_directory('static', filename)
-
 @app.route('/contact', methods=['GET', 'POST'])
 def contactus():
     if request.method == 'POST':
@@ -727,4 +719,4 @@ def get_tasks():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, threaded=True)
+    app.run(host='127.0.0.1', port=5000, threaded=True, debug=True)

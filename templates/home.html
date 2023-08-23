@@ -338,11 +338,6 @@
                 color: white;
                 text-decoration: underline;
             }
-
-        .sidebar p {
-            margin: none !important;
-            padding: none !important;
-        }
         
     </style>
 </head>
@@ -360,7 +355,7 @@
     </header>
 
     <div class="sidebar">
-        <p class="version-style">Version <a style="color: white;" href="/updates">Beta 2</a></p>
+        <p style="margin: none;padding: none;">Version Beta 1</p>
         <p style="font-size: 10px;margin: none;padding-bottom: 0;">Want to file a bug or add/remove feature <a class="no-style" href="/contact">Contact Us</a></p>
         <ul>
             <li><h3 style="margin: none;">Your Groups:</h3></li>
@@ -602,10 +597,10 @@
     // Display the time in the <p> tag
     const timeDisplay = document.getElementById("currentTime");
     if (hours >= 12) {
-        timeDisplay.textContent = `Good evening, {{ username }}`;
+        timeDisplay.textContent = `Good Evening, {{ username }}`;
     }
     else if (hours < 12) {
-        timeDisplay.textContent = `Good morning, {{ username }}`;
+        timeDisplay.textContent = `Good Morning, {{ username }}`;
     }
     
     </script>

@@ -6,9 +6,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signup Page</title>
+  <title>Ready to Join Taskify?</title>
   <style>
-    /* Reset default margin, font, and background */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -16,81 +15,86 @@
       background-color: #f0f0f0;
     }
 
-    /* Header and navigation styling */
     header {
       background-color: #ffffff;
       padding: 10px;
     }
+
     nav {
       display: flex;
       justify-content: center;
+      flex-wrap: wrap;
       background-color: #f2f2f2;
-      padding: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-    nav a {
-      text-decoration: none;
-      color: #333;
-      margin: 0 15px;
-      font-size: 16px;
-      transition: color 0.3s;
-    }
-    nav a:hover {
-      color: #007bff;
     }
 
-    /* Signup container and form styling */
+    nav a {
+      text-decoration: none;
+      color: #000000;
+      padding: 5px 15px;
+      font-size: 14px;
+      position: relative;
+      transition: color 0.3s;
+    }
+
+    nav a:hover {
+      color: #888;
+      text-decoration: underline;
+    }
+
     .signup-container {
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
     }
+
     .signup-box {
-      background-color: #f9f9f9;
-      padding: 30px;
-      border-radius: 15px;
-      border: 1px solid #8f8f8f;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-      width: 360px;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      width: 300px;
     }
+
     .signup-title {
-      font-size: 32px;
-      margin-bottom: 20px;
+      font-size: 24px;
+      margin-bottom: 15px;
       text-align: center;
     }
+
     .signup-form {
       display: flex;
       flex-direction: column;
     }
+
     .signup-input {
-      margin: 15px 0;
-      padding: 14px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 16px;
+      margin: 10px 0;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
     }
+
     .signup-btn {
       background-color: #007bff;
       color: #ffffff;
       border: none;
-      border-radius: 8px;
-      padding: 14px;
-      font-size: 18px;
+      border-radius: 5px;
+      padding: 12px;
       cursor: pointer;
       transition: background-color 0.3s;
-      width: 100%;
     }
+
     .signup-btn:hover {
       background-color: #0056b3;
     }
+
     .login-link {
       text-align: center;
       margin-top: 15px;
       font-size: 14px;
-      color: #007bff;
       transition: color 0.3s;
     }
+
     .login-link:hover {
       color: #0056b3;
     }
@@ -107,31 +111,29 @@
   </header>
   <div class="signup-container">
     <div class="signup-box">
-      <h1 class="signup-title">Welcome to Taskify</h1>
-      <p>Join our community and start organizing your tasks!</p>
+      <h1 class="signup-title">Sign Up for Taskify</h1>
+      <h5 style="text-align: center;">Hey, Future Taskify Rockstar! Users So Far: {{ signed_up_users }}</h5>
+      {% if error_message is defined %}
+        {{ error_message }}
+      {% endif %}
       <form method="post" action="/signup" id="signup-form" class="signup-form">
         <input type="text" name="username" class="signup-input" placeholder="Username" required>
         <input type="email" name="email" class="signup-input" placeholder="Email" required>
         <input type="password" name="password" class="signup-input" placeholder="Password" required>
-        <div class="checkbox-container">
-          <input type="checkbox" name="privacy_policy" id="privacy_policy" required>
-          <label style="font-size: 13px;" for="privacy_policy" class="checkbox-label">I agree to the <a href="/privacy-policy">Privacy Policy</a> and the <a href="/terms-of-services">Terms of Services</a></label>
-        </div>
-        <button type="submit" class="signup-btn">Get Started</button>
+        <p style="font-size: 11px;"><input type="checkbox">I agree to the <a href="/terms-of-services">Terms of Services</a> and <a href="/privacy-policy">Privacy Policy</a></p>
+        <button type="submit" class="signup-btn">Claim Your Spot</button>
       </form>
-      <p class="login-link">Already have an account? <a href="/login">Log in here</a></p>
+      <p class="login-link">Already on board? <a href="/login">Login</a></p>
     </div>
   </div>
 
   <script>
-    // Function to set a cookie with an expiration date
     function setCookie(name, value, days) {
       const expires = new Date();
       expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
       document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
     }
 
-    // Attach event listener to the signup form
     document.getElementById("signup-form").addEventListener("submit", function(event) {
       const usernameInput = document.querySelector("input[name='username']");
       const username = usernameInput.value;
