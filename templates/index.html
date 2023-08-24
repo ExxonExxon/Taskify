@@ -286,6 +286,18 @@ footer {
   }
 }
 
+.login_signup_btn {
+  border: 1px whitesmoke solid;
+  margin-left: 5px;
+  border-radius: 4px;
+}
+
+.login_signup_btn:hover {
+  background-color: whitesmoke;
+  color: black;
+  text-decoration: underline;
+}
+
   </style>
 </head>
 
@@ -296,6 +308,9 @@ footer {
       <a href="/about">About</a>
       <a href="#features">Features</a>
       <a href="/contact">Contact</a>
+      <a href="/updates">Updates</a>
+      <a class="login_signup_btn" href="/login">Login</a>
+      <a class="login_signup_btn" href="/signup">Signup</a>
     </nav>
   </header>
   <div class="hero">
@@ -366,11 +381,11 @@ footer {
       <h2>Statistics</h2>
       <div class="statistics-container">
         <div class="statistic">
-          <span class="stat-value">500+</span>
+          <span class="stat-value">{{ tasks_completed }}</span>
           <span class="stat-label">Tasks Completed</span>
         </div>
         <div class="statistic">
-          <span class="stat-value">200+</span>
+          <span class="stat-value">{{ number_of_users }}</span>
           <span class="stat-label">Users Registered</span>
         </div>
         <div class="statistic">

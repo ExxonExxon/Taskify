@@ -4,7 +4,7 @@
     <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Task Manager</title>
+    <title>Taskify - Profile</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
          /* Reset and Global Styles */
@@ -37,30 +37,36 @@
         }
 
         /* Header and Navigation Styles */
-        header {
-            background-color: #ffffff;
-            padding: 10px;
-        }
+        /* Header */
+/* Header */
+header {
+  background-color: #1a1a1a;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-        nav {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            background-color: #f2f2f2;
-        }
 
-        nav a {
-            text-decoration: none;
-            color: #000000;
-            padding: 5px 10px;
-            font-size: 14px;
-            position: relative;
-        }
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+}
 
-        nav a:hover {
-            color: #888;
-            text-decoration: underline;
-        }
+nav a {
+  text-decoration: none;
+  color: #ffffff;
+  padding: 5px 15px;
+  font-size: 14px;
+  position: relative;
+}
+
+nav a:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
 
         .color-changer-nav {
             text-decoration: none;
@@ -261,6 +267,57 @@
             background-color: #444;
         }
 
+        body.dark-mode .stats-container {
+            background-color: #444;
+        }
+
+        /* Dark Mode Stats Section Styles */
+        body.dark-mode .stats-section {
+            background-color: #444;
+        }
+
+        body.dark-mode .stats-container {
+            background-color: #444;
+        }
+
+        /* Dark Mode Stats Font Color */
+        body.dark-mode .stat-label {
+            color: #fff;
+        }
+
+        body.dark-mode .stat-value {
+            color: #fff;
+        }
+
+
+        body.dark-mode input[type="text"],
+        body.dark-mode textarea {
+            background-color: #444;
+            color: #fff;
+            border-color: #555;
+        }
+
+        body.dark-mode input[type="text"]:focus,
+        body.dark-mode textarea:focus {
+            border-color: #777;
+            outline: none;
+        }
+
+
+        body.dark-mode .danger-zone {
+            background-color: #222;
+        }
+
+        body.dark-mode .danger-zone h2,
+        body.dark-mode .danger-zone p  {
+            color: #f44336;
+        }
+
+        body.dark-mode .danger-zone button {
+            background-color: red;
+        }
+
+
         /* Dark Mode Sidebar Input Styles */
         body.dark-mode .sidebar input[type="text"] {
             background-color: #444;
@@ -316,6 +373,10 @@
             padding: 15px;
             border-radius: 5px;
             box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        body input {
+            font-size: 12px;
         }
 
         .stat {
@@ -496,31 +557,55 @@
         <div class="danger-zone">
             <h2>Danger Zone</h2>
             <p>Think twice before proceeding.</p>
+            <h3>Delete Account</h3>
             <form method="post" action="/delete-account">
-                <input type="text" name="verify_delete" placeholder="Enter current Username to delete!">
+                <input style="font-size: 12px;color: white;" type="text" name="verify_password" placeholder="Enter Password to delete!">
                 <button type="submit">Delete Account</button>
             </form>
             
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        let icoColor;
-document.body.classList.add("transition");
+        let icoColor = "";
+        function toggleDarkLightMode() {
+            const body = document.body;
+            const iconElement = document.getElementById("dark-mode-icon");
 
-// Fetch tasks data from Flask route
-fetch('/get_tasks')
-    .then(response => response.json())
-    .then(tasks => {
-        // ... (your chart creation code) ...
-    })
-    .catch(error => {
-        console.error('Error fetching tasks:', error);
-    });
+            if (body.classList.contains("dark-mode")) {
+                body.classList.remove("dark-mode");
+                body.classList.add("light-mode");
+                document.cookie = "dark_mode=false; path=/";
+                icoColor = "fa fa-sun-o";
+            } else {
+                body.classList.remove("light-mode");
+                body.classList.add("dark-mode");
+                document.cookie = "dark_mode=true; path=/";
+                icoColor = "fa fa-moon-o";
+            }
 
-// Call the fetchTasks function when the page loads
-document.addEventListener('DOMContentLoaded', fetchTasks);
+            iconElement.className = icoColor;
+
+            // Add a timeout to remove the transition class after the transition is complete
+            setTimeout(() => {
+                body.classList.remove("transition");
+            }, 500); // 500ms is the duration of the transition
+        }
+
+
+            const darkModeCookie = document.cookie.match(/(?:(?:^|.*;\s*)dark_mode\s*=\s*([^;]*).*$)|^.*$/)[1];
+            const iconElement = document.getElementById("dark-mode-icon");
+
+            if (darkModeCookie && darkModeCookie === "true") {
+                document.body.classList.add("dark-mode");
+                icoColor = "fa fa-moon-o";
+            } else {
+                icoColor = "fa fa-sun-o";
+            }
+
+            iconElement.className = icoColor;
+
+        document.body.classList.add("transition");
 
 function deleteTask(taskId) {
     fetch(`/delete_task/${taskId}`, {
@@ -539,45 +624,6 @@ function deleteTask(taskId) {
     });
 }
 
-function toggleDarkLightMode() {
-    const body = document.body;
-    const iconElement = document.getElementById("dark-mode-icon");
-
-    if (body.classList.contains("dark-mode")) {
-        body.classList.remove("dark-mode");
-        body.classList.add("light-mode");
-        document.cookie = "dark_mode=false; path=/";
-        icoColor = "fa fa-sun-o";
-    } else {
-        body.classList.remove("light-mode");
-        body.classList.add("dark-mode");
-        document.cookie = "dark_mode=true; path=/";
-        icoColor = "fa fa-moon-o";
-    }
-
-    iconElement.className = icoColor;
-
-    // Add a timeout to remove the transition class after the transition is complete
-    setTimeout(() => {
-        body.classList.remove("transition");
-    }, 500); // 500ms is the duration of the transition
-}
-
-// Retrieve dark mode status from cookies on page load
-const darkModeCookie = document.cookie.match(/(?:(?:^|.*;\s*)dark_mode\s*=\s*([^;]*).*$)|^.*$/)[1];
-
-// Determine initial dark mode status and set appropriate styles
-if (darkModeCookie && darkModeCookie === "true") {
-    document.body.classList.add("dark-mode");
-    icoColor = "fa fa-moon-o";
-} else {
-    icoColor = "fa fa-sun-o";
-}
-
-// Set icon class based on dark mode status
-const iconElement = document.getElementById("dark-mode-icon");
-iconElement.className = icoColor;
-
 function setCookie() {
     var usernameInput = document.querySelector('input[name="username"]');
     var usernameValue = usernameInput.value;
@@ -590,12 +636,13 @@ function setCookie() {
 }
 
 function logout() {
-    // Clear the "user" cookie by setting an empty value and an expired date
-    document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-    
-    // Redirect the user to the logout page or any desired page
-    window.location.href = "/";
-}
+        // Clear the "user" cookie by setting an empty value and an expired date
+        document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        
+        // Redirect the user to the logout page or any desired page
+        window.location.href = "/";
+    }
+
 
 
     </script>

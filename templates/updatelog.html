@@ -12,40 +12,39 @@
             margin: 0;
             font-family: Arial, sans-serif;
             line-height: 1.6;
-            background-color: #ffffff;
+            background-color: #2c2c2c;
           }
       
+         /* Header */
           header {
-            background-color: #ffffff;
+            background-color: #1a1a1a;
             padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
           }
-      
+
+
           nav {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
-            background-color: #f2f2f2;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            overflow: hidden;
           }
-      
+
           nav a {
             text-decoration: none;
-            color: #000000;
+            color: #ffffff;
             padding: 5px 15px;
             font-size: 14px;
             position: relative;
           }
-      
+
           nav a:hover {
-            color: #888;
+            color: #007bff;
             text-decoration: underline;
-          }
+}
       
-          .hero {
-            background-image: linear-gradient(#f2f2f2, #e6e6e6);
-            color: #000000;
-            text-align: center;
-            padding: 100px 0;
-          }
       
           .hero h1 {
             font-size: 3rem;
@@ -86,6 +85,10 @@
           .github-icon img {
             width: 20px;
             height: 20px;
+          }
+
+          .github-icon img:hover {
+            text-decoration: underline;
           }
       
           .footer-content a:hover {
@@ -128,7 +131,7 @@
           padding: 20px;
           border: 1px solid #888;
           border-radius: 10px;
-          background-color: #ffffff;
+          background-color: #8d7e7e;
           transition: transform 0.3s;
         }
       
@@ -148,7 +151,8 @@
           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .updates-list {
-      background-color: #f2f2f2;
+      background-color: #e0e0e0;
+      color: rgb(0, 0, 0);
       padding: 20px;
       margin: 20px auto;
       max-width: 800px;
@@ -176,16 +180,23 @@
   <header>
     <nav>
       <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/#features">Features</a>
-      <a href="/contact">Contact</a>
+      <a href="{{ groups_link }}">{{ groups_name }}</a>
+      <a href="{{ profile_link }}">{{ profile_name }}</a>
     </nav>
   </header>
 
   <!-- Your content -->
   <div class="updates-list">
     <h3>New Updates:</h3>
-    <h4>Beta 2:</h4>
+    <h4>Beta 1.2:</h4>
+    <ul>
+      <li>Fixed Logout bug in some pages</li>
+      <li>Added some more features like completed tasks, but for every user combined will add it for seperate users later</li>
+      <li>Re styled nearly every page</li>
+      <li>Added search and group filtering so we can utilize groups for once</li>
+      <li>Made dark mode better and fixed darkmode glitch in the profile page</li>
+    </ul>
+    <h4>Beta 1.1:</h4>
     <ul>
       <li>Fixed signup bug with cookies.</li>
       <li>Restyled signup, login, and forgot password.</li>
@@ -200,7 +211,7 @@
         <i style="font-size: 20px;" class="fa fa-github"></i>
       </a>
       <a href="/terms-of-services">Terms of Service</a>
-      <a href="/privacy-policy"></a>
+      <a href="/privacy-policy">Privacy Policy</a>
       <a href="/about">About</a>
       <a href="/contact">Contact Us</a>
     </div>

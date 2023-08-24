@@ -50,10 +50,26 @@ def init_db():
         )
     ''')
 
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS stats (
+            id INTEGER PRIMARY KEY,
+            tasks_completed INTEGER
+        )                  
+    ''')
+
     conn.commit()
     conn.close()
 
 init_db()
+
+def stats_maker():
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    cursor.execute('INSERT OR IGNORE INTO stats (id, tasks_completed) VALUES(1, 0)')
+    conn.commit()
+    conn.close()
+
+stats_maker()
 
 def get_db():
     db = sqlite3.connect('database.db')
@@ -76,6 +92,7 @@ def find_task_by_id(task_id):
     except Exception as e:
         print(str(e))
         return None
+    
 
 @app.route('/privacy-policy')
 def privacy_policy():
@@ -89,9 +106,25 @@ def tos():
 def index():
     username = request.cookies.get('user')
     if username is not None:
-        return redirect(url_for('home'))
+        return redirect(url_for('home'))    
     else:
-        return render_template('index.html')
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        cursor.execute('SELECT tasks_completed FROM stats')
+        tasks_completed = cursor.fetchone()
+
+        tasks_completed = int(tasks_completed[0])
+
+        cursor.execute('SELECT * FROM users')
+        users_in_db = cursor.fetchall()
+
+        number_of_users = 0
+
+        for users in users_in_db:
+            number_of_users += 1
+
+        return render_template('index.html', tasks_completed=tasks_completed, number_of_users=number_of_users)
 
 @app.route('/about')
 def aboutus():
@@ -103,7 +136,24 @@ def aboutus():
     
 @app.route('/updates')
 def updates():
-    return render_template('updatelog.html')
+    username = request.cookies.get('user')
+    if username is not None:
+        groups_link = '/groups'
+        groups_name = 'Groups'
+        profile_link = '/profile'
+        profile_name = 'Profile'
+        logout_name = 'Logout'
+        logout_btn_link = 'logout()'
+        logout_link = ''
+    elif username is None:
+        groups_link = '/about'
+        groups_name = 'About'
+        profile_link = '/contact'
+        profile_name = 'Contact'
+        logout_name = 'Features'
+        logout_link = '/#features'
+        logout_btn_link = ''
+    return render_template('updatelog.html', groups_link=groups_link, groups_name=groups_name, profile_link=profile_link, profile_name=profile_name)
 
 @app.route('/<path:filename>')
 def serve_sitemap(filename):
@@ -253,6 +303,8 @@ def signup():
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
     username = request.cookies.get('user')
+    if '%20' in username:
+        username = username.replace('%20', ' ')
     if username is None:
         return redirect(url_for('index'))
 
@@ -265,8 +317,6 @@ def home():
     cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
     tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
     conn.close()
-    if '%20' in username:
-        username = username.replace('%20', ' ')
 
     return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks)
 
@@ -527,18 +577,23 @@ cursor = conn.cursor()
 @app.route('/delete-account', methods=['POST'])
 def delete_account():
     if request.method == 'POST':
-        username_to_verify = request.form['verify_delete']
+        password_to_verify = request.form['verify_password']  # Change to 'verify_password'
 
         # Establish a new database connection and cursor
         db = get_db()
         cursor = db.cursor()
 
-        cursor.execute("SELECT username FROM users WHERE username = ?", (username_to_verify,))
+        username = request.cookies.get('user')
+        if '%20' in username:
+            username = username.replace('%20', ' ')
+            
+
+        cursor.execute("SELECT password FROM users WHERE username = ?", (username,))
         result = cursor.fetchone()
 
-        if result:
-            cursor.execute("DELETE FROM users WHERE username = ?", (username_to_verify,))
-            cursor.execute("DELETE FROM tasks WHERE username = ?", (username_to_verify,))
+        if result and bcrypt.check_password_hash(result['password'], password_to_verify):  # Use bcrypt to check password
+            cursor.execute("DELETE FROM users WHERE username = ?", (username,))
+            cursor.execute("DELETE FROM tasks WHERE username = ?", (username,))
             db.commit()
 
             response = redirect('/')
@@ -550,7 +605,7 @@ def delete_account():
             return response
 
         else:
-            return "Invalid username. Please double-check and try again. Go <a href='/profile/'>Home</a>"
+            return "Invalid password. Please double-check and try again. Go <a href='/profile/'>Home</a>"
 
     return render_template('delete_account.html')
 
@@ -601,6 +656,7 @@ def delete_group(group_name):
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
+
     conn.commit()
     conn.close()
 
@@ -672,6 +728,13 @@ def delete_task(task_id):
         return jsonify({'success': False, 'error': 'Task not found'})
 
     cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+
+    cursor.execute('SELECT tasks_completed FROM stats')
+    tasks_completed = cursor.fetchone()
+    tasks_completed = int(tasks_completed[0])
+    tasks_completed += 1
+
+    cursor.execute('UPDATE stats SET tasks_completed = ?', (tasks_completed,))
     conn.commit()
     conn.close()
 
@@ -727,4 +790,4 @@ def get_tasks():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, threaded=True)
+    app.run(host='0.0.0.0', port=80, threaded=True, debug=True)
