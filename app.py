@@ -153,7 +153,7 @@ def updates():
         logout_name = 'Features'
         logout_link = '/#features'
         logout_btn_link = ''
-    return render_template('updatelog.html', groups_link=groups_link, groups_name=groups_name, profile_link=profile_link, profile_name=profile_name)
+    return render_template('updatelog.html', groups_link=groups_link, groups_name=groups_name, profile_link=profile_link, profile_name=profile_name, logout_name=logout_name, logout_link=logout_link, logout_btn_link=logout_btn_link)
 
 @app.route('/<path:filename>')
 def serve_sitemap(filename):

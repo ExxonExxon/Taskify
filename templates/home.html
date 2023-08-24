@@ -67,7 +67,7 @@ nav a:hover {
 
         .color-changer-nav {
             text-decoration: none;
-            color: #000000;
+            color: #ffffff;
             padding: 5px 15px;
             font-size: 14px;
             position: relative;
@@ -369,14 +369,17 @@ nav a:hover {
     padding: 5px;
     margin: 5px;
     font-size: 12px;
-    color: #ffffff;
+    color: #000000;
     transition: border-color 0.3s, color 0.3s; /* Added color transition */
 }
 
 #searchInput:focus {
     outline: none;
     border-color: #45a049; /* Darker green color on focus */
-    color: #ffffff; /* Ensure the text color remains visible on focus */
+}
+
+body.dark-mode #searchInput {
+    color: #ffff;
 }
 
 .search-button,
