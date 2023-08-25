@@ -309,13 +309,13 @@ def signup():
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
     username = request.cookies.get('user')
-    session['user'] = username
     if username is None:
         return redirect(url_for('index'))
     if '%20' in username:
         username = username.replace('%20', ' ')
     if '+' in username:
         username = username.replace('+', ' ')
+    session['user'] = username
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
