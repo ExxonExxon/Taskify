@@ -189,6 +189,19 @@
   <!-- Your content -->
   <div class="updates-list">
     <h3>New Updates:</h3>
+    <p style="font-style: italic;font-weight: bold;">Bolder updates are more cool and important</p>
+    <h4>Beta 1.3:</h4>
+    <ul>
+      <li>Fixed home page if not logged in</li>
+      <li style="font-weight: bolder;">Added time and notifications</li>
+      <li>Fixed not being able to see tasks sometimes when making an account</li>
+      <li>Fixed dark mode in the group page where you could not see the nav bar</li>
+      <li>Re styled the group page to make it look better</li>
+      <li>Fixed problem /updates where you could not log out well</li>
+      <li>Added a new statisitics in the profile page on how many tasks you have completed</li>
+      <li>Removed the footer in the updates page cus it was too buggy</li>
+      <li style="font-weight: bolder;">CHANGED FROM HTTP TO HTTPS FOR BETTER SECURITY</li>
+    </ul>
     <h4>Beta 1.2:</h4>
     <ul>
       <li>Fixed Logout bug in some pages</li>
@@ -206,21 +219,16 @@
       <li>Fixed "forgot password" prompt to ask for email.</li>
     </ul>
   </div>
-  <footer>
-    <div class="footer-content">
-      <a href="https://github.com/ExxonExxon/Taskify" class="github-icon" target="_blank">
-        <i style="font-size: 20px;" class="fa fa-github"></i>
-      </a>
-      <a href="/terms-of-services">Terms of Service</a>
-      <a href="/privacy-policy">Privacy Policy</a>
-      <a href="/about">About</a>
-      <a href="/contact">Contact Us</a>
-    </div>
-  </footer>
 
   <script>
     // Add Intersection Observer or any other scripting as needed
-
+    function logout() {
+        // Clear the "user" cookie by setting an empty value and an expired date
+        document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        
+        // Redirect the user to the logout page or any desired page
+        window.location.href = "/";
+    }
   </script>
 </body>
 

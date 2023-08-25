@@ -40,6 +40,7 @@ header {
   background-color: #1a1a1a;
   padding: 10px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left: 215px;
 }
 
 
@@ -83,15 +84,6 @@ nav a:hover {
             color: #ccc;
         }
 
-
-        body.dark-mode header {
-            background-color: #222;
-            color: #ccc;
-        }
-
-        body.dark-mode nav {
-            background-color: #222 !important;
-        }
 
         /* Improved styling for form elements */
         .input-field {
@@ -399,6 +391,31 @@ body.dark-mode #searchInput {
     background-color: #45a049; /* Darker green color on hover */
 }
 
+.datetime-input {
+        font-size: 12px;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+        box-sizing: border-box;
+        background-color: white;
+        color: #333;
+        transition: border-color 0.3s;
+    }
+
+    .datetime-input:focus {
+        outline: none;
+        border-color: #4CAF50; /* Green color on focus */
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Add a subtle box-shadow */
+    }
+
+    /* Dark mode styling for datetime input */
+    body.dark-mode .datetime-input {
+        background-color: #444;
+        color: white;
+        border-color: #555;
+    }
+
     </style>
 </head>
 <body class="{{ dark_mode_class }}">
@@ -415,7 +432,7 @@ body.dark-mode #searchInput {
     </header>
 
     <div class="sidebar">
-        <p class="version-style">Version <a style="color: white;" href="/updates">Beta 1.2</a></p>
+        <p class="version-style">Version <a style="color: white;" href="/updates">Beta 1.3</a></p>
         <p style="font-size: 10px;margin: none;padding-bottom: 0;">Want to file a bug or add/remove feature <a class="no-style" href="/contact">Contact Us</a></p>
         <ul>
             <li><h3 style="margin: none;">Your Groups:</h3></li>
@@ -440,23 +457,27 @@ body.dark-mode #searchInput {
 
         <form class="add-form" action="/add_task" method="POST">
             <input class="input-field" placeholder="Task Title" type="text" id="title" name="title" required>
-            <textarea class="input-field" placeholder="Description" id="title" name="description"></textarea>
+            <textarea class="input-field" placeholder="Description" id="description" name="description"></textarea>
             <div class="button-row">
-                <select style="font-size: 12px;" id="group" name="group" required>
-                    <option value="">Add Group Here</option>
+                <select class="input-field" id="group" name="group" required>
+                    <option value="">Select Group</option>
                     {% for group in custom_groups %}
                         <option value="{{ group }}">{{ group }}</option>
                     {% endfor %}
                 </select>
-                <select style="font-size: 12px;" id="importance" name="importance">
+                <select class="input-field" id="importance" name="importance">
                     <option value="">Priority</option>
                     <option value="low">Low</option>
                     <option value="medium">Medium</option>
                     <option value="high">High</option>
                 </select>
+                <input class="input-field datetime-input" type="datetime-local" id="datetime" name="due_date">
             </div>
-            <button style="font-size: 12px;" type="submit">Add Task</button>
+            <button class="submit-button" type="submit">Add Task</button>
         </form>
+        
+        
+        
 
 
         <h2 id="tasks">Your Tasks:</h2>
@@ -477,7 +498,7 @@ body.dark-mode #searchInput {
             <ul class="task-list">
                 {% for task in tasks %}
                     {% if task.title or task.description %}
-                        <li class="task-item" data-group="{{ task.group_name }}">
+                        <li class="task-item" data-group="{{ task.group_name }}" data-due-date="{{ task.due_date }}">
                             <strong>{{ task.title }}</strong>
                             {% if task.description %}
                                 <p>{{ task.description }}</p>
@@ -488,7 +509,7 @@ body.dark-mode #searchInput {
                         </li>
                     {% endif %}
                 {% endfor %}
-            </ul>
+            </ul>        
         {% endif %}
 
     </div>
@@ -505,6 +526,67 @@ body.dark-mode #searchInput {
     <script>
         let icoColor = "";
         let editingTaskId = null;
+        function showNotification(taskTitle, message) {
+    const options = {
+        body: message,
+        icon: 'path_to_your_notification_icon.png' // Replace with your icon URL
+    };
+
+    new Notification(taskTitle, options);
+}
+
+let approachingNotifications = {}; // To track approaching notifications
+let dueDateNotifications = {}; // To track due date notifications
+let overdueNotifications = {}; // To track overdue notifications
+
+function showNotification(taskTitle, message) {
+    const options = {
+        body: message,
+        icon: 'path_to_your_notification_icon.png' // Replace with your icon URL
+    };
+
+    new Notification(taskTitle, options);
+}
+
+function checkDueDates() {
+    const tasks = document.querySelectorAll('.task-item');
+    const now = new Date();
+
+    tasks.forEach(task => {
+        const taskId = task.dataset.taskId;
+        const dueDate = new Date(task.dataset.dueDate);
+
+        if (!approachingNotifications[taskId] && dueDate > now && dueDate - now <= 10 * 60 * 1000) {
+            const timeDiff = dueDate - now;
+            const minutesRemaining = Math.floor(timeDiff / (60 * 1000));
+
+            if (minutesRemaining <= 2) {
+                showNotification(task.querySelector('strong').textContent, 'Due date is approaching!');
+                approachingNotifications[taskId] = true; // Mark task as approaching
+            }
+        } else if (!dueDateNotifications[taskId] && dueDate <= now) {
+            showNotification(task.querySelector('strong').textContent, 'Due date has arrived.');
+            dueDateNotifications[taskId] = true; // Mark task as due date reached
+        } else if (!overdueNotifications[taskId] && dueDate < now && now - dueDate <= (1 * 24 * 60 * 60 * 1000)) {
+            const timeDiff = now - dueDate;
+            const days = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
+            const hours = Math.floor((timeDiff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+            const minutes = Math.floor((timeDiff % (60 * 60 * 1000)) / (60 * 1000));
+            
+            showNotification(task.querySelector('strong').textContent, `You have not completed the task in ${days} days, ${hours} hours, and ${minutes} minutes.`);
+            overdueNotifications[taskId] = true; // Mark task as overdue
+        }
+    });
+}
+
+// Request permission for notifications
+if ('Notification' in window) {
+    Notification.requestPermission();
+}
+
+// Check due dates periodically
+setInterval(checkDueDates, 10000); // Check every 10 seconds
+
 
         function searchTasks() {
     const searchInput = document.getElementById("searchInput").value.toLowerCase();
@@ -532,6 +614,41 @@ body.dark-mode #searchInput {
         taskResults.textContent = `${matchingTasks.length} tasks found by search.`;
     } else {
         taskResults.textContent = "No tasks with those keywords.";
+    }
+}
+
+function searchAndFilterTasks() {
+    const searchInput = document.getElementById("searchInput").value.toLowerCase();
+    const selectedGroup = document.getElementById("groupFilter").value;
+    const taskItems = document.querySelectorAll(".task-item");
+
+    const matchingTasks = Array.from(taskItems).filter(item => {
+        const taskTitle = item.querySelector("strong").textContent.toLowerCase();
+        const taskDescription = item.querySelector("p").textContent.toLowerCase();
+        const taskGroup = item.getAttribute("data-group");
+        
+        const matchesSearch = taskTitle.includes(searchInput) || taskDescription.includes(searchInput);
+        const matchesGroup = selectedGroup === "" || taskGroup === selectedGroup;
+        
+        return matchesSearch && matchesGroup;
+    });
+
+    // Hide all task items
+    taskItems.forEach(item => {
+        item.style.display = "none";
+    });
+
+    // Display matching tasks
+    matchingTasks.forEach(item => {
+        item.style.display = "block";
+    });
+
+    // Update the task results message
+    const taskResults = document.getElementById("taskResults");
+    if (matchingTasks.length > 0) {
+        taskResults.textContent = `${matchingTasks.length} tasks found by search and group.`;
+    } else {
+        taskResults.textContent = "No tasks with those keywords and in the selected group.";
     }
 }
 

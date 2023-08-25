@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response, send_from_directory
 from flask_session import Session
+from urllib.parse import unquote
 from flask_mail import Mail, Message
 import os, sqlite3, random, datetime, string
 from flask_bcrypt import Bcrypt
@@ -35,7 +36,8 @@ def init_db():
             username TEXT NOT NULL,
             password TEXT NOT NULL,
             email TEXT NOT NULL,
-            accountMade TEXT
+            accountMade TEXT,
+            completed_tasks NOT NULL
         )
     ''')
 
@@ -48,7 +50,8 @@ def init_db():
             description TEXT,
             group_name TEXT NOT NULL,
             importance INTEGER,
-            date_made TEXT NOT NULL
+            date_made TEXT NOT NULL,
+            due_date TEXT
         )
     ''')
 
@@ -251,6 +254,7 @@ def signup():
         username = request.form.get('username')
         password = request.form.get('password')
         email = request.form.get('email')
+        tasks_completed = 0
         
         # Validate username, password, and email (your existing validation code)
         
@@ -282,7 +286,7 @@ def signup():
         current_datetime = datetime.datetime.now()  # Get the current date and time
         current_date = current_datetime.date()      # Extract only the date part
         
-        cursor.execute("INSERT INTO users (username, password, email, accountMade) VALUES (?, ?, ?, ?)", (username, hashed_password, email, current_date))
+        cursor.execute("INSERT INTO users (username, password, email, accountMade, completed_tasks) VALUES (?, ?, ?, ?, ?)", (username, hashed_password, email, current_date, tasks_completed))
         conn.commit()
         conn.close()
         
@@ -305,10 +309,13 @@ def signup():
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
     username = request.cookies.get('user')
-    if '%20' in username:
-        username = username.replace('%20', ' ')
+    session['user'] = username
     if username is None:
         return redirect(url_for('index'))
+    if '%20' in username:
+        username = username.replace('%20', ' ')
+    if '+' in username:
+        username = username.replace('+', ' ')
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
@@ -316,11 +323,14 @@ def home():
     cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
     custom_groups = [row[0] for row in cursor.fetchall()]
 
-    cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
-    tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
+    cursor.execute("SELECT id, username, title, description, group_name, importance, due_date FROM tasks WHERE username = ?", (username,))
+    tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5], due_date=row[6]) for row in cursor.fetchall()]
     conn.close()
 
     return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks)
+
+    
+
 
 @app.route('/groups/', methods=['GET', 'POST'])
 def groups():
@@ -488,6 +498,10 @@ def profile():
         cursor.execute('SELECT accountMade FROM users WHERE username = ?', (username,))
         date_made = cursor.fetchone()
 
+        cursor.execute('SELECT completed_tasks FROM users WHERE username = ?', (username,))
+        users_completed_tasks = cursor.fetchone()
+        users_completed_tasks = int(users_completed_tasks[0])
+
         if date_made:
             date_string = date_made[0]  # Assuming the date is the first element in the tuple
             modified_string = date_string.replace("'", "")
@@ -496,7 +510,7 @@ def profile():
         number_of_groups = len(groups)
         number_of_tasks = len(tasks)  # Count the number of tasks
 
-        return render_template('profile.html', username=username, messagePass=messagePass, message=message, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string)
+        return render_template('profile.html', username=username, messagePass=messagePass, message=message, tasks=number_of_tasks, users_completed_tasks=users_completed_tasks, number_of_groups=number_of_groups, date_made=modified_string)
     else:
         message = None
         username = session.get('user')
@@ -512,6 +526,10 @@ def profile():
         cursor.execute('SELECT accountMade FROM users WHERE username = ?', (username,))
         date_made = cursor.fetchone()
 
+        cursor.execute('SELECT completed_tasks FROM users WHERE username = ?', (username,))
+        users_completed_tasks = cursor.fetchone()
+        users_completed_tasks = int(users_completed_tasks[0])
+
         if date_made:
             date_string = date_made[0]  # Assuming the date is the first element in the tuple
             modified_string = date_string.replace("'", "")
@@ -520,7 +538,7 @@ def profile():
         number_of_groups = len(groups)
         number_of_tasks = len(tasks)  # Count the number of tasks
 
-        return render_template('profile.html', username=username, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string)
+        return render_template('profile.html', username=username, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string, users_completed_tasks=users_completed_tasks)
 
 
 @app.route('/reset_password/verification', methods=['GET', 'POST'])
@@ -556,25 +574,24 @@ def add_task():
     description = request.form.get('description')
     group = request.form.get('group')
     importance = request.form.get('importance')
+    due_date = request.form.get('due_date')  # Get the due date from the form
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
     datetime_now = datetime.datetime.now()
-    date_made = datetime_now.date()
+    date_made = datetime_now.strftime('%Y-%m-%d')  # Format the date
 
-    cursor.execute("INSERT INTO tasks (username, title, description, group_name, importance, date_made) VALUES (?, ?, ?, ?, ?, ?)",
-                   (username, title, description, group, importance, date_made))
+    # Insert task data including the due_date
+    cursor.execute("INSERT INTO tasks (username, title, description, group_name, importance, date_made, due_date) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                   (username, title, description, group, importance, date_made, due_date))
+
     conn.commit()
     conn.close()
 
     return redirect(url_for('home'))
 
-# Establish a connection to your SQLite database
-conn = sqlite3.connect('database.db')
-cursor = conn.cursor()
 
-# Your database creation queries here (users and tasks tables)
 
 @app.route('/delete-account', methods=['POST'])
 def delete_account():
@@ -736,7 +753,13 @@ def delete_task(task_id):
     tasks_completed = int(tasks_completed[0])
     tasks_completed += 1
 
+    cursor.execute('SELECT completed_tasks FROM users WHERE username = ?', (username,))
+    user_tasks_completed = cursor.fetchone()
+    user_tasks_completed = int(user_tasks_completed[0])
+    user_tasks_completed += 1
+
     cursor.execute('UPDATE stats SET tasks_completed = ?', (tasks_completed,))
+    cursor.execute('UPDATE users SET completed_tasks = ? WHERE username = ?', (user_tasks_completed, username))
     conn.commit()
     conn.close()
 

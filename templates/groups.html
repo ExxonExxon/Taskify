@@ -7,188 +7,203 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Taskify - Groups</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
+/* Reset */
+body, h1, ul, p, button, input, form {
             margin: 0;
             padding: 0;
-
-            transition: background-color 0.5s, color 0.5s; /* Add this line for transition effect */
+            border: 0;
         }
-
+        
+        /* Global Styles */
+        body {
+            font-family: Arial, sans-serif;
+            transition: background-color 0.5s, color 0.5s;
+        }
+        
+        /* Light Mode */
         body.light-mode {
             background-color: #f7f7f7;
             color: #333;
         }
-
-        body.dark-mode h1 {
-            color: #eee;
-        }
-
+        
+        /* Dark Mode */
         body.dark-mode {
             background-color: #333;
             color: #fff;
         }
-
+        
+        body.dark-mode h1 {
+            color: #eee;
+        }
+        
         /* Header */
-header {
-  background-color: #1a1a1a;
-  padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+        header {
+            background-color: #1a1a1a;
+            padding: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-
+/* Navigation */
 nav {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  background-color: #1e1e1e;
-  border-radius: 10px;
-  overflow: hidden;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    overflow: hidden;
 }
 
 nav a {
-  text-decoration: none;
-  color: #ffffff;
-  padding: 5px 15px;
-  font-size: 14px;
-  position: relative;
+    text-decoration: none;
+    color: #ffffff;
+    padding: 8px 20px;
+    font-size: 14px;
+    position: relative;
+    transition: color 0.3s;
 }
 
 nav a:hover {
-  color: #007bff;
-  text-decoration: underline;
+    color: #007bff;
+    text-decoration: underline;
 }
 
-        .color-changer-nav {
+.color-changer-nav {
             text-decoration: none;
-            color: #000000;
-            padding: 5px 15px;
+            padding: 8px 20px;
             font-size: 14px;
             position: relative;
             border: none;
             background-color: transparent !important;
             cursor: pointer;
-        }
-
-        body.dark-mode .color-changer-nav {
             color: #ccc;
             background-color: transparent;
         }
 
-        body.dark-mode nav a {
-            color: #ccc;
-        }
+/* Form Elements */
+.input-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #333;
+    transition: border-color 0.3s;
+}
+
+.input-field:focus {
+    border-color: #007bff;
+}
+
+/* Typography */
+h1 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 24px;
+}
+
+/* Groups Section */
+.groups {
+    max-width: 600px;
+    margin: 0 auto;
+    color: white;
+    padding: 20px;
+    background-color: #333;
+    border-radius: 10px;
+    margin-top: 30px;
+}
+
+/* Lists */
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    padding: 8px 0;
+}
 
 
-        body.dark-mode header {
-            background-color: #222;
-            color: #ccc;
-        }
+/* Links */
+a {
+    text-decoration: none;
+    transition: color 0.3s;
+}
 
-        body.dark-mode nav {
-            background-color: #222 !important;
-        }
+body.dark-mode a {
+    color: #eee;
+}
 
-        /* Improved styling for form elements */
-        .input-field {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+/* Delete Button and Form */
+.delete-form {
+    display: inline;
+    margin-left: 10px;
+}
 
+.delete-button {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
 
-        h1 {
-            text-align: center;
-            margin-top: 20px;
-        }
+/* Add Group Form */
+.add-form {
+    margin-top: 20px;
+}
 
-        .groups {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-        }
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
 
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s;
+}
 
-        li {
-            margin-bottom: 2px;
-            margin-top: 2px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #222;
-            padding: 5px 0;
-        }
+input[type="text"]:focus {
+    border-color: #007bff;
+}
 
-        a {
-            text-decoration: none;
-        }
+.add_group_btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 20px;
+    cursor: pointer;
+    width: 100%;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    margin-top: 5px;
+}
 
-        body.dark-mode a {
-            color: #eee;
-        }
+.add_group_btn:hover {
+    background-color: #0056b3;
+}
 
-        body.light-mode a {
-            color: #222;
-        }
+@media (max-width: 768px) {
+    .add_group_btn {
+        font-size: 16px;
+    }
+}
 
-        .delete-form {
-            display: inline;
-            margin-left: 10px;
-        }
+/* Active Link Style */
+.active {
+    text-decoration: underline;
+}
 
-        .delete-button {
-            background-color: red;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
-        .add-form {
-            margin-top: 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 5px;
-        }
-
-        .add_group_btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            width: 102.3%;
-            
-        }
-
-        @media (max-width: 768px) {
-            .add_group_btn {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            width: 103.7%;
-            font-size: 16px;
-        }
-        }
-
-        .active {
-            text-decoration: underline;
-        }
     </style>
 </head>
 <body>
@@ -218,7 +233,7 @@ nav a:hover {
             {% endfor %}
             <form class="add-form" action="/add_group/groups" method="POST">
                 <label for="group_name">Custom Group Name:</label>
-                <input type="text" id="group_name" name="group_name" required>
+                <input style="background-color: #333;margin-bottom: 2px;width: 97%;color: #eee;" type="text" id="group_name" name="group_name" required>
                 <button class="add_group_btn" type="submit">Add Group</button>
             </form>
         </ul>

@@ -83,19 +83,6 @@ nav a:hover {
             background-color: transparent;
         }
 
-        body.dark-mode nav a {
-            color: #ccc;
-        }
-
-        body.dark-mode header {
-            background-color: #222;
-            color: #ccc;
-        }
-
-        body.dark-mode nav {
-            background-color: #222 !important;
-        }
-
         /* Form and Input Styles */
         .input-field {
             width: 100%;
@@ -527,6 +514,10 @@ nav a:hover {
                     <span class="stat-value">{{ tasks }}</span>
                 </div>
                 <div class="stat">
+                    <span class="stat-label">Completed Tasks</span>
+                    <span class="stat-value">{{ users_completed_tasks }}</span>
+                </div> 
+                <div class="stat">
                     <span class="stat-label">Account Made on:</span>
                     <span class="stat-value">{{ date_made }}</span>
                 </div>
@@ -539,9 +530,8 @@ nav a:hover {
             <input type="text" placeholder="New Username" name="username" id="newUsername">
             <button type="submit">Change Username</button>
         </form>
-        {% if message is defined %}
-            <p style="color: red;">{{ message }}</p>
-        {% endif %}
+        <p style="color: red;">{{ message }}</p>
+
 
         <h1>Change Password</h1>
         <form class="add-form" action="/profile/" method="post">
@@ -549,9 +539,7 @@ nav a:hover {
             <input name="newPassword" type="text" placeholder="New Password" id="title">
             <button type="submit">Change Password</button>
         </form>
-        {% if messagePass is defined %}
-            <p style="color: red;">{{ messagePass }}</p>
-        {% endif %}
+        <p style="color: red;">{{ messagePass }}</p>
         <a href="/reset_password">Forgot Password?</a>  
 
         <div class="danger-zone">
