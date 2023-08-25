@@ -537,7 +537,6 @@ body.dark-mode #searchInput {
 
 let approachingNotifications = {}; // To track approaching notifications
 let dueDateNotifications = {}; // To track due date notifications
-let overdueNotifications = {}; // To track overdue notifications
 
 function showNotification(taskTitle, message) {
     const options = {
@@ -567,14 +566,6 @@ function checkDueDates() {
         } else if (!dueDateNotifications[taskId] && dueDate <= now) {
             showNotification(task.querySelector('strong').textContent, 'Due date has arrived.');
             dueDateNotifications[taskId] = true; // Mark task as due date reached
-        } else if (!overdueNotifications[taskId] && dueDate < now && now - dueDate <= (1 * 24 * 60 * 60 * 1000)) {
-            const timeDiff = now - dueDate;
-            const days = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
-            const hours = Math.floor((timeDiff % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
-            const minutes = Math.floor((timeDiff % (60 * 60 * 1000)) / (60 * 1000));
-            
-            showNotification(task.querySelector('strong').textContent, `You have not completed the task in ${days} days, ${hours} hours, and ${minutes} minutes.`);
-            overdueNotifications[taskId] = true; // Mark task as overdue
         }
     });
 }
@@ -586,6 +577,7 @@ if ('Notification' in window) {
 
 // Check due dates periodically
 setInterval(checkDueDates, 10000); // Check every 10 seconds
+
 
 
         function searchTasks() {
