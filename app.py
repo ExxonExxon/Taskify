@@ -7,6 +7,8 @@ from flask_bcrypt import Bcrypt
 current_time = datetime.datetime.now()
 current_hour = current_time.hour
 trys = 0
+cert_path = '/etc/letsencrypt/live/taskify.ddns.net/fullchain.pem'
+key_path = '/etc/letsencrypt/live/taskify.ddns.net/privkey.pem'
 
 app = Flask(__name__)
 app.secret_key = 'hi'
@@ -790,4 +792,4 @@ def get_tasks():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=80, threaded=True, debug=True)
+    app.run(host='0.0.0.0', port=443, ssl_context=(cert_path, key_path))
