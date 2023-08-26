@@ -212,7 +212,7 @@ input[type="text"]:focus {
             <a href="/home/">Home</a>
             <a class="active" href="/groups/">Groups</a>
             <a href="/profile/">Profile</a>
-            <a href="/logout">Logout</a>
+            <a href="/" onclick="logout()">Logout</a>
             <button class="color-changer-nav" onclick="toggleDarkLightMode()">
                 <i id="dark-mode-icon" class="{{ icoColor }}"></i>
             </button>
@@ -295,6 +295,14 @@ input[type="text"]:focus {
     }
 
     iconElement.className = icoColor;
+
+    function logout() {
+        // Clear the "user" cookie by setting an empty value and an expired date
+        document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+        
+        // Redirect the user to the logout page or any desired page
+        window.location.href = "/";
+    }
 
     function logout() {
         // Clear the "user" cookie by setting an empty value and an expired date

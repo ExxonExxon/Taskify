@@ -149,7 +149,7 @@ def updates():
         profile_name = 'Profile'
         logout_name = 'Logout'
         logout_btn_link = 'logout()'
-        logout_link = ''
+        logout_link = '/'
     elif username is None:
         groups_link = '/about'
         groups_name = 'About'
@@ -315,6 +315,7 @@ def home():
         username = username.replace('%20', ' ')
     if '+' in username:
         username = username.replace('+', ' ')
+
     session['user'] = username
 
     conn = sqlite3.connect(DATABASE)
@@ -324,10 +325,23 @@ def home():
     custom_groups = [row[0] for row in cursor.fetchall()]
 
     cursor.execute("SELECT id, username, title, description, group_name, importance, due_date FROM tasks WHERE username = ?", (username,))
-    tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5], due_date=row[6]) for row in cursor.fetchall()]
+    tasks = []
+    for row in cursor.fetchall():
+        task = {
+            'id': row[0],
+            'username': row[1],
+            'title': row[2],
+            'description': row[3],
+            'group_name': row[4],
+            'importance': row[5],
+            'due_date': row[6]
+        }
+        tasks.append(task)
+
     conn.close()
 
     return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks)
+
 
     
 
@@ -435,8 +449,9 @@ def pricing_pro():
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
     message = ''
+    modified_string = ''
     if request.method == 'POST':
-        username = request.cookies.get('user')
+        username = session.get('user')
         existingUsername = request.form.get('existingUsername')
         newUsername = request.form.get('username')
         existingPassword = request.form.get('existingPassword')
@@ -500,7 +515,11 @@ def profile():
 
         cursor.execute('SELECT completed_tasks FROM users WHERE username = ?', (username,))
         users_completed_tasks = cursor.fetchone()
-        users_completed_tasks = int(users_completed_tasks[0])
+        if users_completed_tasks is not None:
+            users_completed_tasks = int(users_completed_tasks[0])
+        else:
+            users_completed_tasks = 0  # Set a default value or handle it based on your use case
+
 
         if date_made:
             date_string = date_made[0]  # Assuming the date is the first element in the tuple
@@ -528,7 +547,10 @@ def profile():
 
         cursor.execute('SELECT completed_tasks FROM users WHERE username = ?', (username,))
         users_completed_tasks = cursor.fetchone()
-        users_completed_tasks = int(users_completed_tasks[0])
+        if users_completed_tasks is not None:
+            users_completed_tasks = int(users_completed_tasks[0])
+        else:
+            users_completed_tasks = 0  # Set a default value or handle it based on your use case
 
         if date_made:
             date_string = date_made[0]  # Assuming the date is the first element in the tuple

@@ -184,10 +184,43 @@ nav a:hover {
         .task-item {
             background-color: #fff;
             border: 1px solid #ccc;
-            border-radius: 5px;
-            padding: 10px;
-            margin-bottom: 10px;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, box-shadow 0.3s;
         }
+
+        .task-item:hover {
+            background-color: #f5f5f5;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .task-item strong {
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .task-item p {
+            font-size: 14px;
+            margin-top: 8px;
+        }
+
+
+        .task-item button {
+            padding: 8px 12px;
+            background-color: #e74c3c; /* Red color */
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .task-item button:hover {
+            background-color: #c0392b; /* Darker red color on hover */
+        }
+
+
 
         body.dark-mode .task-item {
             background-color: #222;
@@ -416,6 +449,113 @@ body.dark-mode #searchInput {
         border-color: #555;
     }
 
+    .task-item p.due-date {
+        color: #e74c3c; /* Red color */
+        font-size: 14px;
+        margin-top: 8px;
+    }
+
+    .tutorial-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    color: black;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    display: none;
+
+}
+
+.tutorial-content ol {
+    list-style: none;
+    padding-left: 0; /* Optional: To remove default left padding */
+}
+
+/* Style for the tutorial popup */
+.tutorial-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style for the tutorial popup */
+.tutorial-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style for the tutorial popup */
+.tutorial-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Style for the tutorial content box */
+.tutorial-content {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    max-width: 400px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+/* Style for the tutorial title */
+.tutorial-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* Style for the tutorial text */
+.tutorial-text {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 20px;
+}
+
+/* Style for the close button */
+.close-button {
+    background-color: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 15px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.close-button:hover {
+    background-color: #d32f2f;
+}
+
+
     </style>
 </head>
 <body class="{{ dark_mode_class }}">
@@ -432,7 +572,7 @@ body.dark-mode #searchInput {
     </header>
 
     <div class="sidebar">
-        <p class="version-style">Version <a style="color: white;" href="/updates">Beta 1.3</a></p>
+        <p class="version-style">Version <a style="color: white;" href="/updates">Beta 1.4</a></p>
         <p style="font-size: 10px;margin: none;padding-bottom: 0;">Want to file a bug or add/remove feature <a class="no-style" href="/contact">Contact Us</a></p>
         <ul>
             <li><h3 style="margin: none;">Your Groups:</h3></li>
@@ -480,7 +620,6 @@ body.dark-mode #searchInput {
         
 
 
-        <h2 id="tasks">Your Tasks:</h2>
         <div class="search-container">
             <input type="text" id="searchInput" placeholder="Search tasks...">
             <button class="search-button" onclick="searchTasks()">Search</button>
@@ -505,22 +644,44 @@ body.dark-mode #searchInput {
                             {% endif %}
                             <p>Group: {{ task.group_name }}</p>
                             <p>Importance: {{ task.importance }}</p>
-                            <button onclick="deleteTask({{ task.id }})">Delete</button>
+                            {% if task.due_date %}
+                                <p class="due-date">Due in: <span id="time-remaining" data-due-date="{{ task.due_date }}"></span></p>
+                            {% else %}
+                                <p class="due-date">No Due Date assigned</p>
+                            {% endif %}
+                            <button onclick="deleteTask({{ task.id }})">Complete</button>
                         </li>
                     {% endif %}
                 {% endfor %}
-            </ul>        
+            </ul>
         {% endif %}
+        </div>
+
 
     </div>
 
-    <div id="editFormContainer" style="display: none;">
-        <form id="editForm" onsubmit="saveEditedTask(); return false;">
-            <input type="text" id="editTitle" placeholder="Task Title" required>
-            <textarea id="editDescription" placeholder="Description" required></textarea>
-            <button type="submit">Save</button>
-        </form>
+    <div id="tutorial-popup" class="tutorial-popup">
+        <div class="tutorial-content">
+            <h2>Welcome to Taskify!</h2>
+            <p>This is your first time here. Let's get started:</p>
+            <ul>
+                <li><strong>Create a new task:</strong> Click the "+" button in the sidebar to add a new task.</li>
+                <br>
+                <li><strong>Set task details:</strong> Provide a title, due date, group, and importance. Description is optional.</li>
+                <br>
+                <li><strong>Get notifications:</strong> Receive notifications for tasks with approaching due dates when actively using the website on the home page.</li>
+                <br>
+                <li><strong>Search for tasks:</strong> Use the search feature to find tasks or filter them by group.</li>
+                <br>
+                <li><strong>Complete tasks:</strong> Mark tasks as completed by clicking the "Complete" button.</li>
+                <br>
+                <li><strong>Dark Mode/Light Mode:</strong> Change from dark mode and light mode in the navigation panel.</li>
+            </ul>
+            <button id="close-tutorial">Got it</button>
+        </div>
     </div>
+    
+    
     
 
     <script>
@@ -537,6 +698,7 @@ body.dark-mode #searchInput {
 
 let approachingNotifications = {}; // To track approaching notifications
 let dueDateNotifications = {}; // To track due date notifications
+let overdueNotifications = {}; // To track overdue notifications
 
 function showNotification(taskTitle, message) {
     const options = {
@@ -547,6 +709,113 @@ function showNotification(taskTitle, message) {
     new Notification(taskTitle, options);
 }
 
+function time_remaining(due_date) {
+    const now = new Date();
+    const due = new Date(due_date);
+    const diff = due - now;
+
+    const seconds = Math.floor(diff / 1000);
+    const minutes = Math.floor(seconds / 60);
+    const hours = Math.floor(minutes / 60);
+    const days = Math.floor(hours / 24);
+    const months = Math.floor(days / 30);
+    const years = Math.floor(months / 12);
+
+    if (diff <= 0) {
+        const overdueTime = Math.abs(diff);
+        const overdueDays = Math.floor(overdueTime / (24 * 60 * 60 * 1000));
+        const overdueHours = Math.floor((overdueTime % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+        const overdueMinutes = Math.floor((overdueTime % (60 * 60 * 1000)) / (60 * 1000));
+        const overdueSeconds = Math.floor((overdueTime % (60 * 1000)) / 1000);
+
+        return `Overdue by ${overdueDays} days, ${overdueHours} hours, ${overdueMinutes} minutes, and ${overdueSeconds} seconds`;
+    } else if (years >= 2) {
+        const easterEggValue = 102; // Frozen runtime in minutes
+        const watchCount = Math.floor(diff / (easterEggValue * 60 * 1000));
+        return `In the amount of time you need to wait you could watch Frozen ${watchCount} times`;
+    } else if (years > 0) {
+        return years + ' years';
+    } else if (months > 0) {
+        return months + ' months';
+    } else if (days > 0) {
+        return days + ' days';
+    } else if (hours > 0) {
+        return hours + ' hours';
+    } else if (minutes > 0) {
+        return minutes + ' minutes';
+    } else {
+        return seconds + ' seconds';
+    }
+}
+        function updateTimeRemaining() {
+            const dueDateElements = document.querySelectorAll('#time-remaining');
+            dueDateElements.forEach(dueDateElement => {
+                const dueDate = dueDateElement.getAttribute('data-due-date');
+                const timeRemaining = time_remaining(dueDate);
+
+                dueDateElement.textContent = timeRemaining;
+            });
+        }
+
+        // Update time remaining dynamically every minute
+        setInterval(updateTimeRemaining, 1000);
+        updateTimeRemaining();
+
+        document.addEventListener('DOMContentLoaded', () => {
+    const tutorialPopup = document.getElementById('tutorial-popup');
+    const closeTutorialButton = document.getElementById('close-tutorial');
+
+    function centerTutorialPopup() {
+        const popupWidth = tutorialPopup.offsetWidth;
+        const popupHeight = tutorialPopup.offsetHeight;
+
+        const centerX = (window.innerWidth - popupWidth) / 2;
+        const centerY = (window.innerHeight - popupHeight) / 2;
+
+        tutorialPopup.style.left = centerX + 'px';
+        tutorialPopup.style.top = centerY + 'px';
+    }
+
+    function hideTutorialPopup() {
+        tutorialPopup.style.display = 'none';
+    }
+
+    centerTutorialPopup();
+    window.addEventListener('resize', centerTutorialPopup);
+
+    closeTutorialButton.addEventListener('click', () => {
+        hideTutorialPopup();
+        // Set a cookie to indicate that the tutorial has been seen
+        document.cookie = 'tutorialSeen=true; expires=Fri, 31 Dec 9999 23:59:59 GMT';
+    });
+
+    // Check if the tutorial has been seen in the past
+    if (document.cookie.includes('tutorialSeen=true')) {
+        hideTutorialPopup();
+    } else {
+        tutorialPopup.style.visibility = 'visible'; // Make the popup visible
+    }
+});
+
+
+
+
+// Function to set a cookie
+function setCookie(name, value, days) {
+    const expires = new Date();
+    expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+}
+
+// Function to get a cookie by name
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+
+
+
 function checkDueDates() {
     const tasks = document.querySelectorAll('.task-item');
     const now = new Date();
@@ -555,17 +824,31 @@ function checkDueDates() {
         const taskId = task.dataset.taskId;
         const dueDate = new Date(task.dataset.dueDate);
 
-        if (!approachingNotifications[taskId] && dueDate > now && dueDate - now <= 10 * 60 * 1000) {
-            const timeDiff = dueDate - now;
-            const minutesRemaining = Math.floor(timeDiff / (60 * 1000));
+        const timeDiff = dueDate - now;
+        const minutesRemaining = Math.floor(timeDiff / (60 * 1000));
+        const hoursRemaining = Math.floor(timeDiff / (60 * 60 * 1000));
+        const daysRemaining = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
 
-            if (minutesRemaining <= 2) {
-                showNotification(task.querySelector('strong').textContent, 'Due date is approaching!');
-                approachingNotifications[taskId] = true; // Mark task as approaching
-            }
-        } else if (!dueDateNotifications[taskId] && dueDate <= now) {
+        if (minutesRemaining > 0 && minutesRemaining <= 10 && !approachingNotifications[taskId]) {
+            // ... (rest of the code for approaching notifications)
+        } else if (dueDate <= now && timeDiff <= (10 * 60 * 1000) && !dueDateNotifications[taskId]) {
             showNotification(task.querySelector('strong').textContent, 'Due date has arrived.');
             dueDateNotifications[taskId] = true; // Mark task as due date reached
+        } else if (dueDate <= now && timeDiff <= (1 * 60 * 60 * 1000) && !overdueNotifications[taskId]) {
+            showNotification(task.querySelector('strong').textContent, 'Task overdue.');
+            overdueNotifications[taskId] = true; // Mark task as overdue
+        } else if (dueDate <= now && timeDiff <= (1 * 24 * 60 * 60 * 1000) && !overdueNotifications[taskId]) {
+            showNotification(task.querySelector('strong').textContent, 'Task overdue.');
+            overdueNotifications[taskId] = true; // Mark task as overdue
+        } else if (dueDate <= now && timeDiff > (1 * 24 * 60 * 60 * 1000)) {
+            const daysOverdue = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
+            if (daysOverdue >= 2 && !overdueNotifications[taskId]) {
+                showNotification(task.querySelector('strong').textContent, `Over 2 years overdue finish it bro.`);
+                overdueNotifications[taskId] = true; // Mark task as overdue
+            } else if (!overdueNotifications[taskId]) {
+                showNotification(task.querySelector('strong').textContent, 'Task overdue.');
+                overdueNotifications[taskId] = true; // Mark task as overdue
+            }
         }
     });
 }
@@ -576,7 +859,10 @@ if ('Notification' in window) {
 }
 
 // Check due dates periodically
-setInterval(checkDueDates, 10000); // Check every 10 seconds
+setInterval(checkDueDates, 1000); // Check every second
+
+
+
 
 
 
@@ -831,10 +1117,10 @@ function filterByGroup() {
     // Display the time in the <p> tag
     const timeDisplay = document.getElementById("currentTime");
     if (hours >= 12) {
-        timeDisplay.textContent = `Good evening, {{ username }}`;
+        timeDisplay.textContent = `Good evening, {{ username }}!`;
     }
     else if (hours < 12) {
-        timeDisplay.textContent = `Good morning, {{ username }}`;
+        timeDisplay.textContent = `Good morning, {{ username }}!`;
     }
     
     </script>
