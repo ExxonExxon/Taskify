@@ -555,6 +555,18 @@ body.dark-mode #searchInput {
     background-color: #d32f2f;
 }
 
+.profile-picture-container {
+        margin-bottom: 20px;
+    }
+
+    .profile-picture {
+        border-radius: 50%;
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
 
     </style>
 </head>
@@ -572,7 +584,10 @@ body.dark-mode #searchInput {
     </header>
 
     <div class="sidebar">
-        <p class="version-style">Version <a style="color: white;" href="/updates">Beta 1.4</a></p>
+        <div class="profile-picture-container">
+            <img src="/static/pfp/{{ pfp }}" alt="Profile Picture" class="profile-picture">
+        </div>
+        <p class="version-style">Version <a style="color: white;" href="/updates">Beta 1.5</a></p>
         <p style="font-size: 10px;margin: none;padding-bottom: 0;">Want to file a bug or add/remove feature <a class="no-style" href="/contact">Contact Us</a></p>
         <ul>
             <li><h3 style="margin: none;">Your Groups:</h3></li>

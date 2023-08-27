@@ -37,7 +37,8 @@ def init_db():
             password TEXT NOT NULL,
             email TEXT NOT NULL,
             accountMade TEXT,
-            completed_tasks NOT NULL
+            completed_tasks NOT NULL,
+            pfp TEXT NOT NULL
         )
     ''')
 
@@ -249,7 +250,7 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     error_message = ""  # Initialize the error_message variable with an empty string
-
+    pfp = 'new_user.png'
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
@@ -286,7 +287,7 @@ def signup():
         current_datetime = datetime.datetime.now()  # Get the current date and time
         current_date = current_datetime.date()      # Extract only the date part
         
-        cursor.execute("INSERT INTO users (username, password, email, accountMade, completed_tasks) VALUES (?, ?, ?, ?, ?)", (username, hashed_password, email, current_date, tasks_completed))
+        cursor.execute("INSERT INTO users (username, password, email, accountMade, completed_tasks, pfp) VALUES (?, ?, ?, ?, ?, ?)", (username, hashed_password, email, current_date, tasks_completed, pfp))
         conn.commit()
         conn.close()
         
@@ -321,6 +322,10 @@ def home():
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
+    cursor.execute('SELECT pfp FROM users WHERE username = ?', (username,))
+    pfp = cursor.fetchone()
+    pfp = str(pfp[0])
+
     cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
     custom_groups = [row[0] for row in cursor.fetchall()]
 
@@ -340,7 +345,7 @@ def home():
 
     conn.close()
 
-    return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks)
+    return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks, pfp=pfp)
 
 
     
@@ -446,6 +451,33 @@ def check_code():
 def pricing_pro():
     return render_template('pricing_pro.html')
 
+@app.route('/upload_profile_picture', methods=['POST'])
+def upload_profile_picture():
+    try:
+        new_username = session.get('user')
+        uploaded_file = request.files['profile_picture']
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+        
+        if uploaded_file:
+            # Ensure the 'pfp' directory exists
+            pfp_dir = os.path.join(app.static_folder, 'pfp')
+            os.makedirs(pfp_dir, exist_ok=True)
+            
+            # Save the uploaded file with the username as the filename
+            profile_picture_path = os.path.join(pfp_dir, f'{new_username}.jpg')
+            uploaded_file.save(profile_picture_path)
+
+            cursor.execute('UPDATE users SET pfp = ? WHERE username = ?', (f'{new_username}.jpg', new_username))
+            conn.commit()
+
+            return redirect(url_for('profile'))
+        else:
+            return redirect(url_for('profile'))
+    except Exception as e:
+        error_message = str(e) if str(e) else "An error occurred"
+        return redirect(url_for('profile'))
+
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
     message = ''
@@ -459,26 +491,35 @@ def profile():
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
 
+        cursor.execute('SELECT pfp FROM users WHERE username = ?', (username,))
+        pfp = cursor.fetchone()
+        pfp = str(pfp[0])
+
         cursor.execute('SELECT username FROM tasks WHERE username = ?', (username,))
         tasks = cursor.fetchone()
 
-        if existingUsername:
-            if existingUsername == username:
-                if newUsername:
+        if existingUsername == username:
+            if newUsername:
+                cursor.execute('SELECT username FROM users WHERE username = ?', (newUsername,))
+                existing_user = cursor.fetchone()
+                print(existing_user)
+                if existing_user:
+                    message = 'Username already used'
+                else:
                     cursor.execute('UPDATE users SET username = ? WHERE username = ?', (newUsername, existingUsername))
                     cursor.execute('UPDATE tasks SET username = ? WHERE username = ?', (newUsername, existingUsername))
                     conn.commit()
 
-                    # Update the session and cookie with the new username
                     session['user'] = newUsername
                     response = make_response(redirect(url_for('profile')))
                     response.set_cookie('user', newUsername)
-
+                    message = f'Username has been changed to {newUsername}'
                     return response
-                else:
-                    message = 'Please enter your new username!'
             else:
-                message = 'That is not your current username!'
+                message = 'Please enter your new username!'
+        else:
+            message = 'That is not your current username!'
+
 
 
         if existingPassword and newPassword:
@@ -529,12 +570,16 @@ def profile():
         number_of_groups = len(groups)
         number_of_tasks = len(tasks)  # Count the number of tasks
 
-        return render_template('profile.html', username=username, messagePass=messagePass, message=message, tasks=number_of_tasks, users_completed_tasks=users_completed_tasks, number_of_groups=number_of_groups, date_made=modified_string)
+        return render_template('profile.html', username=username, pfp=pfp, messagePass=messagePass, message=message, tasks=number_of_tasks, users_completed_tasks=users_completed_tasks, number_of_groups=number_of_groups, date_made=modified_string)
     else:
         message = None
         username = session.get('user')
         conn = sqlite3.connect(DATABASE)
         cursor = conn.cursor()
+
+        cursor.execute('SELECT pfp FROM users WHERE username = ?', (username,))
+        pfp = cursor.fetchone()
+        pfp = str(pfp[0])
 
         cursor.execute('SELECT username FROM tasks WHERE username = ?', (username,))
         tasks = cursor.fetchall()
@@ -560,7 +605,7 @@ def profile():
         number_of_groups = len(groups)
         number_of_tasks = len(tasks)  # Count the number of tasks
 
-        return render_template('profile.html', username=username, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string, users_completed_tasks=users_completed_tasks)
+        return render_template('profile.html', username=username, pfp=pfp, tasks=number_of_tasks, number_of_groups=number_of_groups, date_made=modified_string, users_completed_tasks=users_completed_tasks)
 
 
 @app.route('/reset_password/verification', methods=['GET', 'POST'])
@@ -837,4 +882,4 @@ def get_tasks():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=443, ssl_context=(cert_path, key_path))
+    app.run(host='0.0.0.0', port=80, debug=True)

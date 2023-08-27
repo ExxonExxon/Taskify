@@ -491,6 +491,18 @@ nav a:hover {
             align-items: center;
         }
 
+        .profile-picture-container {
+        margin-bottom: 20px;
+    }
+
+    .profile-picture {
+        border-radius: 50%;
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
     </style>
 </head>
 <body class="{{ dark_mode_class }}">
@@ -507,6 +519,9 @@ nav a:hover {
     </header>
     <div class="content">
         <h1>Welcome, {{ username }}</h1>
+        <div class="profile-picture-container">
+            <img src="/static/pfp/{{ pfp }}" alt="Profile Picture" class="profile-picture">
+        </div>
         <div class="stats-section">
             <div class="stats-container">
                 <div class="stat">
@@ -523,6 +538,11 @@ nav a:hover {
                 </div>
             </div>
         </div>
+        <h1>Upload Profile Picture</h1>
+        <form id="upload-form" enctype="multipart/form-data" action="/upload_profile_picture" method="post">
+            <input type="file" name="profile_picture" id="profile-picture-input">
+            <button type="submit">Upload</button>
+        </form>
         <!-- Change Username Form -->
         <h1>Change Username</h1>
         <form class="add-form" action="/profile/" method="post" onsubmit="setCookie()">
@@ -556,6 +576,27 @@ nav a:hover {
 
     <script>
         let icoColor = "";
+        function uploadProfilePicture() {
+            const fileInput = document.getElementById('profile-picture-input');
+            const profilePicture = document.getElementById('profile-picture');
+
+            const file = fileInput.files[0];
+            const formData = new FormData();
+            formData.append('profile_picture', file);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Set the src attribute of the profile picture element
+                    profilePicture.src = '/static/pfps/' + data.username + '.jpg';
+                }
+            });
+        }
+
         function toggleDarkLightMode() {
             const body = document.body;
             const iconElement = document.getElementById("dark-mode-icon");
