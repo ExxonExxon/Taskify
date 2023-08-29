@@ -587,7 +587,7 @@ body.dark-mode #searchInput {
         <div class="profile-picture-container">
             <img src="/static/pfp/{{ pfp }}" alt="Profile Picture" class="profile-picture">
         </div>
-        <p class="version-style">Version <a style="color: white;" href="/updates">Beta 1.5</a></p>
+        <p class="version-style">Version <a style="color: white;" href="/updates">Beta 1.6</a></p>
         <p style="font-size: 10px;margin: none;padding-bottom: 0;">Want to file a bug or add/remove feature <a class="no-style" href="/contact">Contact Us</a></p>
         <ul>
             <li><h3 style="margin: none;">Your Groups:</h3></li>
@@ -655,7 +655,7 @@ body.dark-mode #searchInput {
                         <li class="task-item" data-group="{{ task.group_name }}" data-due-date="{{ task.due_date }}">
                             <strong>{{ task.title }}</strong>
                             {% if task.description %}
-                                <p>{{ task.description }}</p>
+                                <p>{{ task.description | safe }}</p>  <!-- Use the 'safe' filter here -->
                             {% endif %}
                             <p>Group: {{ task.group_name }}</p>
                             <p>Importance: {{ task.importance }}</p>

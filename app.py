@@ -4,6 +4,8 @@ from urllib.parse import unquote
 from flask_mail import Mail, Message
 import os, sqlite3, random, datetime, string
 from flask_bcrypt import Bcrypt
+import re  # Import the regular expression module
+
 
 current_time = datetime.datetime.now()
 current_hour = current_time.hour
@@ -25,6 +27,11 @@ mail = Mail(app)
 
 # Database setup using SQLite
 DATABASE = 'database.db'
+
+def make_links_clickable(text):
+    if text is None:  # Check if text is None
+        return ""      # Return an empty string if it is
+    return re.sub(r'(https?://\S+)', r'<a href="\1">\1</a>', text)
 
 def init_db():
     conn = sqlite3.connect(DATABASE)
@@ -309,34 +316,38 @@ def signup():
 
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
-    username = request.cookies.get('user')
-    if username is None:
+    user = request.cookies.get('user')
+    if user is None:
         return redirect(url_for('index'))
-    if '%20' in username:
-        username = username.replace('%20', ' ')
-    if '+' in username:
-        username = username.replace('+', ' ')
+    if '%20' in user:
+        user = user.replace('%20', ' ')
+    if '+' in user:
+        user = user.replace('+', ' ')
 
-    session['user'] = username
+    session['user'] = user
 
     conn = sqlite3.connect(DATABASE)
     cursor = conn.cursor()
 
-    cursor.execute('SELECT pfp FROM users WHERE username = ?', (username,))
+    cursor.execute('SELECT pfp FROM users WHERE username     = ?', (user,))
     pfp = cursor.fetchone()
-    pfp = str(pfp[0])
 
-    cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
+    if pfp is not None:
+        pfp = str(pfp[0])
+    else:
+        pfp = "default_profile_picture.jpg"  # Set a default profile picture filename
+
+    cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (user,))
     custom_groups = [row[0] for row in cursor.fetchall()]
 
-    cursor.execute("SELECT id, username, title, description, group_name, importance, due_date FROM tasks WHERE username = ?", (username,))
+    cursor.execute("SELECT id, username, title, description, group_name, importance, due_date FROM tasks WHERE username = ?", (user,))
     tasks = []
     for row in cursor.fetchall():
         task = {
             'id': row[0],
             'username': row[1],
             'title': row[2],
-            'description': row[3],
+            'description': make_links_clickable(row[3]),  # Apply the function to the description
             'group_name': row[4],
             'importance': row[5],
             'due_date': row[6]
@@ -345,10 +356,7 @@ def home():
 
     conn.close()
 
-    return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks, pfp=pfp)
-
-
-    
+    return render_template('home.html', username=user, custom_groups=custom_groups, tasks=tasks, pfp=pfp)
 
 
 @app.route('/groups/', methods=['GET', 'POST'])
@@ -705,30 +713,33 @@ def add_group():
         return redirect(url_for('index'))
 
     group_name = request.form.get('group_name')
-    if not group_name or not group_name.strip():
-        error_message = "Group name cannot be empty."
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
+    if '/' not in group_name: 
+        if not group_name or not group_name.strip():
+            error_message = "Group name cannot be empty."
+            conn = sqlite3.connect(DATABASE)
+            cursor = conn.cursor()
 
-        cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
-        custom_groups = [row[0] for row in cursor.fetchall()]
+            cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
+            custom_groups = [row[0] for row in cursor.fetchall()]
 
-        cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
-        tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
+            cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
+            tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
 
-        conn.close()
+            conn.close()
 
-    cursor.execute("SELECT group_name FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
-    existing_group = cursor.fetchone()
-    if existing_group:
-        conn.close()
+        cursor.execute("SELECT group_name FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
+        existing_group = cursor.fetchone()
+        if existing_group:
+            conn.close()
+        else:
+            # Assuming date_made is the name of the date field in your tasks table
+            date_made = datetime.date.today()  # You may need to import datetime
+
+            cursor.execute("INSERT INTO tasks (username, group_name, date_made) VALUES (?, ?, ?)", (username, group_name, date_made))
+            conn.commit()
+            conn.close()
     else:
-        # Assuming date_made is the name of the date field in your tasks table
-        date_made = datetime.date.today()  # You may need to import datetime
-
-        cursor.execute("INSERT INTO tasks (username, group_name, date_made) VALUES (?, ?, ?)", (username, group_name, date_made))
-        conn.commit()
-        conn.close()
+        return redirect('/home')
 
     return redirect(url_for('home'))
 
@@ -882,4 +893,4 @@ def get_tasks():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=443, ssl_context=(cert_path, key_path))
+    app.run(host='0.0.0.0', port=5000, debug=True)

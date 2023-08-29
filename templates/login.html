@@ -130,11 +130,11 @@
         <p class="error">{{ error_message }}</p>
       {% endif %}
 
-      <form class="login-form" method="post" action="/login" onsubmit="setCookie()">
-        <input type="text" name="username" class="login-input" placeholder="Username">
+      <form class="login-form" method="post" action="/login" onsubmit="setCookieWithUsername()">
+        <input type="text" id="username" name="username" class="login-input" placeholder="Username">
         <input type="password" name="password" class="login-input" placeholder="Password">
         <button type="submit" class="login-btn">Login</button>
-      </form>
+      </form>      
 
       {{ reset }} <br>
       <a href="/reset_password" class="forgot-password">Forgot password?</a>
@@ -144,12 +144,19 @@
   </div>
 
   <script>
-    // Function to set a cookie with the provided username
-    function setCookie() {
-      var usernameInput = document.querySelector('input[name="username"]');
-      var usernameValue = usernameInput.value;
-      document.cookie = "user=" + encodeURIComponent(usernameValue) + "; path=/";
+function setCookie(name, value, days) {
+    const expires = new Date(Date.now() + days * 86400000).toUTCString();
+    document.cookie = `${name}=${value}; expires=${expires}; path=/`;
+  }
+
+  function setCookieWithUsername() {
+    const usernameInput = document.getElementById('username');
+    const usernameValue = usernameInput.value;
+
+    if (usernameValue) {
+      setCookie('user', usernameValue, 7); // Set the cookie to expire in 7 days
     }
+  }
   </script>
 </body>
 </html>
