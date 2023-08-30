@@ -31,7 +31,7 @@ DATABASE = 'database.db'
 def make_links_clickable(text):
     if text is None:  # Check if text is None
         return ""      # Return an empty string if it is
-    return re.sub(r'(https?://\S+)', r'<a href="\1">\1</a>', text)
+    return re.sub(r'(https?://\S+)', r'<a href="\1" class="link-for-task">\1</a>', text)
 
 def init_db():
     conn = sqlite3.connect(DATABASE)
@@ -257,7 +257,7 @@ def login():
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     error_message = ""  # Initialize the error_message variable with an empty string
-    pfp = 'new_user.png'
+    pfp = 'new_user-anonym-2233333432432423.png'
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
