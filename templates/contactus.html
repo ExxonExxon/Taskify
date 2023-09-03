@@ -13,7 +13,7 @@
       margin: 0;
       font-family: Arial, sans-serif;
       line-height: 1.6;
-      background-color: #ffffff; /* Update the background color of the body to white */
+      background-color: #1e1e1e;
     }
 
     body::-webkit-scrollbar {
@@ -41,34 +41,39 @@
     }
 
 
-    header {
-      background-color: #ffffff; /* Update the header background color to white */
-      padding: 10px;
-    }
+    /* Header */
+header {
+  background-color: #1a1a1a;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-    nav {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      background-color: #f2f2f2; /* Update the navigation bar background color */
-    }
 
-    nav a {
-      text-decoration: none;
-      color: #000000; /* Update the navigation bar text color to black */
-      padding: 5px 15px;
-      font-size: 14px;
-      position: relative;
-    }
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+}
 
-    nav a:hover {
-      color: #888;
-      text-decoration: underline;
-    }
+nav a {
+  text-decoration: none;
+  color: #ffffff;
+  padding: 5px 15px;
+  font-size: 14px;
+  position: relative;
+}
+
+nav a:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
+
 
     .hero {
-      background-image: linear-gradient(#f2f2f2, #e6e6e6); /* Update the hero section background with a light gradient */
-      color: #000000; /* Update the hero section text color to black */
+      color: #ffffff; /* Update the hero section text color to black */
       text-align: center;
       padding: 100px 0;
     }
@@ -83,162 +88,6 @@
       margin-bottom: 30px;
     }
 
-    .hero button {
-      background-color: #ffffff;
-      color: #000000;
-      border: 1px solid #000000;
-      padding: 10px 30px;
-      font-size: 1rem;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-
-    .features {
-      background-color: #e6e6e6; /* Update the features section background color to white */
-      padding: 50px 0;
-    }
-
-    .features h1 {
-      text-align: center;
-      color: #000000; /* Update the features section text color to black */
-      margin-bottom: 30px;
-    }
-
-    .top-features {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      gap: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 20px;
-    }
-
-    .feature-card {
-      flex: 1 0 40%;
-      background-color: #f2f2f2; /* Update the feature cards background color to a light gray */
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .feature-card h1 {
-      font-size: 1.8rem;
-      color: #000000; /* Update the feature cards text color to black */
-    }
-
-    .feature-card p {
-      color: #000000; /* Update the feature cards text color to black */
-    }
-
-    .pricing {
-      background-color: #e6e6e6; /* Update the pricing section background color to white */
-      color: #000000; /* Update the pricing section text color to black */
-      padding: 50px 0;
-    }
-
-    .pricing h1 {
-      text-align: center;
-      margin-bottom: 30px;
-      font-size: 2.5rem;
-    }
-
-    .pricing-plans {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 30px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .plan {
-      background-color: #f2f2f2; /* Update the pricing plan cards background color to a light gray */
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-      padding: 30px;
-      flex: 1;
-      max-width: 300px;
-      text-align: center;
-      margin-top: 10px;
-    }
-
-    .plan h2 {
-      font-size: 2rem;
-      margin-bottom: 20px;
-      color: #000000; /* Update the pricing plan cards text color to black */
-    }
-
-    .plan p {
-      font-size: 1rem;
-      margin-bottom: 15px;
-      color: #000000; /* Update the pricing plan cards text color to black */
-    }
-
-    .plan ul {
-      padding: 0;
-      margin: 0;
-      list-style: none;
-    }
-
-    .plan li {
-      margin-bottom: 12px;
-      font-size: 1rem;
-      color: #000000; /* Update the pricing plan cards text color to black */
-    }
-
-    .plan strong {
-      color: #000000; /* Update the pricing plan cards text color to black */
-    }
-
-    .plan p:last-child {
-      margin-bottom: 0;
-    }
-
-    .price {
-      font-size: 1.5rem;
-    }
-
-    .highlight {
-      color: #4caf50;
-      font-weight: bold;
-    }
-
-    .cta-btn {
-      display: inline-block;
-      padding: 12px 24px;
-      background-color: #4caf50;
-      color: #ffffff;
-      border-radius: 5px;
-      text-decoration: none;
-      font-size: 1rem;
-      font-weight: bold;
-      margin-top: 25px;
-      transition: ease 0.3s;
-    }
-
-    .cta-btn:hover {
-      transform: scale(1.1);
-    }
-
-    .recommended {
-      border: 2px solid #4caf50;
-      position: relative;
-      z-index: 1;
-    }
-
-    .recommended-label {
-      background-color: #4caf50;
-      color: #ffffff;
-      border-radius: 5px;
-      font-size: 1rem;
-      padding: 5px 10px;
-      position: absolute;
-      top: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
 
     /* Animations and Interactivity */
     /* Animate the hero button on hover */
@@ -256,22 +105,6 @@
       100% {
         transform: scale(1);
       }
-    }
-
-    /* Create a fade-in animation for the feature cards */
-    .feature-card {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: ease 0.3s;
-    }
-
-    .feature-card:hover {
-      transform: scale(1.1);
-    }
-
-    /* Create a bounce effect for the pricing plan cards */
-    .plan {
-      animation: bounceIn 1s forwards;
     }
 
     @keyframes bounceIn {
@@ -336,96 +169,68 @@
       }
     }
 
-    .different-section {
-      padding: 50px 0;
-      text-align: center;
-    }
+    .contact-style {
+    background-color: #444; /* Darker container background color */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    width: 80%; /* Adjust the width as needed */
+    max-width: 400px; /* Maximum width of the container */
+}
 
-    .different-section h2 {
-      font-size: 2rem;
-      color: #000000;
-      margin-bottom: 30px;
-    }
+form {
+    display: flex;
+    flex-direction: column;
+}
 
-    .different-points {
-      display: flex;
-      justify-content: center;
-      gap: 30px;
-      max-width: 1200px;
-      margin: 0 auto;
-      margin-bottom: 20px;
-    }
+label {
+    margin-bottom: 5px;
+}
 
-    .different-point {
-      flex: 1;
-      padding: 20px;
-      border: 1px solid #888;
-      border-radius: 10px;
-      background-color: #ffffff;
-      transition: transform 0.3s;
-    }
+input[type="email"],
+textarea {
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #555; /* Input background color */
+    color: #fff; /* Input text color */
+}
 
-    .different-point i {
-      font-size: 24px;
-      color: #4caf50;
-      margin-bottom: 10px;
-    }
+button[type="submit"] {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007BFF; /* Button background color */
+    color: #fff; /* Button text color */
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-    .different-point p {
-      font-size: 1rem;
-      color: #000000;
-    }
+button[type="submit"]:hover {
+    background-color: #0056b3; /* Button background color on hover */
+}
 
-    .different-point:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+.center-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 59.8vh; /* Make it occupy the full viewport height */
+  }
 
-    form {
-      max-width: 500px;
-      margin: 0 auto;
-      background-color: #f2f2f2;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
+  .login_signup_btn {
+  border: 1px whitesmoke solid;
+  margin-left: 5px;
+  border-radius: 4px;
+}
 
-    form label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: bold;
-      color: #000000;
-    }
+.login_signup_btn:hover {
+  background-color: whitesmoke;
+  color: black;
+  text-decoration: underline;
+}
 
-    form input[type="text"],
-    form input[type="email"],
-    form textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    form textarea {
-      resize: vertical;
-      height: 216px;
-    }
-
-    form button[type="submit"] {
-      background-color: #4caf50;
-      color: #ffffff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background-color 0.3s, transform 0.3s;
-    }
-
-    form button[type="submit"]:hover {
-      background-color: #45a049;
-      transform: scale(1.05);
-    }
   </style>
 </head>
 
@@ -435,35 +240,44 @@
       <a href="/">Home</a>
       <a href="/about">About</a>
       <a href="/#features">Features</a>
-      <a href="#">Contact</a>
+      <a href="/contact">Contact</a>
+      <a href="/updates">Updates</a>
+      <a class="login_signup_btn" href="/login">Login</a>
+      <a class="login_signup_btn" href="/signup">Signup</a>
     </nav>
   </header>
   
   <!-- Contact Form Section -->
-  <section class="hero">
+  <section class="hero center-content"> <!-- Add the center-content class here -->
     <h1>Contact Us</h1>
     <p>We'd love to hear from you! In case you need to file a bug or want to add/remove features! Fill out the form below to get in touch.</p>
+    <p>Please note that if you reload this page after sending an email, the message may be sent again. Ensure that you only submit your message once. Thank you!</p>
+
     <p>{{ mail_sent }}</p>
-    <form action="/contact" method="post">
-      
-      <label for="email">Your Email:</label>
-      <input type="email" id="email" name="email" required>
-      
-      <label for="message">Your Message:</label>
-      <textarea id="message" name="message" rows="4" required></textarea>
-      
-      <button type="submit">Send Message</button>
-    </form>
+    <div class="contact-style">
+      <form action="/contact" method="post">
+        <label for="email">Your Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="message">Your Message:</label>
+        <textarea id="message" name="message" rows="4" required></textarea>
+
+        <button type="submit">Send Message</button>
+      </form>
+    </div>
   </section>
+
+  
 
   <footer>
     <div class="footer-content">
       <a href="https://github.com/ExxonExxon/Taskify" class="github-icon" target="_blank">
         <i style="font-size: 20px;" class="fa fa-github"></i>
       </a>
-      <a href="#">Terms of Service</a>
+      <a href="/terms-of-services">Terms of Service</a>
+      <a href="/privacy-policy">Privacy Policy</a>
       <a href="/about">About</a>
-      <a href="#">Contact Us</a>
+      <a href="/contact">Contact Us</a>
     </div>
   </footer>
 </body>

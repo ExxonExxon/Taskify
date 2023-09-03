@@ -13,37 +13,42 @@
       margin: 0;
       font-family: Arial, sans-serif;
       line-height: 1.6;
-      background-color: #ffffff;
+      background-color: #1e1e1e;
+      color: #fff;
     }
 
-    header {
-      background-color: #ffffff;
-      padding: 10px;
-    }
+    /* Header */
+header {
+  background-color: #1a1a1a;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-    nav {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      background-color: #f2f2f2;
-    }
 
-    nav a {
-      text-decoration: none;
-      color: #000000;
-      padding: 5px 15px;
-      font-size: 14px;
-      position: relative;
-    }
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  background-color: #1e1e1e;
+  border-radius: 10px;
+  overflow: hidden;
+}
 
-    nav a:hover {
-      color: #888;
-      text-decoration: underline;
-    }
+nav a {
+  text-decoration: none;
+  color: #ffffff;
+  padding: 5px 15px;
+  font-size: 14px;
+  position: relative;
+}
+
+nav a:hover {
+  color: #007bff;
+  text-decoration: underline;
+}
 
     .hero {
-      background-image: linear-gradient(#f2f2f2, #e6e6e6);
-      color: #000000;
+      background-image: linear-gradient(#282828, #1e1e1e);
       text-align: center;
       padding: 100px 0;
     }
@@ -107,7 +112,6 @@
 
   .different-section h2 {
     font-size: 2rem;
-    color: #000000;
     margin-bottom: 30px;
   }
 
@@ -124,7 +128,7 @@
     padding: 20px;
     border: 1px solid #888;
     border-radius: 10px;
-    background-color: #ffffff;
+    background-color: #161616;
     transition: transform 0.3s;
   }
 
@@ -136,13 +140,25 @@
 
   .different-point p {
     font-size: 1rem;
-    color: #000000;
   }
 
   .different-point:hover {
     transform: translateY(-10px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
+
+  .login_signup_btn {
+  border: 1px whitesmoke solid;
+  margin-left: 5px;
+  border-radius: 4px;
+}
+
+.login_signup_btn:hover {
+  background-color: whitesmoke;
+  color: black;
+  text-decoration: underline;
+}
+
   </style>
 </head>
 
@@ -150,14 +166,17 @@
   <header>
     <nav>
       <a href="/">Home</a>
-      <a href="#">About</a>
+      <a href="/about">About</a>
       <a href="/#features">Features</a>
       <a href="/contact">Contact</a>
+      <a href="/updates">Updates</a>
+      <a class="login_signup_btn" href="/login">Login</a>
+      <a class="login_signup_btn" href="/signup">Signup</a>
     </nav>
   </header>
   <div class="hero">
     <h1>About Us</h1>
-    <p>Welcome to the About Us page of Tomas! We're passionate about bringing you the best solutions for your tasks and productivity needs.</p>
+    <p>Welcome to the About Us page of Taskify! We're passionate about bringing you the best solutions for your tasks and productivity needs.</p>
   </div>
   <section class="different-section">
     <h2>Why Choose Us?</h2>
@@ -196,9 +215,10 @@
       <a href="https://github.com/ExxonExxon/Taskify" class="github-icon" target="_blank">
         <i style="font-size: 20px;" class="fa fa-github"></i>
       </a>
-      <a href="#">Terms of Service</a>
-      <a href="#">About</a>
-      <a href="#">Contact Us</a>
+      <a href="/terms-of-services">Terms of Service</a>
+      <a href="/privacy-policy">Privacy Policy</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact Us</a>
     </div>
   </footer>
 

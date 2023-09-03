@@ -247,13 +247,13 @@ nav a:hover {
             height: 100vh;
             position: fixed;
             top: 0;
-            left: 0;
+            left: -250%; /* Initially off-screen to the left */
             display: flex;
             flex-direction: column;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             z-index: 100;
             overflow-y: auto;
-            
+            transition: left 0.3s ease; /* Add a transition for the left property */
         }
 
         .sidebar h2 {
@@ -349,7 +349,6 @@ nav a:hover {
             display: none;
         }
 
-
             @media (max-width: 768px) {
                 header {
                     margin-left: 0; /* Reset margin for smaller screens */
@@ -371,10 +370,6 @@ nav a:hover {
                     margin: 0 2px; /* Adjust margins for smaller screens */
                     padding: 10px;
                     margin-left: 0; /* Reset margin for small screens */
-                }
-
-                .sidebar {
-                    display: none;
                 }
 
                 .button-row {
@@ -604,7 +599,7 @@ body.dark-mode #searchInput {
         <div class="profile-picture-container">
             <img src="/static/pfp/{{ pfp }}" alt="Profile Picture" class="profile-picture">
         </div>
-        <p class="version-style">Version <a style="color: white;" href="/updates">Beta 1.5</a></p>
+        <p class="version-style">Version <a style="color: white;" href="/updates">Beta 1.6</a></p>
         <p style="font-size: 10px;margin: none;padding-bottom: 0;">Want to file a bug or add/remove feature <a class="no-style" href="/contact">Contact Us</a></p>
         <ul>
             <li><h3 style="margin: none;">Your Groups:</h3></li>
@@ -719,44 +714,44 @@ body.dark-mode #searchInput {
     <script>
         let icoColor = "";
         let editingTaskId = null;
+        const sidebar = document.querySelector('.sidebar');
 
-        function toggleSidebar() {
-    const sidebar = document.querySelector('.sidebar');
 
-    // Check if the screen width is less than or equal to 768px (mobile)
-    if (window.innerWidth <= 768) {
-        // Toggle the sidebar's transform property
-        if (getComputedStyle(sidebar).transform === 'none') {
-            sidebar.style.transform = 'translateX(-100%)'; // Slide the sidebar off-screen
-        } else {
-            sidebar.style.transform = 'none'; // Slide the sidebar back in
+        function toggleSidebar() {            
+            // Check if the screen width is less than or equal to 768px (mobile)
+            if (window.innerWidth <= 768) {
+                if (sidebar.style.left === '-100%' || sidebar.style.left === '') {
+                    sidebar.style.left = '0'; // Slide the sidebar in
+                } else {
+                    sidebar.style.left = '-100%'; // Slide the sidebar out
+                }
+            } else {
+                // For desktop, always display the sidebar without animation
+                sidebar.style.left = '0';
+            }
         }
-    } else {
-        // For desktop, always display the sidebar without animation
-        sidebar.style.transform = 'none';
-    }
-}
 
-
-        function checkSidebar() {
+        function checkSidebarSize() {
             const sidebar = document.querySelector('.sidebar');
-
-            if (window.innerWidth >= 800) {
-                sidebar.style.display = 'block';
-            } 
+            
+            if (window.innerWidth >= 769) {
+                sidebar.style.left = '0'; // Show the sidebar
+            }
         }
 
-        // Call the function initially to set the initial state based on the screen width
-        checkSidebar();
+        checkSidebarSize();
 
-        // Periodically check the sidebar's display every second (1000 milliseconds)
-        setInterval(checkSidebar, 10);
+        // Use a function expression with setInterval
+        setInterval(function() {
+            checkSidebarSize();
+        }, 10);
+
         
         function showNotification(taskTitle, message) {
-    const options = {
-        body: message,
-        icon: 'path_to_your_notification_icon.png' // Replace with your icon URL
-    };
+        const options = {
+            body: message,
+            icon: 'path_to_your_notification_icon.png' // Replace with your icon URL
+        };
 
 
 

@@ -145,7 +145,6 @@ nav a:hover {
   color: #ffffff;
 }
 
-/* Different section */
 .different-section {
   padding: 50px 0;
   text-align: center;
@@ -160,6 +159,7 @@ nav a:hover {
 .different-points {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 30px;
   max-width: 1200px;
   margin: 0 auto;
@@ -180,11 +180,11 @@ nav a:hover {
   color: #4caf50; /* Vibrant green */
   margin-bottom: 10px;
 }
+
 .different-point p {
   font-size: 1rem;
   color: #ffffff;
 }
-
 .different-point:hover {
   transform: translateY(-10px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -286,7 +286,26 @@ footer {
     padding: 8px 20px;
     font-size: 0.9rem;
   }
+  .different-points {
+    flex-direction: column; /* Stack the points vertically on small screens */
+    align-items: center;
+  }
+
+  .different-point {
+    width: 80%; /* Make each point take up full width on small screens */
+    margin-bottom: 20px;
+  }
+
+  .statistics-container {
+    flex-direction: column; /* Stack statistics vertically on small screens */
+  }
+
+  .statistic {
+    width: 80%; /* Make each statistic take up full width on small screens */
+    margin-bottom: 20px;
+  }
 }
+
 
 .login_signup_btn {
   border: 1px whitesmoke solid;
@@ -306,7 +325,7 @@ footer {
 <body>
   <header>
     <nav>
-      <a href="#">Home</a>
+      <a href="/">Home</a>
       <a href="/about">About</a>
       <a href="#features">Features</a>
       <a href="/contact">Contact</a>
