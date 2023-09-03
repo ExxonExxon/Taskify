@@ -4,10 +4,8 @@
   <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <meta charset="UTF-8">
-  <meta name="keywords" content="task management, to-do list, productivity, organize tasks, task organizer, Taskify, taskify, taskify signup">
-  <meta name="description" content="Signup Page for Taskify">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Taskify - Signup</title>
+  <title>Signup Page</title>
   <style>
     /* Reset default margin, font, and background */
     body {
@@ -144,8 +142,8 @@
     <div class="signup-box">
       <h1 class="signup-title">Welcome to Taskify</h1>
       <p style="align-items: center;text-align: center;color: rgb(252, 98, 98);">{{ error_message }}</p>
-      <form method="post" action="/signup" id="signup-form" onsubmit="setCookieWithUsername()" class="signup-form">
-        <input type="text" id="username" name="username" class="signup-input" placeholder="Username" required>
+      <form method="post" action="/signup" id="signup-form" class="signup-form">
+        <input type="text" name="username" class="signup-input" placeholder="Username" required>
         <input type="email" name="email" class="signup-input" placeholder="Email" required>
         <input type="password" name="password" class="signup-input" placeholder="Password" required>
         <div class="checkbox-container">
@@ -159,19 +157,17 @@
     </div>
   </div>
   <script>
-     function setCookie(name, value, days) {
-    const expires = new Date(Date.now() + days * 86400000).toUTCString();
-    document.cookie = `${name}=${value}; expires=${expires}; path=/`;
-  }
-
-  function setCookieWithUsername() {
-    const usernameInput = document.getElementById('username');
-    const usernameValue = usernameInput.value;
-
-    if (usernameValue) {
-      setCookie('user', usernameValue, 7); // Set the cookie to expire in 7 days
+    function setCookie(name, value, days) {
+      const expires = new Date();
+      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
     }
-  }
+
+    document.getElementById("signup-form").addEventListener("submit", function(event) {
+      const usernameInput = document.querySelector("input[name='username']");
+      const username = usernameInput.value;
+      setCookie("user", username, 7);
+    });
   </script>
 </body>
 </html>
