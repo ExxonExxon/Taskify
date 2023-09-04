@@ -222,95 +222,88 @@ def update_task(task_id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     error_message = None  # Initialize error message
-    username = request.cookies.get('user')
-    if username is not None:
-        return redirect(url_for('home'))    
-    else:
-        if request.method == 'POST':
-            username = request.form.get('username')
-            password = request.form.get('password')
+    
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
 
-            if username:
-                if not username or not username.strip() or not password:
-                    error_message = "Username and password cannot be empty."
+        if username:
+            if not username or not username.strip() or not password:
+                error_message = "Username and password cannot be empty."
+            else:
+                conn = sqlite3.connect(DATABASE)
+                cursor = conn.cursor()
+
+                cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+                user = cursor.fetchone()
+                conn.close()
+
+                if not user or not bcrypt.check_password_hash(user[2], password):
+                    error_message = "Invalid username or password."
                 else:
-                    conn = sqlite3.connect(DATABASE)
-                    cursor = conn.cursor()
+                    session['user'] = user[1]
+                    return redirect(url_for('home'))
+    
 
-                    cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
-                    user = cursor.fetchone()
-                    conn.close()
-
-                    if not user or not bcrypt.check_password_hash(user[2], password):
-                        error_message = "Invalid username or password."
-                    else:
-                        session['user'] = user[1]
-                        return redirect(url_for('home'))
-        
-
-        return render_template('login.html', error_message=error_message)
+    return render_template('login.html', error_message=error_message)
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     error_message = ""  # Initialize the error_message variable with an empty string
     pfp = 'new_user.png'
-    username = request.cookies.get('user')
-    if username is not None:
-        return redirect(url_for('home'))    
-    else:
-        if request.method == 'POST':
-            username = request.form.get('username')
-            password = request.form.get('password')
-            email = request.form.get('email')
-            tasks_completed = 0
-            
-            # Validate username, password, and email (your existing validation code)
-            
-            if not username or not username.strip() or not email or not email.strip():
-                error_message = "Username and email cannot be empty."
-            
-            conn = sqlite3.connect(DATABASE)
-            cursor = conn.cursor()
-            
-            cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
-            existing_user = cursor.fetchone()
-            
-            if existing_user:
-                error_message = "Username already taken. Please choose a different username."
-            
-            cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
-            existing_email = cursor.fetchone()
-            
-            if existing_email:
-                error_message = "Email already registered. Please use a different email address."
-            
-            if error_message:
-                row = cursor.execute("SELECT COUNT(*) FROM users").fetchone()[0]
-                conn.close()
-                return render_template('signup.html', signed_up_users=row, error_message=error_message)
-            
-            hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
-            
-            current_datetime = datetime.datetime.now()  # Get the current date and time
-            current_date = current_datetime.date()      # Extract only the date part
-            
-            cursor.execute("INSERT INTO users (username, password, email, accountMade, completed_tasks, pfp) VALUES (?, ?, ?, ?, ?, ?)", (username, hashed_password, email, current_date, tasks_completed, pfp))
-            conn.commit()
-            conn.close()
-            
-            # Set user cookie and redirect to home (your existing code)
-            
-            return redirect(url_for('home'))
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        email = request.form.get('email')
+        tasks_completed = 0
         
-        else:
-            conn = sqlite3.connect(DATABASE)
-            cursor = conn.cursor()
-            
+        # Validate username, password, and email (your existing validation code)
+        
+        if not username or not username.strip() or not email or not email.strip():
+            error_message = "Username and email cannot be empty."
+        
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+        existing_user = cursor.fetchone()
+        
+        if existing_user:
+            error_message = "Username already taken. Please choose a different username."
+        
+        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+        existing_email = cursor.fetchone()
+        
+        if existing_email:
+            error_message = "Email already registered. Please use a different email address."
+        
+        if error_message:
             row = cursor.execute("SELECT COUNT(*) FROM users").fetchone()[0]
-            
             conn.close()
-            
             return render_template('signup.html', signed_up_users=row, error_message=error_message)
+        
+        hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+        
+        current_datetime = datetime.datetime.now()  # Get the current date and time
+        current_date = current_datetime.date()      # Extract only the date part
+        
+        cursor.execute("INSERT INTO users (username, password, email, accountMade, completed_tasks, pfp) VALUES (?, ?, ?, ?, ?, ?)", (username, hashed_password, email, current_date, tasks_completed, pfp))
+        conn.commit()
+        conn.close()
+        
+        # Set user cookie and redirect to home (your existing code)
+        
+        return redirect(url_for('home'))
+    
+    else:
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+        
+        row = cursor.execute("SELECT COUNT(*) FROM users").fetchone()[0]
+        
+        conn.close()
+        
+        return render_template('signup.html', signed_up_users=row, error_message=error_message)
 
 @app.route('/change-password', methods=['POST'])
 
