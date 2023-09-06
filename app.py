@@ -347,42 +347,6 @@ def home():
 
     return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks, pfp=pfp)
 
-
-    
-
-
-@app.route('/groups/', methods=['GET', 'POST'])
-def groups():
-    username = session.get('user')
-    if username is None:
-        return redirect(url_for('index'))
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
-    if request.method == 'POST':
-        new_group_name = request.form.get('new_group_name')
-
-        cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
-        existing_groups = [row[0] for row in cursor.fetchall()]
-
-        if new_group_name in existing_groups:
-            conn.close()
-            return render_template('groups.html', username=username, custom_groups=existing_groups, tasks=tasks, error='Group already exists.')
-
-        cursor.execute("INSERT INTO tasks (username, group_name) VALUES (?, ?)", (username, new_group_name))
-        conn.commit()
-
-    cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
-    custom_groups = [row[0] for row in cursor.fetchall()]
-
-    cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
-    tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
-
-    conn.close()
-
-    return render_template('groups.html', username=username, custom_groups=custom_groups, tasks=tasks)
-
 @app.route('/reset_password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
