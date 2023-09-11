@@ -142,7 +142,7 @@
     <div class="signup-box">
       <h1 class="signup-title">Welcome to Taskify</h1>
       <p style="align-items: center;text-align: center;color: rgb(252, 98, 98);">{{ error_message }}</p>
-      <form method="post" action="/signup" id="signup-form" class="signup-form">
+      <form method="post" action="/signup" id="signup-form" class="signup-form" onsubmit="setCookie()">
         <input type="text" name="username" class="signup-input" placeholder="Username" required>
         <input type="email" name="email" class="signup-input" placeholder="Email" required>
         <input type="password" name="password" class="signup-input" placeholder="Password" required>
@@ -157,17 +157,10 @@
     </div>
   </div>
   <script>
-    function setCookie(name, value, days) {
-      const expires = new Date();
-      expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-      document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+    function setCookie() {
+        const username = document.querySelector('input[name="username"]').value;
+        document.cookie = `user=${username}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
     }
-
-    document.getElementById("signup-form").addEventListener("submit", function(event) {
-      const usernameInput = document.querySelector("input[name='username']");
-      const username = usernameInput.value;
-      setCookie("user", username, 7);
-    });
   </script>
 </body>
 </html>

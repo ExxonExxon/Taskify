@@ -144,11 +144,9 @@
   </div>
 
   <script>
-    // Function to set a cookie with the provided username
     function setCookie() {
-      var usernameInput = document.querySelector('input[name="username"]');
-      var usernameValue = usernameInput.value;
-      document.cookie = "user=" + encodeURIComponent(usernameValue) + "; path=/";
+        const username = document.querySelector('input[name="username"]').value;
+        document.cookie = `user=${username}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
     }
   </script>
 </body>

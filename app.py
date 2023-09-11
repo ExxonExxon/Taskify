@@ -4,6 +4,9 @@ from urllib.parse import unquote
 from flask_mail import Mail, Message
 import os, sqlite3, random, datetime, string
 from flask_bcrypt import Bcrypt
+import base64
+from flask_cors import CORS  # Import CORS
+
 
 current_time = datetime.datetime.now()
 current_hour = current_time.hour
@@ -12,6 +15,8 @@ cert_path = '/etc/letsencrypt/live/taskify.ddns.net/fullchain.pem'
 key_path = '/etc/letsencrypt/live/taskify.ddns.net/privkey.pem'
 
 app = Flask(__name__)
+CORS(app)  # Initialize CORS
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 app.secret_key = 'hi'
 app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Replace with your SMTP server address
 app.config['MAIL_PORT'] = 587  # Replace with the appropriate port number
@@ -247,6 +252,33 @@ def login():
 
     return render_template('login.html', error_message=error_message)
 
+@app.route('/api/login', methods=['GET'])
+def api_login():
+    username = request.args.get('username')
+    password = request.args.get('password')
+
+    if username:
+        if not username.strip() or not password:
+            # If username or password is missing or empty, return "Not Ok"
+            return jsonify({'status': 'Not Ok'}), 401
+        else:
+            conn = sqlite3.connect(DATABASE)
+            cursor = conn.cursor()
+
+            cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+            user = cursor.fetchone()
+            conn.close()
+
+            if not user or not bcrypt.check_password_hash(user[2], password):
+                # If authentication fails, return "Not Ok"
+                return jsonify({'status': 'Not Ok'}), 401
+            else:
+                # Authentication successful, return "Ok"
+                return jsonify({'status': 'Ok'}), 200
+
+    # If there's an error or invalid request, return "Not Ok"
+    return jsonify({'status': 'Not Ok'}), 401
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     error_message = ""  # Initialize the error_message variable with an empty string
@@ -304,18 +336,63 @@ def signup():
         conn.close()
         
         return render_template('signup.html', signed_up_users=row, error_message=error_message)
+    
+@app.route('/api/signup', methods=['POST'])
+def signup_api():
+    data = request.get_json()  # Get JSON data from the request
+    
+    # Extract user data from JSON
+    username = data.get('username')
+    password = data.get('password')
+    email = data.get('email')
+    
+    # Validate username, password, and email (your existing validation code)
+    if not username or not username.strip() or not email or not email.strip():
+        return jsonify({"result": "not ok"}), 400
+    
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
+    existing_user = cursor.fetchone()
+    
+    if existing_user:
+        conn.close()
+        return jsonify({"result": "not ok"}), 400
+    
+    cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+    existing_email = cursor.fetchone()
+    
+    if existing_email:
+        conn.close()
+        return jsonify({"result": "not ok"}), 400
+    
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    
+    current_datetime = datetime.datetime.now()  # Get the current date and time
+    current_date = current_datetime.date()      # Extract only the date part
+    
+    cursor.execute("INSERT INTO users (username, password, email, accountMade, completed_tasks, pfp) VALUES (?, ?, ?, ?, ?, ?)",
+                   (username, hashed_password, email, current_date, 0, 'new_user.png'))
+    conn.commit()
+    conn.close()
+    
+    # Return a success message
+    return jsonify({"result": "ok"}), 200
 
-@app.route('/change-password', methods=['POST'])
 
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
     username = request.cookies.get('user')
+    wantsProfile = session.get('wantsProfile')
     if username is None:
         return redirect(url_for('index'))
     if '%20' in username:
         username = username.replace('%20', ' ')
     if '+' in username:
         username = username.replace('+', ' ')
+    if wantsProfile == True:
+        return redirect('/profile/')    
 
     session['user'] = username
 
@@ -346,6 +423,70 @@ def home():
     conn.close()
 
     return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks, pfp=pfp)
+
+@app.route('/api/home/', methods=['GET'])
+def api_home():
+    # Get the username from the request query parameter
+    username = request.args.get('username')
+    
+    # Check if the username is provided
+    if not username:
+        return jsonify({'status': 'Not Ok'}), 400
+
+    try:
+        # Establish a connection to the database
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        # Get the path to the user's profile picture (pfp)
+        pfp_path = os.path.join('static', 'pfp', f'{username}.jpg')
+
+        # Check if the pfp file exists
+        if os.path.exists(pfp_path):
+            with open(pfp_path, 'rb') as pfp_file:
+                # Read the pfp file as binary data
+                pfp_binary = pfp_file.read()
+                # Encode the binary data to Base64
+                profilePicture = base64.b64encode(pfp_binary).decode('utf-8')
+        else:
+            profilePicture = None
+
+        # Retrieve distinct custom group names
+        cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
+        custom_groups = [row[0] for row in cursor.fetchall()]
+
+        # Retrieve tasks associated with the username
+        cursor.execute("SELECT id, username, title, description, group_name, importance, due_date FROM tasks WHERE username = ?", (username,))
+        tasks = []
+        for row in cursor.fetchall():
+            task = {
+                'id': row[0],
+                'username': row[1],
+                'title': row[2],
+                'description': row[3],
+                'group_name': row[4],
+                'importance': row[5],
+                'due_date': row[6]
+            }
+            tasks.append(task)
+
+        # Close the database connection
+        conn.close()
+
+        # Create a JSON response with the retrieved data
+        response_data = {
+            'status': 'Ok',
+            'pfp': profilePicture,
+            'custom_groups': custom_groups,
+            'tasks': tasks
+        }
+
+        return jsonify(response_data), 200
+
+    except Exception as e:
+        # Handle any exceptions and return an error response
+        return jsonify({'status': 'Error', 'message': str(e)}), 500
+
 
 @app.route('/reset_password', methods=['GET', 'POST'])
 def forgot_password():
@@ -444,10 +585,19 @@ def upload_profile_picture():
 
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
+    username = session.get('user')
+    if username is None:
+        session['wantsProfile'] = True
+        return redirect('/login')
     message = ''
     modified_string = ''
     if request.method == 'POST':
         username = session.get('user')
+        if username is None:
+            session['wantsProfile'] = True
+            return redirect('/login')
+        if session.get('wantsPorfile') == True:
+            session['wantsProfile'] = False
         existingUsername = request.form.get('existingUsername')
         newUsername = request.form.get('username')
         existingPassword = request.form.get('existingPassword')
@@ -622,7 +772,43 @@ def add_task():
 
     return redirect(url_for('home'))
 
+@app.route('/api/create/task', methods=['GET'])
+def create_task():
+    try:
+        username = request.args.get('username')
+        title = request.args.get('title')
+        description = request.args.get('description')
+        group = request.args.get('group')
+        importance = request.args.get('importance')
+        due_date = request.args.get('due_date')
 
+        # Validate input data
+        if not username or not title or not group or not importance:
+            return jsonify({'status': 'Bad Request', 'message': 'Incomplete task data'}), 400
+
+        # Assuming you have a SQLite database connection
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        datetime_now = datetime.datetime.now()
+        date_made = datetime_now.strftime('%Y-%m-%d')  # Format the date
+
+        # Insert task data into the database
+        cursor.execute(
+            "INSERT INTO tasks (username, title, description, group_name, importance, date_made, due_date) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (username, title, description, group, importance, date_made, due_date)
+        )
+
+        conn.commit()
+        conn.close()
+
+        # Return a success response
+        response_data = {'status': 'Task Created'}
+        return jsonify(response_data), 200
+
+    except Exception as e:
+        # Handle any exceptions and return an error response
+        return jsonify({'status': 'Error', 'message': str(e)}), 500
 
 @app.route('/delete-account', methods=['POST'])
 def delete_account():
@@ -695,6 +881,40 @@ def add_group():
         conn.close()
 
     return redirect(url_for('home'))
+
+# Create a new route for adding a group via API using GET
+@app.route('/api/add_group', methods=['GET'])
+def add_group_api():
+    try:
+        username = request.args.get('username')
+        group_name = request.args.get('group_name')
+
+        if not username or not group_name:
+            return jsonify({'success': False, 'error': 'Missing username or group_name'}), 400
+
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        # Check if the group already exists for the user
+        cursor.execute("SELECT * FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
+        existing_group = cursor.fetchone()
+        if existing_group:
+            conn.close()
+            return jsonify({'success': False, 'error': 'Group already exists'}), 409
+
+        # Assuming date_made is the name of the date field in your tasks table
+        date_made = datetime.date.today()  # You may need to import datetime
+
+        cursor.execute("INSERT INTO tasks (username, group_name, date_made) VALUES (?, ?, ?)", (username, group_name, date_made))
+        conn.commit()
+        conn.close()
+
+        return jsonify({'success': True}), 200
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
+
 
 @app.route('/delete_group/<group_name>', methods=['POST'])
 def delete_group(group_name):
@@ -796,6 +1016,42 @@ def delete_task(task_id):
 
     return jsonify({'success': True})
 
+@app.route('/api/delete_task/<int:task_id>', methods=['GET'])
+def delete_task_api(task_id):
+    username = request.args.get('username')
+
+    if username is None or task_id is None:
+        return jsonify({'success': False, 'error': 'Missing username or task_id'})
+
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM tasks WHERE id = ? AND username = ?", (task_id, username))
+    task = cursor.fetchone()
+    if not task:
+        conn.close()
+        return jsonify({'success': False, 'error': 'Task not found'})
+
+    cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
+
+    cursor.execute('SELECT tasks_completed FROM stats')
+    tasks_completed = cursor.fetchone()
+    tasks_completed = int(tasks_completed[0])
+    tasks_completed += 1
+
+    cursor.execute('SELECT completed_tasks FROM users WHERE username = ?', (username,))
+    user_tasks_completed = cursor.fetchone()
+    user_tasks_completed = int(user_tasks_completed[0])
+    user_tasks_completed += 1
+
+    cursor.execute('UPDATE stats SET tasks_completed = ?', (tasks_completed,))
+    cursor.execute('UPDATE users SET completed_tasks = ? WHERE username = ?', (user_tasks_completed, username))
+    conn.commit()
+    conn.close()
+
+    return jsonify({'success': True})
+
+
 @app.route('/group/<group_name>', methods=['GET'])
 def group(group_name):
     username = session.get('user')
@@ -814,6 +1070,41 @@ def group(group_name):
     conn.close()
 
     return render_template('group.html', username=username, custom_groups=custom_groups, tasks=tasks, selected_group=group_name)
+
+# Create a new route for deleting groups
+@app.route('/api/delete_group', methods=['GET'])
+def delete_group_api():
+    try:
+        username = request.args.get('username')
+        group_name = request.args.get('group_name')
+
+        if not username or not group_name:
+            return jsonify({'success': False, 'error': 'Missing username or group_name'}), 400
+
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+        # Check if there are tasks with the specified group_name for the user
+        cursor.execute("SELECT * FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
+        tasks_with_group = cursor.fetchall()
+        
+        if not tasks_with_group:
+            conn.close()
+            return jsonify({'success': False, 'error': 'No tasks found with the specified group_name'}), 404
+
+        # Delete tasks with the specified group_name and no title
+        for task in tasks_with_group:
+            if not task[2]:  # Assuming title is at index 2
+                cursor.execute("DELETE FROM tasks WHERE id = ?", (task[0],))  # Assuming id is at index 0
+
+        conn.commit()
+        conn.close()
+
+        return jsonify({'success': True}), 200
+
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)}), 500
+
 
 
 # Update your get_tasks route to include the date_created column
