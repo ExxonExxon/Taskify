@@ -11,8 +11,8 @@ from flask_cors import CORS  # Import CORS
 current_time = datetime.datetime.now()
 current_hour = current_time.hour
 trys = 0
-cert_path = '/etc/letsencrypt/live/taskify.ddns.net/fullchain.pem'
-key_path = '/etc/letsencrypt/live/taskify.ddns.net/privkey.pem'
+cert_path = '/etc/letsencrypt/live/taskiy.ddns.net/fullchain.pem'
+key_path = '/etc/letsencrypt/live/taskiy.ddns.net/privkey.pem'
 
 app = Flask(__name__)
 CORS(app)  # Initialize CORS
@@ -109,6 +109,10 @@ def find_task_by_id(task_id):
 def privacy_policy():
     return render_template('privacypolicy.html')
 
+@app.route('/downloads')
+def downloads():
+    return render_template('downloads.html')
+
 @app.route('/terms-of-services')
 def tos():
     return render_template('tos.html')
@@ -176,7 +180,7 @@ def contactus():
         email = request.form['email']
         message = request.form['message']
 
-        msg = Message('Taskify Contact Submission',
+        msg = Message('taskiy Contact Submission',
                       sender='tomas.gorjux@gmail.com',  # Update with your email
                       recipients=['tomas.gorjux@gmail.com'])  # Update with your email
         msg.body = f'From: {email}\n\nMessage:\n{message}'
@@ -513,7 +517,7 @@ Verification Code: {secure_number}
 If you did not initiate this request, you can safely ignore this message. Your account security is important to us.
 
 Thank you,
-Taskify'''
+taskiy'''
 
             mail.send(msg)     
             return redirect(url_for('check_code'))

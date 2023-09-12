@@ -4,8 +4,10 @@
     <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taskify - Home</title>
+    <title>taskiy - Home</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/static/CSS/header_css.css">
+    <link rel="stylesheet" href="/static/CSS/scroll_bar.css">
     <style>
          body {
             font-family: Arial, sans-serif;
@@ -33,38 +35,6 @@
             background-color: #333;
             color: #fff;
         }
-
-        /* Header */
-/* Header */
-header {
-  background-color: #1a1a1a;
-  padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-left: 215px;
-}
-
-
-nav {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  background-color: #1e1e1e;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-nav a {
-  text-decoration: none;
-  color: #ffffff;
-  padding: 5px 15px;
-  font-size: 14px;
-  position: relative;
-}
-
-nav a:hover {
-  color: #007bff;
-  text-decoration: underline;
-}
 
         .color-changer-nav {
             text-decoration: none;
@@ -689,7 +659,7 @@ body.dark-mode #searchInput {
 
     <div id="tutorial-popup" class="tutorial-popup">
         <div class="tutorial-content">
-            <h2>Welcome to Taskify!</h2>
+            <h2>Welcome to taskiy!</h2>
             <p>This is your first time here. Let's get started:</p>
             <ul>
                 <li><strong>Create a new task:</strong> Click the "+" button in the sidebar to add a new task.</li>
@@ -750,7 +720,7 @@ body.dark-mode #searchInput {
         function showNotification(taskTitle, message) {
         const options = {
             body: message,
-            icon: 'path_to_your_notification_icon.png' // Replace with your icon URL
+            icon: 'static/favicon-32x32.png' // Replace with your icon URL
         };
 
 
@@ -856,9 +826,10 @@ function time_remaining(due_date) {
     if (document.cookie.includes('tutorialSeen=true')) {
         hideTutorialPopup();
     } else {
-        tutorialPopup.style.visibility = 'visible'; // Make the popup visible
+        tutorialPopup.style.display = 'block'; // Make the popup visible
     }
 });
+
 
 // Function to set a cookie
 function setCookie(name, value, days) {
@@ -891,25 +862,25 @@ function checkDueDates() {
 
         if (minutesRemaining > 0 && minutesRemaining <= 10 && !approachingNotifications[taskId]) {
             // ... (rest of the code for approaching notifications)
-        } else if (dueDate <= now && timeDiff <= (10 * 60 * 1000) && !dueDateNotifications[taskId]) {
-            showNotification(task.querySelector('strong').textContent, 'Due date has arrived.');
-            dueDateNotifications[taskId] = true; // Mark task as due date reached
-        } else if (dueDate <= now && timeDiff <= (1 * 60 * 60 * 1000) && !overdueNotifications[taskId]) {
-            showNotification(task.querySelector('strong').textContent, 'Task overdue.');
-            overdueNotifications[taskId] = true; // Mark task as overdue
-        } else if (dueDate <= now && timeDiff <= (1 * 24 * 60 * 60 * 1000) && !overdueNotifications[taskId]) {
-            showNotification(task.querySelector('strong').textContent, 'Task overdue.');
-            overdueNotifications[taskId] = true; // Mark task as overdue
-        } else if (dueDate <= now && timeDiff > (1 * 24 * 60 * 60 * 1000)) {
-            const daysOverdue = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
-            if (daysOverdue >= 2 && !overdueNotifications[taskId]) {
-                showNotification(task.querySelector('strong').textContent, `Over 2 years overdue finish it bro.`);
-                overdueNotifications[taskId] = true; // Mark task as overdue
-            } else if (!overdueNotifications[taskId]) {
+        } else if (dueDate <= now && timeDiff > (10 * 60 * 1000) && !overdueNotifications[taskId]) {
+            if (timeDiff <= (1 * 60 * 60 * 1000)) {
                 showNotification(task.querySelector('strong').textContent, 'Task overdue.');
                 overdueNotifications[taskId] = true; // Mark task as overdue
+            } else if (timeDiff <= (1 * 24 * 60 * 60 * 1000)) {
+                showNotification(task.querySelector('strong').textContent, 'Task overdue.');
+                overdueNotifications[taskId] = true; // Mark task as overdue
+            } else {
+                const daysOverdue = Math.floor(timeDiff / (24 * 60 * 60 * 1000));
+                if (daysOverdue >= 2) {
+                    showNotification(task.querySelector('strong').textContent, `Over 2 years overdue finish it bro.`);
+                    overdueNotifications[taskId] = true; // Mark task as overdue
+                } else {
+                    showNotification(task.querySelector('strong').textContent, 'Task overdue.');
+                    overdueNotifications[taskId] = true; // Mark task as overdue
+                }
             }
         }
+
     });
 }
 
@@ -920,10 +891,6 @@ if ('Notification' in window) {
 
 // Check due dates periodically
 setInterval(checkDueDates, 1000); // Check every second
-
-
-
-
 
 
         function searchTasks() {

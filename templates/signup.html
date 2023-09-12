@@ -5,6 +5,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/CSS/header_css.css">
+  <link rel="stylesheet" href="/static/CSS/scroll_bar.css">
   <title>Signup Page</title>
   <style>
     /* Reset default margin, font, and background */
@@ -14,35 +16,6 @@
       line-height: 1.6;
       background-color: #333;
       color: #ccc;
-    }
-
-    /* Header and navigation styling */
-    header {
-      background-color: #1a1a1a;
-      padding: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    nav {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      background-color: #1e1e1e;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #ffffff;
-      padding: 5px 15px;
-      font-size: 14px;
-      position: relative;
-    }
-
-    nav a:hover {
-      color: #007bff;
-      text-decoration: underline;
     }
 
     /* Signup container and form styling */
@@ -140,7 +113,7 @@
   </header>
   <div class="signup-container">
     <div class="signup-box">
-      <h1 class="signup-title">Welcome to Taskify</h1>
+      <h1 class="signup-title">Welcome to taskiy</h1>
       <p style="align-items: center;text-align: center;color: rgb(252, 98, 98);">{{ error_message }}</p>
       <form method="post" action="/signup" id="signup-form" class="signup-form" onsubmit="setCookie()">
         <input type="text" name="username" class="signup-input" placeholder="Username" required>

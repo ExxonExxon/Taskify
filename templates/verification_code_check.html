@@ -2,44 +2,11 @@
 <html>
 <head>
     <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
-    <title>Verification Code</title>
+    <link rel="stylesheet" href="/static/CSS/header_css.css">
+    <link rel="stylesheet" href="/static/CSS/scroll_bar.css">
+    <link rel="stylesheet" href="/static/CSS/index_body.css">
+    <title>Taskiy - Verification Code</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            color: #333333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-        }
-        header {
-            background-color: #ffffff;
-            padding: 10px;
-            padding-bottom: 0px;
-            width: 100%;
-        }
-        nav {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            background-color: #f2f2f2;
-            margin-bottom: 13px;
-        }
-        nav a {
-            text-decoration: none;
-            color: #000000;
-            padding: 5px 15px;
-            font-size: 14px;
-            position: relative;
-            transition: color 0.3s;
-        }
-        nav a:hover {
-            color: #888;
-            text-decoration: underline;
-        }
         .container {
             background-color: #ffffff;
             padding: 20px;
@@ -47,6 +14,7 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             width: 90%;
             max-width: 400px;
+            margin: 0 auto;
         }
         h1 {
             text-align: center;
@@ -89,6 +57,11 @@
             color: #999999;
             margin-top: 20px;
         }
+
+        p {
+            color: black;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -109,7 +82,7 @@
             <br>
             <input type="submit" value="Submit">
 
-            {{ stats }}
+            <p>{{ stats }}</p>
         </form>
     </div>
 </body>

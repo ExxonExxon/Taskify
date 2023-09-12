@@ -5,6 +5,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/static/CSS/header_css.css">
+  <link rel="stylesheet" href="/static/CSS/scroll_bar.css">
   <title>Login Page</title>
   <style>
     /* Reset default margin, font, and background */
@@ -14,35 +16,6 @@
       line-height: 1.6;
       background-color: #333;
       color: #ccc;
-    }
-
-    /* Header and navigation styling */
-    header {
-      background-color: #1a1a1a;
-      padding: 10px;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    nav {
-      display: flex;
-      justify-content: center;
-      flex-wrap: wrap;
-      background-color: #1e1e1e;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    nav a {
-      text-decoration: none;
-      color: #ffffff;
-      padding: 5px 15px;
-      font-size: 14px;
-      position: relative;
-    }
-
-    nav a:hover {
-      color: #007bff;
-      text-decoration: underline;
     }
 
     /* Login container and form styling */
@@ -124,7 +97,7 @@
   </header>
   <div class="login-container">
     <div class="login-box">
-      <h1 class="login-title">Welcome to <span style="font-weight: bold;">Taskify</span></h1>
+      <h1 class="login-title">Welcome to <span style="font-weight: bold;">taskiy</span></h1>
 
       {% if error_message %}
         <p class="error">{{ error_message }}</p>
