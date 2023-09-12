@@ -1,5 +1,7 @@
-# Taskify
+# Taskiy
 To Do List Website
+
+Changed name to Taskiy from Taskify
 
 To start the site using gunicorn use this command you will need a SSL encryption
 
