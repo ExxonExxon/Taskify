@@ -549,8 +549,126 @@ body.dark-mode #searchInput {
         box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
     }
 
+    /* Overlay */
+body::before {
+    content: "";
+    display: block;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* Adjust the opacity as needed */
+    z-index: 999;
+    display: none;
+}
 
-    </style>
+
+/* Common styles for both desktop and mobile */
+/* Collab Popup Container */
+#collab-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f9f9f9; /* Light gray background */
+    padding: 20px;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    width: 400px;
+    height: 550px;
+    text-align: left;
+    z-index: 1000;
+    display: none;
+}
+
+/* Close Button */
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    background-color: #ddd; /* Light gray background for the button */
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.close-button:hover {
+    background-color: #aaa; /* Darker gray background on hover */
+    color: #fff; /* White text on hover */
+}
+
+/* Heading */
+#collab-popup h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+/* Input Fields */
+#collab-popup label {
+    font-weight: bold;
+}
+
+#collab-popup input[type="text"] {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Submit Button */
+#collab-popup input[type="submit"] {
+    background-color: #007BFF;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 20px;
+}
+
+#collab-popup input[type="submit"]:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Suggestions Container */
+#suggestions {
+    display: none; /* Initially hidden */
+    max-height: 150px; /* Set a maximum height for scrollability */
+    overflow-y: auto; /* Add vertical scroll when needed */
+    border: 1px solid #ccc; /* Add a border */
+    border-radius: 5px; /* Round corners */
+    background-color: #fff; /* White background */
+    position: absolute; /* Position it absolutely */
+    z-index: 1000; /* Make it appear above other elements */
+    width: calc(90% - 25px); /* Adjust the width as needed */
+    margin-right: 10px;
+    padding: 5px; /* Add some padding */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+}
+
+.suggestion {
+    padding: 8px; /* Add padding for each suggestion item */
+    cursor: pointer; /* Change cursor to pointer on hover */
+    transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.suggestion:hover {
+    background-color: #f2f2f2; /* Light gray background on hover */
+}
+
+/* Media query for smaller screens (e.g., mobile devices) */
+@media (max-width: 600px) {
+    /* Adjust styles for smaller screens here */
+    /* For example, you can change the width of the popup */
+    #collab-popup {
+        width: 90%;
+    }
+}
+</style>
 </head>
 <body class="{{ dark_mode_class }}">
     <header>
@@ -572,6 +690,17 @@ body.dark-mode #searchInput {
         <p class="version-style">Version <a style="color: white;" href="/updates">Beta 1.6</a></p>
         <p style="font-size: 10px;margin: none;padding-bottom: 0;">Want to file a bug or add/remove feature <a class="no-style" href="/contact">Contact Us</a></p>
         <ul>
+            <li>
+                <!-- <a>{{ collab }}</a> -->
+                <form class="settings-form"  method="POST">
+                    <button type="submit" class="settings-button"><i class="fa fa-cog"></i> Settings</button>
+                </form>
+                <form class="join-form"  method="POST">
+                    <button type="submit" class="join-button">Join</button>
+                </form>
+                <button id="show-collab-button" onclick="showCollabForm()">Make a Collab</button>
+            </li>
+            
             <li><h3 style="margin: none;">Your Groups:</h3></li>
             {% for group in custom_groups %}
                 <li>
@@ -677,15 +806,142 @@ body.dark-mode #searchInput {
             <button id="close-tutorial">Got it</button>
         </div>
     </div>
-    
-    
-    
 
+    <div id="collab-popup">
+        <!-- Close button in the top right corner -->
+        <span class="close-button" onclick="closeCollabForm()">&#10006;</span>
+    
+        <h2>Create a Collaboration</h2>
+        <form id="collab-form" action="/create_collab" method="post">
+            <!-- Collaboration Name -->
+            <div class="form-group">
+                <label for="collab-name">Collaboration Name:</label>
+                <input type="text" id="collab-name" name="collab-name" required>
+            </div>
+    
+            <!-- Collaborators -->
+            <div class="form-group">
+                <label for="user-list">Invite Collaborators:</label><br>
+                <div id="collaborator-inputs">
+                    <div class="collaborator-input">
+                        <input type="text" id="user1" name="user1" placeholder="User 1" required>
+                        <div id="suggestions"></div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Button to add more collaborators -->
+            <button style="display: none;" type="button" id="add-collaborator">Add Collaborator</button>
+            <p id="userCollabError">You can add more people after group creation in settings</p>
+    
+            <!-- Submit Button -->
+            <div class="form-group">
+                <input type="submit" value="Create Collaboration" class="btn-primary">
+            </div>
+        </form>
+    </div>
+    
+    <script>
+        function showCollabForm() {
+        document.getElementById('collab-popup').style.display = 'block';
+        document.getElementById('dimmed-background').style.display = 'block';
+    }
+
+    function closeCollabForm() {
+        document.getElementById('collab-popup').style.display = 'none';
+        document.getElementById('dimmed-background').style.display = 'none';
+    }
+
+    // JavaScript to add more collaborator input fields
+    document.addEventListener("DOMContentLoaded", function () {
+        const addButton = document.getElementById("add-collaborator");
+        const userCollabError = document.getElementById("userCollabError");
+        const collaboratorInputs = document.getElementById("collaborator-inputs");
+
+        let collaboratorCount = 1;
+
+        addButton.addEventListener("click", function () {
+            if (collaboratorCount < 3) { // Limit to 3 collaborators
+                const input = document.createElement("div");
+                input.classList.add("collaborator-input");
+                input.innerHTML = `
+                    <input type="text" name="user${collaboratorCount + 1}" placeholder="User ${collaboratorCount + 1}" required>
+                `;
+                collaboratorInputs.appendChild(input);
+                collaboratorCount++;
+            }
+
+            if (collaboratorCount === 3) {
+                userCollabError.textContent = 'Max amount of users!';
+                addButton.disabled = true; // Disable the button when the max is reached
+            }
+        });
+
+
+        // JavaScript for fetching and displaying usernames
+        const usernameInput = document.getElementById("user1");
+        usernameInput.addEventListener("input", function () {
+            const username = usernameInput.value;
+            fetchUsernames(username);
+        });
+
+        function fetchUsernames(username) {
+        // Make an AJAX request to the server to fetch usernames
+        fetch(`http://127.0.0.1/get_usernames?username=${username}`)
+            .then((response) => response.json())
+            .then((data) => {
+                // Display the usernames as suggestions
+                displayUsernames(data.usernames);
+            })
+            .catch((error) => {
+                console.error("Error fetching usernames:", error);
+            });
+        }
+
+
+        // JavaScript for displaying username suggestions
+        function displayUsernames(usernames) {
+            const suggestions = document.getElementById("suggestions");
+            const usernameInput = document.getElementById("user1"); // Change this to the actual ID of your input field
+
+            // Clear previous suggestions
+            suggestions.innerHTML = "";
+
+            if (usernames.length > 0) {
+                // Show the suggestions container
+                suggestions.style.display = "block";
+
+                // Loop through usernames and create suggestion items
+                usernames.forEach((username) => {
+                    const suggestion = document.createElement("div");
+                    suggestion.textContent = username;
+                    suggestion.classList.add("suggestion");
+
+                    // Handle click on a suggestion
+                    suggestion.addEventListener("click", function () {
+                        usernameInput.value = username;
+                        suggestions.style.display = "none"; // Hide suggestions after selection
+                    });
+
+                    suggestions.appendChild(suggestion);
+                });
+            } else {
+                // Hide the suggestions container when no suggestions are available
+                suggestions.style.display = "none";
+            }
+        }
+
+    });
+
+    </script>
+    
     <script>
         let icoColor = "";
         let editingTaskId = null;
         const sidebar = document.querySelector('.sidebar');
+        
 
+        
 
         function toggleSidebar() {            
             // Check if the screen width is less than or equal to 768px (mobile)

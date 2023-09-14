@@ -68,6 +68,17 @@ def init_db():
         )                  
     ''')
 
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS collabs (
+            id INTEGER PRIMARY KEY,
+            owner TEXT NOT NULL,
+            user_1 TEXT,
+            user_2 TEXT,
+            user_3 TEXT
+        )
+    ''')
+
+
     conn.commit()
     conn.close()
 
@@ -104,6 +115,26 @@ def find_task_by_id(task_id):
         print(str(e))
         return None
     
+def fetch_usernames(username):
+    conn = sqlite3.connect(DATABASE)
+    cursor = conn.cursor()
+
+    # Query the database to retrieve usernames matching the input
+    cursor.execute("SELECT username FROM users WHERE username LIKE ?", ('%' + username + '%',))
+    usernames = [row[0] for row in cursor.fetchall()]
+
+    conn.close()
+    return usernames
+
+@app.route('/get_usernames')
+def get_usernames():
+    username = request.args.get('username')
+
+    if not username:
+        return jsonify({'usernames': []})
+
+    usernames = fetch_usernames(username)
+    return jsonify({'usernames': usernames})
 
 @app.route('/privacy-policy')
 def privacy_policy():
