@@ -1,0 +1,22 @@
+/* Styles for the scroll bar in dark mode */
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+::-webkit-scrollbar-track {
+    background: #333; /* Background color of the track */
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color of the thumb on hover */
+}
+
+/* Rest of your CSS styles for the webpage in dark mode */
+body {
+    background-color: #111; /* Dark background color */
+    color: #fff; /* Light text color */
+}

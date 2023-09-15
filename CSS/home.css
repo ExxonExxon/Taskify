@@ -1,0 +1,664 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f7f7f7;
+    color: #333;
+    transition: background-color 0.5s, color 0.5s; /* Add this line for transition effect */
+}
+
+.active {
+    text-decoration: underline;
+}
+
+body.light-mode {
+    background-color: #f7f7f7;
+    color: #333;
+}
+
+body.dark-mode h1 {
+    color: #eee;
+}
+
+body.dark-mode {
+    background-color: #333;
+    color: #fff;
+}
+
+.color-changer-nav {
+    text-decoration: none;
+    color: #ffffff;
+    padding: 5px 15px;
+    font-size: 14px;
+    position: relative;
+    background-color: transparent;
+}
+
+body.dark-mode .color-changer-nav {
+    color: #ccc;
+    background-color: transparent;
+}
+
+body.dark-mode nav a {
+    color: #ccc;
+}
+
+
+/* Improved styling for form elements */
+.input-field {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 12px;
+}
+
+/* Styling for the "Add Task" button */
+.submit-button {
+    padding: 10px 15px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Dark mode styling for form elements */
+body.dark-mode .input-field,
+body.dark-mode textarea {
+    background-color: #444;
+    color: #fff;
+    border-color: #555;
+}
+
+/* Dark mode styling for "Add Task" button */
+body.dark-mode .submit-button {
+    background-color: #222;
+}
+
+.content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    margin-left: 300px;
+}
+
+h1 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.add-form {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.add-form input[type="text"],
+.add-form textarea,
+.add-form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    display: block;
+    align-items: center;
+}
+
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.button-row select {
+    margin-right: 0; /* Remove margin-right for spacing */
+}
+
+button[type="submit"],
+button {
+    padding: 10px 15px;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+body.dark-mode button[type="submit"],
+button {
+    background-color: #222;
+}
+
+.task-list {
+    list-style: none;
+    padding: 0;
+}
+
+.task-item {
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+.task-item:hover {
+    background-color: #f5f5f5;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.task-item strong {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.task-item p {
+    font-size: 14px;
+    margin-top: 8px;
+}
+
+
+.task-item button {
+    padding: 8px 12px;
+    background-color: #e74c3c; /* Red color */
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.task-item button:hover {
+    background-color: #c0392b; /* Darker red color on hover */
+}
+
+
+
+body.dark-mode .task-item {
+    background-color: #222;
+}
+
+body.dark-mode select {
+    background-color: #333;
+    color: white;
+}
+
+body.dark-mode .task-item button {
+    background-color: rgb(216, 15, 15);
+}
+
+body.dark-mode .task-item button:hover {
+    background-color: rgb(151, 31, 31);
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: -250%; /* Initially off-screen to the left */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    overflow-y: auto;
+    transition: left 0.3s ease; /* Add a transition for the left property */
+}
+
+.sidebar h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.sidebar .a_links {
+    color: #fff;
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.sidebar a:hover {
+    background-color: #444;
+}
+
+    .sidebar .add-form {
+        margin-top: auto;
+    }
+
+    .sidebar label {
+        color: #ccc;
+        font-size: 14px;
+        margin-bottom: 5px;
+    }
+
+    .sidebar input[type="text"] {
+        width: 90%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #555;
+        border-radius: 5px;
+        background-color: #444;
+        color: #fff;
+        transition: border-color 0.3s;
+    }
+
+    .sidebar input[type="text"]:focus {
+        border-color: #777;
+        outline: none;
+    }
+
+    .add_group_btn {
+        background-color: #555;
+        color: #fff;
+        border: none;
+        padding: 5px 92px;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+    .add_group_btn:hover {
+        background-color: #777;
+    }
+
+    .delete-button {
+        background-color: #ff4d4d;
+        color: #fff;
+        border: 1px solid #ff4d4d;
+        padding: 6px 12px !important;
+        cursor: pointer;
+        transition: ease 0.3s;
+    }
+
+    .delete-button:hover {
+        background-color: #b33434 !important;
+    }
+
+    .sidebar-toggle-icon {
+    cursor: pointer;
+    color: #ffffff;
+    padding: 5px 15px;
+    font-size: 15px;
+    position: relative;
+    background-color: transparent;
+    display: none;
+}
+
+    @media (max-width: 768px) {
+        header {
+            margin-left: 0; /* Reset margin for smaller screens */
+        }
+
+        nav {
+            margin-left: 0; /* Reset margin for smaller screens */
+        }
+
+        nav a {
+            padding: 5px 15px; /* Adjust padding for smaller screens */
+        }
+
+        .sidebar-toggle-icon {
+            display: block;
+        }
+        
+        .content {
+            margin: 0 2px; /* Adjust margins for smaller screens */
+            padding: 10px;
+            margin-left: 0; /* Reset margin for small screens */
+        }
+
+        .button-row {
+            flex-direction: column;
+        }
+
+        .sidebar li {
+        width: 95%;
+        }
+    }
+
+    .no-style {
+        color: white;
+        text-decoration: underline;
+    }
+
+.sidebar p {
+    margin: none !important;
+    padding: none !important;
+}
+
+/* Styles for search and group elements */
+.search-container {
+display: flex;
+align-items: center;
+margin-bottom: 20px;
+}
+
+#searchInput {
+flex: 1;
+border: none;
+background-color: transparent;
+border-bottom: 2px solid #4CAF50; /* Green color */
+padding: 5px;
+margin: 5px;
+font-size: 12px;
+color: #000000;
+transition: border-color 0.3s, color 0.3s; /* Added color transition */
+}
+
+#searchInput:focus {
+outline: none;
+border-color: #45a049; /* Darker green color on focus */
+}
+
+body.dark-mode #searchInput {
+color: #ffff;
+}
+
+.search-button,
+.group-filter {
+background-color: #4CAF50; /* Green color */
+border: none;
+color: white;
+padding: 5px 10px;
+margin: 5px;
+font-size: 12px;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+
+.search-button:hover,
+.group-filter:hover {
+background-color: #45a049; /* Darker green color on hover */
+}
+
+.datetime-input {
+font-size: 12px;
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+width: 100%;
+box-sizing: border-box;
+background-color: white;
+color: #333;
+transition: border-color 0.3s;
+}
+
+.datetime-input:focus {
+outline: none;
+border-color: #4CAF50; /* Green color on focus */
+box-shadow: 0 0 5px rgba(76, 175, 80, 0.5); /* Add a subtle box-shadow */
+}
+
+/* Dark mode styling for datetime input */
+body.dark-mode .datetime-input {
+background-color: #444;
+color: white;
+border-color: #555;
+}
+
+.task-item p.due-date {
+color: #e74c3c; /* Red color */
+font-size: 14px;
+margin-top: 8px;
+}
+
+.tutorial-popup {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.6);
+display: flex;
+color: black;
+justify-content: center;
+align-items: center;
+z-index: 9999;
+display: none;
+
+}
+
+.tutorial-content ol {
+list-style: none;
+padding-left: 0; /* Optional: To remove default left padding */
+}
+
+/* Style for the tutorial popup */
+.tutorial-popup {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+/* Style for the tutorial popup */
+.tutorial-popup {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+/* Style for the tutorial popup */
+.tutorial-popup {
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.5);
+display: flex;
+align-items: center;
+justify-content: center;
+}
+
+/* Style for the tutorial content box */
+.tutorial-content {
+background-color: #fff;
+border-radius: 10px;
+padding: 20px;
+max-width: 400px;
+box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+text-align: center;
+}
+
+/* Style for the tutorial title */
+.tutorial-title {
+font-size: 1.5rem;
+font-weight: bold;
+margin-bottom: 10px;
+}
+
+/* Style for the tutorial text */
+.tutorial-text {
+font-size: 1rem;
+line-height: 1.5;
+margin-bottom: 20px;
+}
+
+/* Style for the close button */
+.close-button {
+background-color: #f44336;
+color: #fff;
+border: none;
+border-radius: 5px;
+padding: 8px 15px;
+font-size: 1rem;
+cursor: pointer;
+transition: background-color 0.3s;
+}
+
+.close-button:hover {
+background-color: #d32f2f;
+}
+
+.profile-picture-container {
+margin-bottom: 20px;
+}
+
+.profile-picture {
+border-radius: 50%;
+width: 100px;
+height: 100px;
+object-fit: cover;
+box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for the dimmed background */
+body::before {
+content: "";
+position: fixed;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+background-color: rgba(0, 0, 0, 0.7); /* Adjust the opacity as needed */
+z-index: 0; /* Place it behind the popup */
+backdrop-filter: blur(5px); /* Apply a blur effect to the background */
+display: var(--dimmed-background-display, none); /* Use the custom property */
+}
+
+
+/* Common styles for both desktop and mobile */
+/* Collab Popup Container */
+#collab-popup {
+position: fixed;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background-color: #f9f9f9; /* Light gray background */
+padding: 20px;
+border: 1px solid #ccc;
+box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+width: 400px;
+height: 550px;
+text-align: left;
+z-index: 1000;
+display: none;
+
+}
+
+/* Close Button */
+.close-button {
+position: absolute;
+top: 10px;
+right: 10px;
+cursor: pointer;
+background-color: #ddd; /* Light gray background for the button */
+padding: 5px 10px;
+border-radius: 5px;
+}
+
+.close-button:hover {
+background-color: #aaa; /* Darker gray background on hover */
+color: #fff; /* White text on hover */
+}
+
+/* Heading */
+#collab-popup h2 {
+font-size: 24px;
+margin-bottom: 10px;
+}
+
+/* Input Fields */
+#collab-popup label {
+font-weight: bold;
+}
+
+#collab-popup input[type="text"] {
+width: 90%;
+padding: 10px;
+margin: 10px 0;
+border: 1px solid #ccc;
+border-radius: 5px;
+font-size: 16px;
+}
+
+/* Submit Button */
+#collab-popup input[type="submit"] {
+background-color: #007BFF;
+color: #fff;
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-size: 14px;
+margin-top: 20px;
+}
+
+#collab-popup input[type="submit"]:hover {
+background-color: #0056b3; /* Darker blue on hover */
+}
+
+/* Suggestions Container */
+#suggestions {
+display: none; /* Initially hidden */
+max-height: 150px; /* Set a maximum height for scrollability */
+overflow-y: auto; /* Add vertical scroll when needed */
+border: 1px solid #ccc; /* Add a border */
+border-radius: 5px; /* Round corners */
+background-color: #fff; /* White background */
+position: absolute; /* Position it absolutely */
+z-index: 1000; /* Make it appear above other elements */
+width: calc(90% - 25px); /* Adjust the width as needed */
+margin-right: 10px;
+padding: 5px; /* Add some padding */
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add a subtle shadow */
+}
+
+.suggestion {
+padding: 8px; /* Add padding for each suggestion item */
+cursor: pointer; /* Change cursor to pointer on hover */
+transition: background-color 0.3s ease; /* Smooth hover effect */
+}
+
+.suggestion:hover {
+background-color: #f2f2f2; /* Light gray background on hover */
+}
+
+#collabErrorMessage {
+    color: red;
+}
+
+/* Media query for smaller screens (e.g., mobile devices) */
+@media (max-width: 600px) {
+/* Adjust styles for smaller screens here */
+/* For example, you can change the width of the popup */
+#collab-popup {
+width: 90%;
+}
+}
