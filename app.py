@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response, send_from_directory
+from flask import Flask, redirect, url_for, render_template, session, request, jsonify, make_response, send_from_directory, g
 from flask_session import Session
 from urllib.parse import unquote
 from flask_mail import Mail, Message
@@ -31,9 +31,10 @@ mail = Mail(app)
 # Database setup using SQLite
 DATABASE = 'database.db'
 
+
 def init_db():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
 
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
@@ -71,6 +72,8 @@ def init_db():
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS collabs (
             id INTEGER PRIMARY KEY,
+            collab_id INTEGER NOT NULL,
+            collab_name TEXT NOT NULL,
             owner TEXT NOT NULL,
             user_1 TEXT,
             user_2 TEXT,
@@ -79,24 +82,27 @@ def init_db():
     ''')
 
 
-    conn.commit()
-    conn.close()
+    db.commit()
+    db.close()
 
 init_db()
 
+# Function to get the database connection for the current thread
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
+
 def stats_maker():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
     cursor.execute('INSERT OR IGNORE INTO stats (id, tasks_completed) VALUES(1, 0)')
-    conn.commit()
-    conn.close()
+    db.commit()
+    db.close()
 
 stats_maker()
 
-def get_db():
-    db = sqlite3.connect('database.db')
-    db.row_factory = sqlite3.Row
-    return db
 
 def find_task_by_id(task_id):
     try:
@@ -115,16 +121,20 @@ def find_task_by_id(task_id):
         print(str(e))
         return None
     
+
+    
 def fetch_usernames(username):
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
+    db = sqlite3.connect(DATABASE)
+    cursor = db.cursor()
 
     # Query the database to retrieve usernames matching the input
     cursor.execute("SELECT username FROM users WHERE username LIKE ?", ('%' + username + '%',))
     usernames = [row[0] for row in cursor.fetchall()]
 
-    conn.close()
+    db.close()
     return usernames
+
+
 
 @app.route('/get_usernames')
 def get_usernames():
@@ -136,26 +146,34 @@ def get_usernames():
     usernames = fetch_usernames(username)
     return jsonify({'usernames': usernames})
 
+
+
 @app.route('/privacy-policy')
 def privacy_policy():
     return render_template('privacypolicy.html')
+
+
 
 @app.route('/downloads')
 def downloads():
     return render_template('downloads.html')
 
+
+
 @app.route('/terms-of-services')
 def tos():
     return render_template('tos.html')
+
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     username = request.cookies.get('user')
     if username is not None:
-        return redirect(url_for('home'))    
+        return redirect(url_for('home'))
     else:
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
+        db = get_db()
+        cursor = db.cursor()
 
         cursor.execute('SELECT tasks_completed FROM stats')
         tasks_completed = cursor.fetchone()
@@ -170,7 +188,10 @@ def index():
         for users in users_in_db:
             number_of_users += 1
 
+        cursor.close()
         return render_template('index.html', tasks_completed=tasks_completed, number_of_users=number_of_users)
+    
+
 
 @app.route('/about')
 def aboutus():
@@ -179,6 +200,8 @@ def aboutus():
         return redirect(url_for('home'))
     else:
         return render_template('aboutus.html')
+    
+
     
 @app.route('/updates')
 def updates():
@@ -201,9 +224,12 @@ def updates():
         logout_btn_link = ''
     return render_template('updatelog.html', groups_link=groups_link, groups_name=groups_name, profile_link=profile_link, profile_name=profile_name, logout_name=logout_name, logout_link=logout_link, logout_btn_link=logout_btn_link)
 
+
 @app.route('/<path:filename>')
 def serve_sitemap(filename):
     return send_from_directory('static', filename)
+
+
 
 @app.route('/contact', methods=['GET', 'POST'])
 def contactus():
@@ -223,6 +249,8 @@ def contactus():
 
     return render_template('contactus.html')
 
+
+
 @app.route('/get_task/<int:task_id>', methods=['GET'])
 def get_task(task_id):
     task = find_task_by_id(task_id)
@@ -234,10 +262,9 @@ def get_task(task_id):
 
 @app.route('/update_task/<int:task_id>', methods=['PUT'])
 def update_task(task_id):
+    db = get_db()
+    cursor = db.cursor()
     try:
-        connection = sqlite3.connect('database.db')  # Update with your database name
-        cursor = connection.cursor()
-
         updated_task = request.json  # Assuming you're sending JSON data
 
         cursor.execute('''
@@ -252,15 +279,19 @@ def update_task(task_id):
             task_id
         ))
 
-        connection.commit()
-        connection.close()
+        db.commit()
+        db.close()
 
         return jsonify(success=True)
     except Exception as e:
         return jsonify(success=False, error=str(e))
+    
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    db = get_db()
+    cursor = db.cursor()
     error_message = None  # Initialize error message
     
     if request.method == 'POST':
@@ -271,12 +302,10 @@ def login():
             if not username or not username.strip() or not password:
                 error_message = "Username and password cannot be empty."
             else:
-                conn = sqlite3.connect(DATABASE)
-                cursor = conn.cursor()
 
                 cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
                 user = cursor.fetchone()
-                conn.close()
+                db.close()
 
                 if not user or not bcrypt.check_password_hash(user[2], password):
                     error_message = "Invalid username or password."
@@ -287,8 +316,12 @@ def login():
 
     return render_template('login.html', error_message=error_message)
 
+
+
 @app.route('/api/login', methods=['GET'])
 def api_login():
+    db = get_db()
+    cursor = db.cursor()
     username = request.args.get('username')
     password = request.args.get('password')
 
@@ -297,12 +330,10 @@ def api_login():
             # If username or password is missing or empty, return "Not Ok"
             return jsonify({'status': 'Not Ok'}), 401
         else:
-            conn = sqlite3.connect(DATABASE)
-            cursor = conn.cursor()
 
             cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
             user = cursor.fetchone()
-            conn.close()
+            db.close()
 
             if not user or not bcrypt.check_password_hash(user[2], password):
                 # If authentication fails, return "Not Ok"
@@ -314,8 +345,12 @@ def api_login():
     # If there's an error or invalid request, return "Not Ok"
     return jsonify({'status': 'Not Ok'}), 401
 
+
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    db = get_db()
+    cursor = db.cursor()
     error_message = ""  # Initialize the error_message variable with an empty string
     pfp = 'new_user.png'
     if request.method == 'POST':
@@ -328,9 +363,6 @@ def signup():
         
         if not username or not username.strip() or not email or not email.strip():
             error_message = "Username and email cannot be empty."
-        
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
         
         cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
         existing_user = cursor.fetchone()
@@ -346,7 +378,7 @@ def signup():
         
         if error_message:
             row = cursor.execute("SELECT COUNT(*) FROM users").fetchone()[0]
-            conn.close()
+            db.close()
             return render_template('signup.html', signed_up_users=row, error_message=error_message)
         
         hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -355,25 +387,27 @@ def signup():
         current_date = current_datetime.date()      # Extract only the date part
         
         cursor.execute("INSERT INTO users (username, password, email, accountMade, completed_tasks, pfp) VALUES (?, ?, ?, ?, ?, ?)", (username, hashed_password, email, current_date, tasks_completed, pfp))
-        conn.commit()
-        conn.close()
+        db.commit()
+        db.close()
         
         # Set user cookie and redirect to home (your existing code)
         
         return redirect(url_for('home'))
     
     else:
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
+        db = sqlite3.connect(DATABASE)
+        cursor = db.cursor()
         
         row = cursor.execute("SELECT COUNT(*) FROM users").fetchone()[0]
         
-        conn.close()
+        db.close()
         
         return render_template('signup.html', signed_up_users=row, error_message=error_message)
     
 @app.route('/api/signup', methods=['POST'])
 def signup_api():
+    db = get_db()
+    cursor = db.cursor()
     data = request.get_json()  # Get JSON data from the request
     
     # Extract user data from JSON
@@ -385,21 +419,18 @@ def signup_api():
     if not username or not username.strip() or not email or not email.strip():
         return jsonify({"result": "not ok"}), 400
     
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-    
     cursor.execute("SELECT * FROM users WHERE username = ?", (username,))
     existing_user = cursor.fetchone()
     
     if existing_user:
-        conn.close()
+        db.close()
         return jsonify({"result": "not ok"}), 400
     
     cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
     existing_email = cursor.fetchone()
     
     if existing_email:
-        conn.close()
+        db.close()
         return jsonify({"result": "not ok"}), 400
     
     hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
@@ -409,8 +440,8 @@ def signup_api():
     
     cursor.execute("INSERT INTO users (username, password, email, accountMade, completed_tasks, pfp) VALUES (?, ?, ?, ?, ?, ?)",
                    (username, hashed_password, email, current_date, 0, 'new_user.png'))
-    conn.commit()
-    conn.close()
+    db.commit()
+    db.close()
     
     # Return a success message
     return jsonify({"result": "ok"}), 200
@@ -418,6 +449,8 @@ def signup_api():
 
 @app.route('/home/', methods=['GET', 'POST'])
 def home():
+    db = get_db()
+    cursor = db.cursor()
     username = request.cookies.get('user')
     wantsProfile = session.get('wantsProfile')
     if username is None:
@@ -430,9 +463,6 @@ def home():
         return redirect('/profile/')    
 
     session['user'] = username
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
 
     cursor.execute('SELECT pfp FROM users WHERE username = ?', (username,))
     pfp = cursor.fetchone()
@@ -455,12 +485,14 @@ def home():
         }
         tasks.append(task)
 
-    conn.close()
+    db.close()
 
     return render_template('home.html', username=username, custom_groups=custom_groups, tasks=tasks, pfp=pfp)
 
 @app.route('/api/home/', methods=['GET'])
 def api_home():
+    db = get_db()
+    cursor = db.cursor()
     # Get the username from the request query parameter
     username = request.args.get('username')
     
@@ -469,10 +501,6 @@ def api_home():
         return jsonify({'status': 'Not Ok'}), 400
 
     try:
-        # Establish a connection to the database
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
-
         # Get the path to the user's profile picture (pfp)
         pfp_path = os.path.join('static', 'pfp', f'{username}.jpg')
 
@@ -506,7 +534,7 @@ def api_home():
             tasks.append(task)
 
         # Close the database connection
-        conn.close()
+        db.close()
 
         # Create a JSON response with the retrieved data
         response_data = {
@@ -522,6 +550,21 @@ def api_home():
         # Handle any exceptions and return an error response
         return jsonify({'status': 'Error', 'message': str(e)}), 500
 
+@app.route('/make_collab/<string:collab_name>/<string:invited_user>/<string:owner>')
+def make_collab(collab_name, invited_user, owner):
+    db = get_db()
+    cursor = db.cursor()
+    if collab_name and invited_user and owner:
+        try:
+            cursor.execute('INSERT INTO collabs (collab_name, owner, user_1) VALUES (?, ?, ?)', (collab_name, owner, invited_user))
+            db.commit()
+            return jsonify({'status': 'OK', 'message': 'Collaboration created successfully'})
+        except Exception as e:
+            return jsonify({'status': 'Error', 'message': str(e)})
+    else:
+        return jsonify({'status': 'Error', 'message': 'Invalid input parameters'})
+    
+    
 
 @app.route('/reset_password', methods=['GET', 'POST'])
 def forgot_password():
@@ -587,17 +630,14 @@ def check_code():
     else:
         return render_template('verification_code_check.html')
 
-@app.route('/pricing-pro', methods=['GET', 'POST'])
-def pricing_pro():
-    return render_template('pricing_pro.html')
 
 @app.route('/upload_profile_picture', methods=['POST'])
 def upload_profile_picture():
+    db = get_db()
+    cursor = db.cursor()
     try:
         new_username = session.get('user')
         uploaded_file = request.files['profile_picture']
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
         
         if uploaded_file:
             # Ensure the 'pfp' directory exists
@@ -609,7 +649,7 @@ def upload_profile_picture():
             uploaded_file.save(profile_picture_path)
 
             cursor.execute('UPDATE users SET pfp = ? WHERE username = ?', (f'{new_username}.jpg', new_username))
-            conn.commit()
+            db.commit()
 
             return redirect(url_for('profile'))
         else:
@@ -620,6 +660,9 @@ def upload_profile_picture():
 
 @app.route('/profile/', methods=['GET', 'POST'])
 def profile():
+    db = get_db()
+    cursor = db.cursor()
+
     username = session.get('user')
     if username is None:
         session['wantsProfile'] = True
@@ -637,8 +680,6 @@ def profile():
         newUsername = request.form.get('username')
         existingPassword = request.form.get('existingPassword')
         newPassword = request.form.get('newPassword')
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
 
         cursor.execute('SELECT pfp FROM users WHERE username = ?', (username,))
         pfp = cursor.fetchone()
@@ -657,7 +698,7 @@ def profile():
                 else:
                     cursor.execute('UPDATE users SET username = ? WHERE username = ?', (newUsername, existingUsername))
                     cursor.execute('UPDATE tasks SET username = ? WHERE username = ?', (newUsername, existingUsername))
-                    conn.commit()
+                    db.commit()
 
                     session['user'] = newUsername
                     response = make_response(redirect(url_for('profile')))
@@ -678,7 +719,7 @@ def profile():
             if passwordNow and bcrypt.check_password_hash(passwordNow[0], existingPassword):
                 hashed_new_password = bcrypt.generate_password_hash(newPassword).decode('utf-8')
                 cursor.execute('UPDATE users SET password = ? WHERE username = ?', (hashed_new_password, username))
-                conn.commit()
+                db.commit()
                 messagePass = 'Successfully Changed Password!'
             else:
                 messagePass = 'Wrong Existing Password'
@@ -688,11 +729,9 @@ def profile():
         # Password Delete
         if request.form.get('deletePassword'):
             cursor.execute('UPDATE users SET password = NULL WHERE username = ?', (username,))
-            conn.commit()
+            db.commit()
             messagePass = 'Password deleted successfully!'
-        
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
+
 
         cursor.execute('SELECT username FROM tasks WHERE username = ?', (username,))
         tasks = cursor.fetchall()
@@ -723,8 +762,7 @@ def profile():
     else:
         message = None
         username = session.get('user')
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
+
 
         cursor.execute('SELECT pfp FROM users WHERE username = ?', (username,))
         pfp = cursor.fetchone()
@@ -759,9 +797,9 @@ def profile():
 
 @app.route('/reset_password/verification', methods=['GET', 'POST'])
 def reset_password_verification():
+    db = get_db()
+    cursor = db.cursor()
     if request.method == 'POST':
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
         user = session.get('user')
         email = session.get('email')
         new_password = request.form.get('new_password')
@@ -772,7 +810,7 @@ def reset_password_verification():
                 hashed_password = bcrypt.generate_password_hash(new_password).decode('utf-8')
                                                                              
                 cursor.execute('UPDATE users SET password = ? WHERE email = ?', (hashed_password, email))
-                conn.commit()
+                db.commit()
                 session['error_message'] = 'New password has been set!'
                 return redirect(url_for('login'))
             else:
@@ -782,6 +820,8 @@ def reset_password_verification():
 
 @app.route('/add_task', methods=['POST'])
 def add_task():
+    db = get_db()
+    cursor = db.cursor()
     username = session.get('user')
     if username is None:
         return redirect(url_for('index'))
@@ -792,9 +832,6 @@ def add_task():
     importance = request.form.get('importance')
     due_date = request.form.get('due_date')  # Get the due date from the form
 
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
     datetime_now = datetime.datetime.now()
     date_made = datetime_now.strftime('%Y-%m-%d')  # Format the date
 
@@ -802,13 +839,15 @@ def add_task():
     cursor.execute("INSERT INTO tasks (username, title, description, group_name, importance, date_made, due_date) VALUES (?, ?, ?, ?, ?, ?, ?)",
                    (username, title, description, group, importance, date_made, due_date))
 
-    conn.commit()
-    conn.close()
+    db.commit()
+    db.close()
 
     return redirect(url_for('home'))
 
 @app.route('/api/create/task', methods=['GET'])
 def create_task():
+    db = get_db()
+    cursor = db.cursor()
     try:
         username = request.args.get('username')
         title = request.args.get('title')
@@ -821,10 +860,6 @@ def create_task():
         if not username or not title or not group or not importance:
             return jsonify({'status': 'Bad Request', 'message': 'Incomplete task data'}), 400
 
-        # Assuming you have a SQLite database connection
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
-
         datetime_now = datetime.datetime.now()
         date_made = datetime_now.strftime('%Y-%m-%d')  # Format the date
 
@@ -834,8 +869,8 @@ def create_task():
             (username, title, description, group, importance, date_made, due_date)
         )
 
-        conn.commit()
-        conn.close()
+        db.commit()
+        db.close()
 
         # Return a success response
         response_data = {'status': 'Task Created'}
@@ -883,8 +918,8 @@ def delete_account():
 
 @app.route('/add_group', methods=['POST'])
 def add_group():
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
+    db = get_db()
+    cursor = db.cursor()
     username = session.get('user')
     if username is None:
         return redirect(url_for('index'))
@@ -892,8 +927,6 @@ def add_group():
     group_name = request.form.get('group_name')
     if not group_name or not group_name.strip():
         error_message = "Group name cannot be empty."
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
 
         cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
         custom_groups = [row[0] for row in cursor.fetchall()]
@@ -901,48 +934,46 @@ def add_group():
         cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
         tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
 
-        conn.close()
+        db.close()
 
     cursor.execute("SELECT group_name FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
     existing_group = cursor.fetchone()
     if existing_group:
-        conn.close()
+        db.close()
     else:
         # Assuming date_made is the name of the date field in your tasks table
         date_made = datetime.date.today()  # You may need to import datetime
 
         cursor.execute("INSERT INTO tasks (username, group_name, date_made) VALUES (?, ?, ?)", (username, group_name, date_made))
-        conn.commit()
-        conn.close()
+        db.commit()
+        db.close()
 
     return redirect(url_for('home'))
 
 # Create a new route for adding a group via API using GET
 @app.route('/api/add_group', methods=['GET'])
 def add_group_api():
+    db = get_db()
+    cursor = db.cursor()
     try:
         username = request.args.get('username')
         group_name = request.args.get('group_name')
 
         if not username or not group_name:
             return jsonify({'success': False, 'error': 'Missing username or group_name'}), 400
-
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
-
         # Check if the group already exists for the user
         cursor.execute("SELECT * FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
         existing_group = cursor.fetchone()
         if existing_group:
-            conn.close()
+            db.close()
             return jsonify({'success': False, 'error': 'Group already exists'}), 409
 
         # Assuming date_made is the name of the date field in your tasks table
         date_made = datetime.date.today()  # You may need to import datetime
 
         cursor.execute("INSERT INTO tasks (username, group_name, date_made) VALUES (?, ?, ?)", (username, group_name, date_made))
-        conn.commit()
-        conn.close()
+        db.commit()
+        db.close()
 
         return jsonify({'success': True}), 200
 
@@ -953,22 +984,23 @@ def add_group_api():
 
 @app.route('/delete_group/<group_name>', methods=['POST'])
 def delete_group(group_name):
+    db = get_db()
+    cursor = db.cursor()
     username = session.get('user')
     if username is None:
         return redirect(url_for('index'))
 
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
     cursor.execute("DELETE FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
 
-    conn.commit()
-    conn.close()
+    db.commit()
+    db.close()
 
     return redirect(url_for('home'))
 
 @app.route('/add_group/groups', methods=['POST'])
 def add_group_groups():
+    db = get_db()
+    cursor = db.cursor()
     username = session.get('user')
     if username is None:
         return redirect(url_for('index'))
@@ -976,8 +1008,6 @@ def add_group_groups():
     group_name = request.form.get('group_name')
     if not group_name or not group_name.strip():
         error_message = "Group name cannot be empty."
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
 
         cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
         custom_groups = [row[0] for row in cursor.fetchall()]
@@ -985,51 +1015,47 @@ def add_group_groups():
         cursor.execute("SELECT * FROM tasks WHERE username = ?", (username,))
         tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
 
-        conn.close()
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
+        db.close()
 
     cursor.execute("SELECT group_name FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
     existing_group = cursor.fetchone()
     if existing_group:
-        conn.close()
+        db.close()
     else:
         date_now = datetime.datetime.now()
         cursor.execute("INSERT INTO tasks (username, group_name, date_made) VALUES (?, ?, ?)", (username, group_name, date_now))
-        conn.commit()
-        conn.close()
+        db.commit()
+        db.close()
 
     return redirect(url_for('groups'))
 
 @app.route('/delete_groups/groups/<group_name>', methods=['POST'])
 def delete_groups(group_name):
+    db = get_db()
+    cursor = db.cursor()
     username = session.get('user')
     if username is None:
         return redirect(url_for('index'))
 
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
-
     cursor.execute("DELETE FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
-    conn.commit()
-    conn.close()
+    db.commit()
+    db.close()
 
     return redirect(url_for('groups'))
 
 @app.route('/delete_task/<int:task_id>', methods=['DELETE'])
 def delete_task(task_id):
+    db = get_db()
+    cursor = db.cursor()
     username = session.get('user')
     if username is None:
         return jsonify({'success': False, 'error': 'User not logged in'})
 
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM tasks WHERE id = ? AND username = ?", (task_id, username))
     task = cursor.fetchone()
     if not task:
-        conn.close()
+        db.close()
         return jsonify({'success': False, 'error': 'Task not found'})
 
     cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
@@ -1046,25 +1072,25 @@ def delete_task(task_id):
 
     cursor.execute('UPDATE stats SET tasks_completed = ?', (tasks_completed,))
     cursor.execute('UPDATE users SET completed_tasks = ? WHERE username = ?', (user_tasks_completed, username))
-    conn.commit()
-    conn.close()
+    db.commit()
+    db.close()
 
     return jsonify({'success': True})
 
 @app.route('/api/delete_task/<int:task_id>', methods=['GET'])
 def delete_task_api(task_id):
+    db = get_db()
+    cursor = db.cursor()
     username = request.args.get('username')
 
     if username is None or task_id is None:
         return jsonify({'success': False, 'error': 'Missing username or task_id'})
 
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
 
     cursor.execute("SELECT * FROM tasks WHERE id = ? AND username = ?", (task_id, username))
     task = cursor.fetchone()
     if not task:
-        conn.close()
+        db.close()
         return jsonify({'success': False, 'error': 'Task not found'})
 
     cursor.execute("DELETE FROM tasks WHERE id = ?", (task_id,))
@@ -1081,20 +1107,19 @@ def delete_task_api(task_id):
 
     cursor.execute('UPDATE stats SET tasks_completed = ?', (tasks_completed,))
     cursor.execute('UPDATE users SET completed_tasks = ? WHERE username = ?', (user_tasks_completed, username))
-    conn.commit()
-    conn.close()
+    db.commit()
+    db.close()
 
     return jsonify({'success': True})
 
 
 @app.route('/group/<group_name>', methods=['GET'])
 def group(group_name):
+    db = get_db()
+    cursor = db.cursor()
     username = session.get('user')
     if username is None:
         return redirect(url_for('index'))
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
 
     cursor.execute("SELECT DISTINCT group_name FROM tasks WHERE username = ?", (username,))
     custom_groups = [row[0] for row in cursor.fetchall()]
@@ -1102,13 +1127,15 @@ def group(group_name):
     cursor.execute("SELECT * FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
     tasks = [dict(id=row[0], username=row[1], title=row[2], description=row[3], group_name=row[4], importance=row[5]) for row in cursor.fetchall()]
 
-    conn.close()
+    db.close()
 
     return render_template('group.html', username=username, custom_groups=custom_groups, tasks=tasks, selected_group=group_name)
 
 # Create a new route for deleting groups
 @app.route('/api/delete_group', methods=['GET'])
 def delete_group_api():
+    db = get_db()
+    cursor = db.cursor()
     try:
         username = request.args.get('username')
         group_name = request.args.get('group_name')
@@ -1116,15 +1143,12 @@ def delete_group_api():
         if not username or not group_name:
             return jsonify({'success': False, 'error': 'Missing username or group_name'}), 400
 
-        conn = sqlite3.connect(DATABASE)
-        cursor = conn.cursor()
-
         # Check if there are tasks with the specified group_name for the user
         cursor.execute("SELECT * FROM tasks WHERE username = ? AND group_name = ?", (username, group_name))
         tasks_with_group = cursor.fetchall()
         
         if not tasks_with_group:
-            conn.close()
+            db.close()
             return jsonify({'success': False, 'error': 'No tasks found with the specified group_name'}), 404
 
         # Delete tasks with the specified group_name and no title
@@ -1132,8 +1156,8 @@ def delete_group_api():
             if not task[2]:  # Assuming title is at index 2
                 cursor.execute("DELETE FROM tasks WHERE id = ?", (task[0],))  # Assuming id is at index 0
 
-        conn.commit()
-        conn.close()
+        db.commit()
+        db.close()
 
         return jsonify({'success': True}), 200
 
@@ -1145,12 +1169,11 @@ def delete_group_api():
 # Update your get_tasks route to include the date_created column
 @app.route('/get_tasks', methods=['GET'])
 def get_tasks():
+    db = get_db()
+    cursor = db.cursor()
     username = session.get('user')
     if username is None:
         return jsonify([])
-
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
 
     cursor.execute("SELECT id, username, title, description, group_name, importance, date_made FROM tasks WHERE username = ?", (username,))
     tasks = [
@@ -1166,7 +1189,7 @@ def get_tasks():
         for row in cursor.fetchall()
     ]
 
-    conn.close()
+    db.close()
 
     return jsonify(tasks)
 
