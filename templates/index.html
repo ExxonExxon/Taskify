@@ -1,407 +1,409 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta name="google-site-verification" content="wdTKhg9N0p26sZIVtYMJPs0bcDi3f8IAcB5z9YgFdwU" />
-  <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Taskiy is a free task management website that helps you stay organized and productive. Easily create, prioritize, and manage your tasks online.">
-  <meta name="keywords" content="task management, to-do list, productivity, organize tasks, task organizer">
-  <title>Taskiy</title>
-  <link rel="stylesheet" href="/static/CSS/header_css.css">
-  <link rel="stylesheet" href="/static/CSS/scroll_bar.css">
-  <link rel="stylesheet" href="/static/CSS/index_body.css">
-  <style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <meta name="google-site-verification" content="wdTKhg9N0p26sZIVtYMJPs0bcDi3f8IAcB5z9YgFdwU" />
+    <link rel="icon" href="/static/favicon-32x32.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Taskiy is a free task management website that helps you stay organized and productive. Easily create, prioritize, and manage your tasks online.">
+    <meta name="keywords" content="task management, to-do list, productivity, organize tasks, task organizer">
+    <title>Taskiy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden;
+        }
 
-/* Base styles */
-body {
-  background-color: #1e1e1e;
-  color: #ffffff;
-  line-height: 1.6;
-  margin: 0;
-  padding: 0;
-}
+        .hero {
+            background: url('5185208.jpg') center/cover no-repeat;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+        }
 
-a {
-  text-decoration: none;
-  color: inherit;
-}
+        .navbar {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            position: absolute;
+            top: 0;
+            background-color: black;
+        }
 
-/* Hero section */
-.hero {
-  background-image: linear-gradient(#282828, #1e1e1e);
-  color: #ffffff;
-  text-align: center;
-  padding: 100px 0;
-}
+        .logo {
+            color: #333;
+            text-decoration: none;
+            font-size: 24px;
+            font-weight: bold;
+            margin-left: 20px;
+            cursor: pointer;
+            transition: ease 0.3s;
+        }
 
-.hero h1 {
-  font-size: 3rem;
-  margin-bottom: 20px;
-}
+        .logo:hover {
+            transform: scale(1.1);
+        }
 
-.hero p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
-}
+        .menu {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            margin-right: 50px;
+        }
 
-.hero button {
-  background-color: #3f3f3f;
-  color: #ffffff;
-  border: 1px solid #000000;
-  padding: 10px 30px;
-  font-size: 1rem;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s, transform 0.3s;
-}
+        .menu li {
+            margin: 0 10px;
+        }
 
-.hero button:hover {
-  transform: scale(1.1);
-}
+        .menu a {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            position: relative;
+            margin-right: 20px;
+        }
 
-/* Features section */
-.features {
-  background-color: #1e1e1e;
-  padding: 50px 0;
-}
+        .menu a::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background: #ffffff;
+            transform: scaleX(0);
+            transform-origin: right;
+            transition: transform 0.2s ease;
+        }
 
-.features h1 {
-  text-align: center;
-  color: #ffffff;
-  margin-bottom: 30px;
-}
+        .menu a:hover::before {
+            transform: scaleX(1);
+            transform-origin: left;
+        }
 
-.top-features {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-}
+        .signup-login-btn {
+            border: transparent solid 1px;
+            border-radius: 5px;
+            padding: 8px 16px;
+            background-color: #ff6600;
+            text-decoration: none;
+            color: #fff !important;
+            font-size: 16px;
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
 
-.feature-card {
-  flex: 1 0 40%;
-  background-color: #2a2a2a; /* Dark gray background */
-  border: 1px solid #444;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  padding: 20px;
-  text-align: center;
-  transition: all ease 0.3s;
-}
+        .signup-login-btn:hover {
+            transform: scale(1.1) !important;
+        }
 
-.feature-card:hover {
-  transform: scale(1.05);
-}
+        .logo-image {
+            margin-top: 5px;
+            width: 40px;
+            height: 40px;
+        }
 
+        .hero-text {
+            font-size: 28px;
+            text-align: center;
+        }
 
-.feature-card h2 {
-  font-size: 1.8rem;
-  color: #ffffff;
-}
+        .hero-text h3 {
+            font-size: 20px;
+        }
 
-.feature-card p {
-  color: #ffffff;
-}
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin: 50px 0;
+        }
 
-.different-section {
-  padding: 50px 0;
-  text-align: center;
-}
+        .feature {
+            text-align: center;
+        }
 
-.different-section h2 {
-  font-size: 2rem;
-  color: #ffffff;
-  margin-bottom: 30px;
-}
+        .feature i {
+            font-size: 48px;
+            color: #ff6600;
+        }
 
-.different-points {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 30px;
-  max-width: 1200px;
-  margin: 0 auto;
-  margin-bottom: 20px;
-}
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 5px;
+            }
+            .logo {
+                font-size: 18px;
+                margin-left: 10px;
+            }
+            .menu {
+                margin-right: 10px;
+            }
+            .signup-login-btn {
+                font-size: 14px;
+            }
+            .hero-text {
+                font-size: 20px;
+            }
+            .features {
+                flex-direction: column;
+            }
+            .feature {
+                margin: 10px 0;
+                text-align: center;
+            }
+            .feature i {
+                font-size: 36px;
+            }
+        }
 
-.different-point {
-  flex: 1;
-  padding: 20px;
-  border: 1px solid #444;
-  border-radius: 10px;
-  background-color: #282828;
-  transition: transform 0.3s;
-}
+        .menu-toggle {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
 
-.different-point i {
-  font-size: 24px;
-  color: #4caf50; /* Vibrant green */
-  margin-bottom: 10px;
-}
+        .bar {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px 0;
+        }
 
-.different-point p {
-  font-size: 1rem;
-  color: #ffffff;
-}
-.different-point:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
+        @media (max-width: 768px) {
+            .menu {
+                display: none;
+                flex-direction: column;
+                background-color: black;
+                position: absolute;
+                top: 55px;
+                width: 100%;
+                padding: 20px;
+            }
 
-/* Footer */
-footer {
-  background-color: #282828;
-  padding: 20px;
-  text-align: center;
-}
+            .menu.active {
+                display: flex;
+            }
 
-.footer-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-}
+            .menu-toggle {
+                display: flex;
+            }
+        }
 
-.footer-content a:hover,
-.footer-content i:hover {
+        @media (max-width: 768px) {
+            .navbar {
+                position: static;
+                background-color: black;
+                justify-content: space-between;
+                padding: 20px;
+                height: auto;
+                width: auto;
+            }
 
-  text-decoration: underline;
-}
+            .logo {
+                display: none;
+            }
 
-.github-icon img {
-  width: 20px;
-  height: 20px;
-}
+            .menu {
+                display: none;
+                flex-direction: column;
+                background-color: black;
+                position: absolute;
+                top: 55px;
+                width: 88%;
+                padding: 20px;
+                transform: translateX(-5.5%);
+            }
 
-.footer-content a:hover {
-  color: #cecdcd;
-  text-decoration: underline;
-}
+            .menu.active {
+                display: flex;
+            }
 
-.statistics {
-  background-color: #1e1e1e;
-  color: #ffffff;
-  padding: 50px 0;
-  text-align: center;
-}
+            .menu-toggle {
+                display: flex;
+            }
 
-.statistics h2 {
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
+            .menu li {
+                margin: 0 0 30px;
+            }
 
-.statistics-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
+            .hero-text {
+                margin-bottom: 300px;
+            }
 
-.statistic {
-  flex: 1;
-  padding: 20px;
-  background-color: #282828;
-  border: 1px solid #444;
-  border-radius: 10px;
-  transition: transform 0.3s;
-}
-
-.statistic:hover {
-  transform: scale(1.1);
-}
-
-.stat-value {
-  font-size: 2rem;
-  color: #4caf50;
-}
-
-.stat-label {
-  font-size: 1rem;
-  color: #ffffff;
-}
-
-
-
-
-/* Animations */
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-  }
-}
-
-/* Media queries */
-@media screen and (max-width: 768px) {
-  .hero h1 {
-    font-size: 2.5rem;
-  }
-  .hero p {
-    font-size: 1rem;
-  }
-  .hero button {
-    padding: 8px 20px;
-    font-size: 0.9rem;
-  }
-  .different-points {
-    flex-direction: column; /* Stack the points vertically on small screens */
-    align-items: center;
-  }
-
-  .different-point {
-    width: 80%; /* Make each point take up full width on small screens */
-    margin-bottom: 20px;
-  }
-
-  .statistics-container {
-    flex-direction: column; /* Stack statistics vertically on small screens */
-  }
-
-  .statistic {
-    width: 80%; /* Make each statistic take up full width on small screens */
-    margin-bottom: 20px;
-  }
-}
+            .feature {
+                font-size: 15px;
+            }
 
 
-.login_signup_btn {
-  border: 1px whitesmoke solid;
-  margin-left: 5px;
-  border-radius: 4px;
-}
+        }
 
-.login_signup_btn:hover {
-  background-color: whitesmoke;
-  color: black;
-  text-decoration: underline;
-}
+        @media (max-width: 768px) {
+            .collaboration {
+                flex-direction: column;
+            }
 
-  </style>
+
+            .collaboration-text-container {
+                background-color: #e7e7e7;
+                text-align: center;
+                font-size: 20px;
+                margin-top: 10px;
+            }
+
+            .collaboration-text {
+                margin-left: 0;
+                margin-right: 20px;
+                align-items: center !important;
+                text-align: center !important;
+            }
+
+            .collaboration-image {
+                width: 100% !important;
+                height: auto;
+            }
+        }
+
+
+        .bar {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            margin: 4px 0;
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .menu-toggle.active .bar:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .menu-toggle.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active .bar:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        .collaboration-image {
+            width: 800px;
+            height: 400px;
+        }
+
+        .feature-text {
+            max-width: 300px;
+            font-size: 18px;
+        }
+
+        .feature-text i {
+            font-size: 25px !;
+        }
+
+        @keyframes speedUp {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .collaboration {
+            display: flex;
+        }
+
+        .collaboration-text-container {
+            background-color: #e7e7e7;
+            width: 100%;
+            text-align: center;
+            font-size: 20px;
+        }
+
+        .collaboration-text {
+            margin-left: 100px;
+        }
+    </style>
 </head>
-
 <body>
-  <header>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="#features">Features</a>
-      <a href="/contact">Contact</a>
-      <a href="/updates">Updates</a>
-      <a class="login_signup_btn" href="/login">Login</a>
-      <a class="login_signup_btn" href="/signup">Signup</a>
-    </nav>
-  </header>
-  <div class="hero">
-    <h1>Welcome to Taskiy</h1>
-    <p>Welcome to Taskiy, a Free Task Management Site. Get started now!</p>
-    <button onclick="window.location.href='/signup';">Get Started</button>
-    <br>
-    <br>
-    <p style="margin-top: 5;">or</p>
-    <button onclick="sendToDownloads()"><i></i>Download Now For Free!</button>
-    </a> 
-  </div>
-
-
-  <div class="features" id="features">
-    <h1 style="font-size: 33px;">Our Features</h1>
-    <div class="top-features">
-      <div class="feature-card">
-          <h2>Easily Create and Delete Tasks</h2>
-          <p>Create and delete tasks with just a few clicks. With our intuitive interface, you can quickly add new tasks to your list and remove completed tasks, keeping your to-do list organized and up-to-date. Stay on top of your tasks effortlessly.</p>
-      </div>
-      <div class="feature-card">
-          <h2>Prioritize Your Tasks</h2>
-          <p>Effortlessly manage your workload by marking tasks as high, medium, or low priority. By categorizing tasks based on their importance, you can focus your attention on what matters most, ensuring that you stay productive and meet your goals efficiently.</p>
-      </div>
-      <div class="feature-card">
-          <h2>Create Task Groups</h2>
-          <p>Stay organized by creating task groups. Whether you're working on multiple projects, following various topics, or pursuing different goals, you can easily categorize your tasks into groups. This feature ensures that you can maintain clarity and structure in your task management process.</p>
-      </div>
-      <div class="feature-card">
-          <h2>Mobile Friendly and User-Friendly</h2>
-          <p>Access your tasks from anywhere using our mobile-friendly design. Our website is optimized to work seamlessly on mobile devices, allowing you to manage your tasks on the go. With a user-friendly interface, you can efficiently navigate through your tasks and stay productive, no matter where you are.</p>
-      </div>
-  </div>  
-    <section class="different-section">
-      <h2>Why Taskiy is Different</h2>
-      <div class="different-points">
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Free to Use</p>
-          <p>Taskiy is completely free to use, ensuring that you can access all of its features without any cost. No subscription fees or hidden charges.</p>
+    <div class="navbar">
+        <a href="/" class="logo"><img class="logo-image" src="5185208.jpg" alt="Your Logo"></a>
+        <div class="menu-toggle">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
         </div>
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Easy to Use</p>
-          <p>Taskiy's intuitive interface and user-friendly design make it simple to create, manage, and organize your tasks. No steep learning curves or complex setups.</p>
-        </div>
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Mobile-Friendly</p>
-          <p>Access your tasks anytime, anywhere. Taskiy's responsive design ensures that you can stay productive on both desktop and mobile devices.</p>
-        </div>
-      </div>
-      <div class="different-points">
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Flexible Task Groups</p>
-          <p>Stay organized your way. Create and customize task groups based on projects, topics, or goals. Tailor Taskiy to your unique workflow.</p>
-        </div>
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Stay Organized</p>
-          <p>Taskiy empowers you to prioritize tasks, set deadlines, and categorize them effectively. Stay on top of your to-do list and boost productivity.</p>
-        </div>
-        <div class="different-point">
-          <i class="fa fa-check-circle"></i>
-          <p>Free to Use</p>
-          <p>Taskiy is completely free to use, ensuring that you can access all of its features without any cost. No subscription fees or hidden charges.</p>
-        </div>
-      </div>
-    </section>
-    
-    <section class="statistics">
-      <h2>Statistics</h2>
-      <div class="statistics-container">
-        <div class="statistic">
-          <span class="stat-value">30,000+</span>
-          <span class="stat-label">Tasks Completed</span>
-        </div>
-        <div class="statistic">
-          <span class="stat-value">20,000+</span>
-          <span class="stat-label">Users Registered</span>
-        </div>
-        <div class="statistic">
-          <span class="stat-value">100%</span>
-          <span class="stat-label">User Satisfaction</span>
-        </div>
-      </div>
-    </section>
-    
-  </div>
-
-
-  <footer>
-    <div class="footer-content">
-      <a href="https://github.com/ExxonExxon/Taskiy" class="github-icon" target="_blank">
-        <i style="font-size: 20px;" class="fa fa-github"></i>
-      </a>
-      <a href="/terms-of-services">Terms of Service</a>
-      <a href="/privacy-policy">Privacy Policy</a>
-      <a href="/about">About</a>
-      <a href="/contact">Contact Us</a>
+        <ul class="menu">
+            <li><a href="/">Home</a></li>
+            <li><a href="https://taskiy.co/about">About Us</a></li>
+            <li><a href="#">Services <i class="fas fa-search"></i></a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a class="signup-login-btn" href="#">Signup</a></li>
+            <li><a class="signup-login-btn" href="#">Login</a></li>
+        </ul>
     </div>
-  </footer>
 
-  <script src="/static/js/index.js"></script>
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Welcome to Taskiy</h1>
+            <h3>Taskiy is designed for speed</h3>
+            <a class="signup-login-btn" href="#">Signup Now</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <div  class="feature">
+            <i  style="font-size: 70px; color:rgb(118, 202, 230);" class="fa fa-tachometer"></i>
+            <h2>Unparalleled Speed</h2>
+            <p class="feature-text">Experience the power of unparalleled speed with Taskiy. Our app is finely tuned to deliver blazing fast performance, ensuring that your tasks are managed swiftly and efficiently. No more waiting around – accomplish more in less time.</p>
+        </div>
+        <div class="feature">
+            <i style="font-size: 70px; color:rgb(118, 202, 230);" class="fa fa-terminal"></i>
+            <h2>Intuitive User Experience</h2>
+            <p class="feature-text">Taskiy offers an intuitive and user-friendly interface that makes task management a joy rather than a chore. Effortlessly organize your to-dos, set priorities, and collaborate with ease. We've made it easy for you to stay on top of your tasks and projects.</p>
+        </div>
+        <div class="feature">
+            <i style="font-size: 70px; color:rgb(118, 202, 230);" class="fa fa-star"></i>
+            <h2>Unique Features</h2>
+            <p class="feature-text">What sets Taskiy apart are its unique features that enhance your task management experience. From intelligent reminders to seamless integration with your favorite tools, Taskiy provides you with the tools you need to excel in your personal and professional life.</p>
+        </div>
+    </section>
+
+    <section class="detailedFeatures">
+        <div class="collaboration">
+            <div class="collaboration-img">
+                <img class="collaboration-image" src="5185208.jpg" alt="">
+            </div>
+            <div class="collaboration-text-container">
+                <div class="collaboration-text">
+                    <h1>Collaboration</h1>
+                    <p>
+                        Taskiy offers free collaboration for up to 10 users.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const menu = document.querySelector('.menu');
+
+        menuToggle.addEventListener('click', () => {
+            menu.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        });
+    </script>
 </body>
-
 </html>
